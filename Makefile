@@ -14,6 +14,23 @@ sbt:
 
 compile: $(gen_dir)/Tile.sv
 
+# Generate CoreSoc FIRRTL and Coq, then check the generated Coq file.
+coq:
+	bash "$(base_dir)/scripts/generate-coq.sh"
+
+# CIRCT/MLIR state-machine version described in fir2coq.md.
+coq-mlir:
+	bash "$(base_dir)/scripts/generate-coq-mlir.sh"
+
+coq-mlir-tool:
+	@test -n "$(CIRCT_ROOT)" || { echo "Set CIRCT_ROOT to the CIRCT SDK directory" >&2; exit 1; }
+	cmake -S "$(base_dir)/mlir-to-coq" -B "$(base_dir)/out/coq-mlir" -G Ninja \
+		-DCMAKE_PREFIX_PATH="$(CIRCT_ROOT)" -DCMAKE_BUILD_TYPE=Release
+	cmake --build "$(base_dir)/out/coq-mlir" -j$(or $(JOBS),2)
+
+test-coq-mlir: coq-mlir-tool
+	ctest --test-dir "$(base_dir)/out/coq-mlir" --output-on-failure
+
 $(gen_dir)/Tile.sv: $(wildcard $(src_dir)/scala/*.scala)
 	$(SBT) $(SBT_FLAGS) "run --target-dir=$(gen_dir)"
 
@@ -67,4 +84,4 @@ clean:
 cleanall: clean
 	rm -rf target project/target
 
-.PHONY: sbt compile verilator run-tests run-custom-bmark test test-quick clean cleanall
+.PHONY: sbt compile coq coq-mlir coq-mlir-tool test-coq-mlir verilator run-tests run-custom-bmark test test-quick clean cleanall
