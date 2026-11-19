@@ -39,3 +39,6 @@ verification_files/results/
 
 formal/
 mlir-to-coq/
+mini-proof/
+library/
+temp/

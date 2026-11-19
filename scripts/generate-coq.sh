@@ -6,7 +6,7 @@ cd "$repo"
 work=$(mktemp -d)
 trap 'rm -rf -- "$work"' EXIT
 
-# Run in an environment with Coq 8.16, MathComp 1.15, OCaml and dune.
+# Run in an environment with Coq 8.20.1, MathComp 1.19, OCaml and dune.
 # Preserve an already checked-out translator version (including newer commits).
 if [ ! -f firrtl2coq/_CoqProject ]; then
   git submodule update --init --recursive -- firrtl2coq

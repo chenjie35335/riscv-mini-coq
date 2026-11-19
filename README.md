@@ -1,130 +1,189 @@
 # riscv-mini
 
-## FIRRTL → Coq
+The complete proof is available at [riscv-mini-proof](https://github.com/chenjie35335/riscv-mini-proof).
 
-`firrtl2coq/` 是工具子模块，来源于 https://github.com/wky17/firrtl2coq，
-固定版本为 `482f062d9ea4b6638c2e1bf8327632694b44db66`。
+## FIRRTL to Coq
 
-`formal/CoreSoc.hi.fir` 从当前 Scala 源码重新生成，使用与现有形式化测试
-相同的 `CoreSoc(new Core(MiniConfig().core))` 顶层，包含 RVFI、参考模型、
-检查器和指令/数据存储器。这里不是含 I$/D$ 的 `Tile` 顶层。
-`formal/CoreSoc.v` 为该 FIRRTL 经工具转换得到的 Coq 表示。
-此版本仅发布这两个文件，编译验证的临时文件会自动清理。
+`firrtl2coq/` is a translator submodule from https://github.com/wky17/firrtl2coq.
+The documented translator revision is `482f062d9ea4b6638c2e1bf8327632694b44db66`.
 
-本次产物包含 12 个模块、2 个存储器、45 条断言和 1 条假设，已通过
-Coq 8.16.0 编译检查。源码基线为 `dac51f0b4c2d02ac0ec235ddcd10bd5738b15f6e`，
-参考模型子模块版本为 `2525d297a84e68f1c956478276e16b7a77e8b789`。
+`make coq` regenerates `formal/CoreSoc.hi.fir` from the current Scala sources
+and translates it into `formal/CoreSoc.v`. It uses the same
+`CoreSoc(new Core(MiniConfig().core))` top level as the formal tests, including
+RVFI, the reference model, checkers, and instruction/data memories. The `Tile`
+top level additionally includes instruction and data caches.
+Only these two source artifacts are published; temporary compilation files are
+removed automatically.
 
-依赖：Java 17、Mill 0.10.0-M4、Coq 8.16.0、MathComp ssreflect/algebra 1.15.0、
-OCaml 4.14.2、dune（至少 3.16）。例如使用独立 opam switch：
+The earlier generated model contained 12 modules, two memories, 45 assertions,
+and one assumption, and passed compilation with Coq 8.16.0. Its source baseline
+was `dac51f0b4c2d02ac0ec235ddcd10bd5738b15f6e`, with reference-model revision
+`2525d297a84e68f1c956478276e16b7a77e8b789`.
+
+The current generation workflow requires Java 17, Mill 0.10.0-M4, Coq 8.20.1,
+MathComp ssreflect/algebra 1.19.0, OCaml 4.14.2, and dune 3.16 or newer.
+For example, create a dedicated opam switch:
 
 ```bash
 opam switch create firrtl2coq ocaml-base-compiler.4.14.2
 opam repository add coq-released https://coq.inria.fr/opam/released --switch=firrtl2coq
-opam install --switch=firrtl2coq coq.8.16.0 coq-mathcomp-ssreflect.1.15.0 coq-mathcomp-algebra.1.15.0 dune
+opam install --switch=firrtl2coq coq.8.20.1 coq-mathcomp-ssreflect.1.19.0 coq-mathcomp-algebra.1.19.0 dune
 opam exec --switch=firrtl2coq -- make coq
 ```
 
-依赖已在当前环境中可用时，在项目根目录运行：
+If the dependencies are already available, run from the repository root:
 
 ```bash
 make coq
-# 可选：指定 firrtl2coq 的 Coq 依赖库构建并行度（默认 4）
+# Optional: change the Coq library build parallelism (default: 4).
 make coq JOBS=8
+# The script can also be invoked directly:
+bash scripts/generate-coq.sh
 ```
 
-`coq` 是伪目标，每次执行都会调用 `scripts/generate-coq.sh`，从当前
-Scala 源码重新生成。默认的 `make` / `make compile` 仍用于生成 Verilog。
-成功后得到 `formal/CoreSoc.hi.fir` 和 `formal/CoreSoc.v`；命令失败时
-不会更新这两个输出文件。
+The phony `coq` target invokes `scripts/generate-coq.sh` on every run. The script
+initializes the translator submodule if needed, generates high FIRRTL with
+resolved connections and widths, builds the translator and its Coq libraries,
+and checks the generated model with `coqc` before updating `formal/`.
+Generation or compilation failures leave the existing outputs unchanged.
+Scala sources are preserved, and translator build caches remain in ignored
+submodule directories. The default `make` / `make compile` targets generate Verilog.
 
-脚本初始化子模块、生成已解析连线及宽度的 high FIRRTL、构建工具和 Coq
-依赖库，转换后用 `coqc` 检查，成功后更新 `formal/`。它保留原有 Scala
-源码；工具的构建缓存留在子模块的忽略目录中，不纳入版本管理。
+Translation alone does not prove processor correctness. The translator emits
+`assert` statements as lemmas containing `Admitted`, represents `assume`
+statements as premises, and ignores `printf`. The complete assertion proofs
+are maintained in [riscv-mini-proof](https://github.com/chenjie35335/riscv-mini-proof).
 
-注意：转换不等于完成处理器正确性证明。工具将 `assert` 输出为带
-`Admitted` 的待证明引理，将 `assume` 输出为前提，并忽略 `printf`。
+## Flattened Low FIRRTL Assertion Proofs
 
-## MLIR → Coq 状态机版本
+The proof covers **all 45 original assertions** of
+`formal/flat-low/CoreSoc.lo.fir` using Coq 8.20.1. The flattened model contains
+one module, no submodule instances, and the original assumption; no design
+assertions were added. Translation was reproduced, and both generated
+`CoreSoc.v` files passed the original hash checks. The high FIRRTL compilation
+record above belongs to the earlier workflow.
 
-根据 [`fir2coq.md`](fir2coq.md) 实现的另一个转换器位于 `mlir-to-coq/`。
-它使用 CIRCT 解析、验证 FIRRTL dialect 的 MLIR，生成可执行的 Coq
-状态机：`Inputs`、`State`、`Outputs`、`eval`、`outputs`、`step` 和 `trace`。
-核心类型为 `eval : Inputs -> State -> Outputs * State`。
-原有 `make coq` 使用 `firrtl2coq`；此版本使用 `make coq-mlir`。
+The following paths describe the local proof workspace. For the complete proof
+sources, see the [dedicated proof repository](https://github.com/chenjie35335/riscv-mini-proof).
+The local [file inventory](formal/README.md) groups sources by function and
+separates final dependencies from auxiliary and historical files. Sources and
+artifacts outside the final dependency closure were archived under
+`temp/formal/`, preserving their directory structure; the move and hash manifest
+is `temp/formal-archive-manifest.json`.
 
-依赖：Java 17、Mill 0.10.0-M4、C++17 编译器、CMake ≥ 3.20、Ninja、
-Python 3（测试使用）、Coq（已验证 8.16.0），以及包含头文件、库、`firtool`
-和 `circt-opt` 的 **CIRCT SDK firtool-1.62.0**。仅下载 `firtool` 可执行文件不够。
-SDK 可从 [CIRCT 发布页](https://github.com/llvm/circt/releases/tag/firtool-1.62.0)
-获取。`Semantics.v` 只依赖 Coq 标准库，不需要 MathComp 或 OCaml/dune。
+| Area | Main files or families | Proof approach |
+| --- | --- | --- |
+| Original assertions | `GeneratedAssertion0.v` through `GeneratedAssertion44.v`, `AllOriginalAssertions.v` | Preserve the generated propositions, derive each from observations and legal traces, and conjoin all 45 results. |
+| Cycle interface and joint invariant | `CycleView*`, `CycleJointBase/Step/Invariant`, `CycleDataReachability` | Map environments to cycle views, establish initialization and preservation, and induct over cycles. |
+| Register files, x0, and writeback | `RF*`, `DUTBank*`, `ReferenceBank*`, `X0*`, `Cycle*BankAdvance` | Relate implementation and reference register files, prove writeback by instruction class, and track pending operations. |
+| PC and instruction fetch | `Fetch*`, `FormalFetch*`, `CommitPC*`, `PCRelative*`, `JALR*` | Align PCs through reset, stalls, sequential execution, branches, and jumps. |
+| Decode and pipeline | `CycleInstruction*`, `ReferenceControl*`, `EarlyControl*`, `Bubble*`, `Pipeline*` | Establish instruction coverage, control correspondence, and stability through normal, bubble/NOP, and stall paths. |
+| Memory operations | `Data*`, `MemoryPendingInvariant`, `StorePendingInvariant`, `CycleLoad*`, `CycleStore*` | Relate ports and memory states, track delayed requests, and align addresses, data, valid signals, and widths. |
+| Exceptions, CSR, and interrupts | `Exception*`, `FormalCSR*`, `InterruptZero*` | Connect exception events, PC selection, and control inputs to the joint invariant; this does not separately establish a complete CSR specification. |
+| Execution semantics and certificates | `Concrete*`, `FormalDeclared*`, `*Connection*`, `*Frames`, `*DependencyRanks`, `*GraphPropagation` | Derive evaluation, connection, typing, and environment lemmas from FIRRTL statements and reuse dependency and propagation certificates. |
 
-在项目根目录运行：
+Most files reside in `formal/flat-low/staged-integration/`, with shared
+foundations in `formal/flat-low/`. Historical hierarchical models,
+`legacy-validif-baseline/`, and unused experiments are archived under
+`temp/formal/` and excluded from the current build. `CoreSocModel.v` contains
+the generated definitions preceding the first unproved assertion; proofs import
+this prefix to avoid depending on the generated admitted statements.
+
+The proof proceeds from FIRRTL evaluation and connection lemmas through cycle
+transitions and joint register-file/PC/memory/pipeline invariants to the 45
+assertions and their conjunction. The final theorem requires only the original
+model's `generated_observe … = Some states` and `generated_legal_trace …`.
+`Print Assumptions` reports the two existing library axioms
+`HiEnv_with_implicit_widths.ftype_eqn_eq` and `ffield_eqn_eq`.
+
+Start with [the combined theorem](formal/flat-low/staged-integration/AllOriginalAssertions.v),
+then an individual `GeneratedAssertionN.v` and
+[the cycle joint invariant](formal/flat-low/staged-integration/CycleJointInvariant.v).
+Consult the foundation certificates when tracing individual connections.
+
+The documented validation includes a clean source rebuild, recursive `coqchk`,
+and a separate parallel kernel check covering all dependencies. Local reports:
+[final verification](formal/flat-low/final-snapshot-verification.json) and
+[assertion audit](formal/flat-low/original-assertion-proof-audit.json).
+Local reproduction and verification instructions are in
+[REPRODUCE_FLAT_LOW.txt](formal/generators/REPRODUCE_FLAT_LOW.txt) and
+[VERIFY_ORIGINAL_ASSERTIONS.txt](formal/generators/VERIFY_ORIGINAL_ASSERTIONS.txt).
+Proof-specific generators and audit scripts remain in `formal/generators/`;
+the main high FIRRTL generation script is `scripts/generate-coq.sh`.
+
+## MLIR to Coq State-Machine Workflow
+
+The alternative translator described in [fir2coq.md](fir2coq.md) resides in the
+local `mlir-to-coq/` directory. It uses CIRCT to parse and verify FIRRTL dialect
+MLIR and generates executable Coq definitions: `Inputs`, `State`, `Outputs`,
+`eval`, `outputs`, `step`, and `trace`, with
+`eval : Inputs -> State -> Outputs * State`. This workflow uses `make coq-mlir`.
+
+Dependencies are Java 17, Mill 0.10.0-M4, a C++17 compiler, CMake 3.20 or newer,
+Ninja, Python 3 for tests, Coq (validated with 8.16.0), and the complete
+[CIRCT SDK firtool-1.62.0](https://github.com/llvm/circt/releases/tag/firtool-1.62.0),
+including headers, libraries, `firtool`, and `circt-opt`. The standalone
+`firtool` executable is insufficient. `Semantics.v` requires only the Coq
+standard library.
 
 ```bash
 export CIRCT_ROOT=/path/to/firtool-1.62.0
 make coq-mlir
-# 如果 Coq 安装在前述 opam switch 中：
+# If Coq is installed in the switch above:
 opam exec --switch=firrtl2coq -- make coq-mlir
 ```
 
-命令从当前 Scala 源码生成 `CoreSoc` FIRRTL，依次进行 CHIRRTL 降低、位宽和
-复位推断、聚合类型展开、模块内联及条件连接展开，再导出 Coq。
-`Semantics.v` 和生成模型均通过 `coqc` 后，才发布到独立的 `formal/mlir/`：
+The command generates CoreSoc FIRRTL, lowers CHIRRTL, infers widths and resets,
+flattens aggregate types, inlines modules, expands conditional connections,
+and exports Coq. After both the semantics and model pass `coqc`, it publishes:
 
-| 文件 | 用途 |
+| File | Purpose |
 | --- | --- |
-| `CoreSoc.mlir` | 规范化后的 FIRRTL dialect MLIR |
-| `CoreSoc.v` | 当前 CoreSoc 的状态机模型 |
-| `Semantics.v` | 位宽、有符号整数、事件及轨迹基础语义 |
+| `formal/mlir/CoreSoc.mlir` | Normalized FIRRTL dialect MLIR |
+| `formal/mlir/CoreSoc.v` | CoreSoc state-machine model |
+| `formal/mlir/Semantics.v` | Bit-width, signed-integer, event, and trace semantics |
 
-构建缓存位于 `out/coq-mlir/`。`JOBS=4` 可调整 C++ 构建并行度。
-脚本默认启用 `--named-nodes`，将中间表达式生成为独立 `Definition`，方便
-检查大型电路；`make coq-mlir COQ_NAMED_NODES=0` 改为 `eval_with_events` 内的局部 `let`。
-已有 `CoreSoc.fir` 时，也可以运行：
+Build caches reside in `out/coq-mlir/`; `JOBS=4` adjusts C++ build parallelism.
+By default, `--named-nodes` emits intermediate expressions as separate
+`Definition`s. Use `make coq-mlir COQ_NAMED_NODES=0` for local `let` bindings
+inside `eval_with_events`. To translate an existing FIRRTL file:
 
 ```bash
-bash scripts/generate-coq-mlir.sh /path/to/CoreSoc.fir
+bash formal/generators/generate-coq-mlir.sh /path/to/CoreSoc.fir
 ```
 
-单独构建转换器、运行测试或转换其他已经规范化的 MLIR 模块：
+Numeric fields use `Z`, with `bv` enforcing widths on inputs, state, and results;
+`signed` interprets two's complement. Each `step` represents one rising edge of
+the same clock. `outputs` observes the state before that edge, and
+`trace inputs initial n` returns the state after n transitions. The caller
+supplies the initial state; `step` handles synchronous reset.
+
+Supported designs use one clock, known-width UInt/SInt values, synchronous
+reset, and memories with power-of-two depth up to 1024, at most one write port,
+read latency zero, write latency one, and a one-bit mask. Memory cells become
+individual state fields; memories without write ports retain their initial
+contents. Hierarchy, aggregates, and conditional connections must be lowered
+first. Asynchronous reset, derived clocks, multiple drivers, and unsupported
+operations are rejected. Additional `undef_*`, `divzero_*`, and `memundef_*`
+inputs represent undefined data, division-by-zero results, and disabled reads.
+
+`assert`, `assume`, `cover`, and `printf` are preserved as observation events
+with enables, predicates, message bytes, and print arguments. `assertions` and
+`assumptions` expose the corresponding propositions. Traces do not automatically
+filter inputs by assumptions or prove assertions. Generated code introduces no
+`Axiom` or `Admitted`. Tests use Coq `vm_compute` to check concrete operations
+and transitions and verify rejection of unsupported inputs; they do not prove
+semantic preservation of the entire translator or processor correctness.
+
+## Reference-Model Integration
+
+The modified version integrates the updated reference model. Generate formal
+transition systems with:
 
 ```bash
-make coq-mlir-tool
-make test-coq-mlir
-out/coq-mlir/firrtl-to-coq input.mlir Module output.v --named-nodes
-# 也可省略 --named-nodes。将 Semantics.v 放在输出旁，再编译：
-cp mlir-to-coq/Semantics.v /path/to/output-directory/
-cd /path/to/output-directory
-coqc Semantics.v
-coqc output.v
-```
-
-模型的数值字段为 `Z`，读取输入/状态及计算结果时通过 `bv` 限定位宽；
-有符号运算通过 `signed` 解释补码。每次 `step` 表示同一个时钟的一个上升沿，
-时钟不作为数值输入；`outputs` 观察该沿之前的当前状态，`trace inputs initial n`
-返回经过 n 次状态转换后的状态。初始状态由调用者提供，同步复位由 `step` 处理。
-
-支持单时钟、已知位宽的 UInt/SInt、同步复位，以及深度为 2 的幂且不超过
-1024 的存储器（最多一个写端口、读延迟 0、写延迟 1、单比特 mask）。
-存储单元展开为独立状态字段；无写端口的存储器保持其初始内容。
-层次实例、聚合类型和条件连接需预先展开；异步复位、派生时钟、多驱动和
-未实现的操作会报错。未定义数据、除零结果、关闭读使能时的读结果分别由
-`undef_*`、`divzero_*`、`memundef_*` 额外输入表示，而非固定为零。
-
-`assert`、`assume`、`cover`、`printf` 保留为 `events` 中的观察事件，包含
-使能、谓词、消息字节和打印参数；`assertions` / `assumptions` 给出对应命题。
-轨迹不会自动过滤不满足假设的输入，也不会自动证明断言；生成代码不引入
-`Axiom` 或 `Admitted`。测试通过 Coq `vm_compute` 检查具体运算和状态转换，
-并检查不支持的输入被拒绝；这不构成整个转换器语义保持或处理器正确性的证明。
-
-## 修改说明
-关于接入最新参考模型的修改版本
-```bash
-# Compile to generate transition system for formal verification
-# for btor2 format
+# BTOR2 format
 mill chiselModule.test.testOnly formal.RISCVMiniFormalSpecBtor
-# for SystemVerilog format (to Symbiyosys)
+# SystemVerilog format for SymbiYosys
 mill chiselModule.test.testOnly formal.RISCVMiniFormalSpecSV
 ```
 
@@ -171,7 +230,7 @@ The following command runs the whole test hex files in verilator and dumps the t
 ## Unit and Integration Tests with `sbt`
 
 `riscv-mini` provides synthesizable unit & integration tests.
-Theres are six sets of unit tests(`ALUTests`, `BrCondTests`, `ImmGenTests`, `CSRTests`, `CacheTests`, `DatapathTests`),
+There are six sets of unit tests(`ALUTests`, `BrCondTests`, `ImmGenTests`, `CSRTests`, `CacheTests`, `DatapathTests`),
 running user-defined test vectors.
 To execute them, first launch sbt with `make sbt` and run:
 
@@ -192,13 +251,40 @@ Finally, to run all the tests, just in sbt:
     
 ## Running Your Own Program on `riscv-mini`
 
-At this point, you may want to implement and exeucte your custom application on `riscv-mini`. In this case, you need to install RISC-V tools for priv 1.7. This repo provides a script to install the correct version of tools. Run the script as follows:
+At this point, you may want to implement and execute your custom application on `riscv-mini`. In this case, you need to install RISC-V tools for priv 1.7. This repo provides a script to install the correct version of tools. Run the script as follows:
 
     $ export RISCV=<path to riscv tools for priv 1.7>
-    $ ./build-riscv-tools
+    $ ./build-riscv-tools.sh
     
 It takes a while to install the toolchain, so please be patient.
 
 This repo also provides a template for your own program in `custom-bmark`. Add your c or assembly code and edit `Makefile`. Next, to compile you program, run `make` in `custom-bmark` to generate the binary, dump, and the hex files. Finally, run the following command in the base directory:
 
     $ make run-custom-bmark
+
+## Standalone Proof Source Package
+
+The complete proof is published at
+[chenjie35335/riscv-mini-proof](https://github.com/chenjie35335/riscv-mini-proof).
+
+The local `mini-proof/` package collects 1,183 `.v` files needed for all 45
+original assertions: 1,158 model/proof sources and 25 FIRRTL, bit-vector, and
+foundation library sources. Relative directories preserve Coq namespaces.
+The entry point is
+`mini-proof/formal/flat-low/staged-integration/AllOriginalAssertions.v`.
+The package contains source files only. To validate the local package:
+
+```bash
+python3 formal/generators/verify-mini-proof.py --jobs 3
+```
+
+The verifier copies only package sources into a separate
+`/tmp/riscv-mini-proof-check-*` directory, rebuilds all dependencies, checks the
+combined theorem's assumptions, and runs recursive `coqchk` with VM conversion
+checking enabled. Build products, logs, and `verification.json` remain in that
+temporary directory; consult its report for the outcome of a particular run.
+
+Library sources in `mini-proof/` are kept byte-for-byte identical to the original
+`firrtl2coq/` libraries, including existing unproved declarations. Final theorem
+dependencies are assessed with `Print Assumptions`. Experimental library
+versions that proved or removed declarations are excluded from the delivery.
