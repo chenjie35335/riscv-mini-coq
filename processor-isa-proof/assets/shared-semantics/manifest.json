@@ -1,0 +1,2049 @@
+{
+  "schema_version": 1,
+  "description": "Exact-copy DUT-independent proofs over the shared FIRRTL semantics; external libraries are required. No CoreSocModel or ComparisonNodes dependency.",
+  "source_root": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof",
+  "source_revision": "6666776a8018b54c1b8993b4cdc2528925f1278a",
+  "coqc": "/home/stormy/.opam/firrtl2coq/bin/coqc",
+  "flags": [
+    "-Q",
+    "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+    "simplssrlib",
+    "-Q",
+    "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+    "nbits",
+    "-R",
+    "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+    "firrtl"
+  ],
+  "modules": [
+    {
+      "module": "RegisterInvariants",
+      "asset": "coq/RegisterInvariants.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/RegisterInvariants.v",
+      "source_relative": "formal/flat-low/RegisterInvariants.v",
+      "sha256": "1c4218cf65a4b238c16d5185dfd33d4dcd61a6c03faab46c46b319f80d9ecb6e",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "restore_preserves_agreement",
+          "line": 7,
+          "declaration": "Lemma restore_preserves_agreement (old_map current : VM.t hvalue) id name value :\n VM.find id current = VM.find id old_map ->\n VM.find name old_map = Some value ->\n VM.find id (VM.add name value current) = VM.find id old_map."
+        },
+        {
+          "kind": "Lemma",
+          "name": "finish_false_preserves_agreement",
+          "line": 20,
+          "declaration": "Lemma finish_false_preserves_agreement : forall (stmts : HiF.hfstmt_seq)\n (eval : HiF.hfexpr -> option hvalue) old_map current result id,\n VM.find id current = VM.find id old_map ->\n finish_registers eval old_map false current stmts = Some result ->\n VM.find id result = VM.find id old_map."
+        },
+        {
+          "kind": "Fixpoint",
+          "name": "has_register",
+          "line": 46,
+          "declaration": "Fixpoint has_register (id : VarOrder.T) (stmts : HiF.hfstmt_seq) : bool :=\n match stmts with\n | Qnil => false\n | Qcons st tl =>\n   (match st with\n    | Sreg name _ => id == name\n    | Swhen _ yes no => has_register id yes || has_register id no\n    | _ => false end) || has_register id tl\n end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "finish_false_holds_registers",
+          "line": 56,
+          "declaration": "Lemma finish_false_holds_registers : forall (stmts : HiF.hfstmt_seq)\n (eval : HiF.hfexpr -> option hvalue) old_map current result id,\n has_register id stmts = true ->\n finish_registers eval old_map false current stmts = Some result ->\n VM.find id result = VM.find id old_map."
+        },
+        {
+          "kind": "Theorem",
+          "name": "policy_combinational_iteration_holds_registers",
+          "line": 90,
+          "declaration": "Theorem policy_combinational_iteration_holds_registers : forall invalid mm old_map current result stmts id,\n has_register id stmts = true ->\n value_iter_with_memory_policy invalid mm old_map false current stmts = Some result ->\n VM.find id result = VM.find id old_map."
+        },
+        {
+          "kind": "Corollary",
+          "name": "formal_combinational_iteration_holds_registers",
+          "line": 102,
+          "declaration": "Corollary formal_combinational_iteration_holds_registers : forall input path mm old_map current result stmts id,\n has_register id stmts = true ->\n value_iter_with_memory_policy (formal_invalid_policy input path)\n   mm old_map false current stmts = Some result ->\n VM.find id result = VM.find id old_map."
+        },
+        {
+          "kind": "Theorem",
+          "name": "memory_combinational_iteration_holds_registers",
+          "line": 109,
+          "declaration": "Theorem memory_combinational_iteration_holds_registers : forall mm old_map current result stmts id,\n has_register id stmts = true ->\n value_iter_with_memory mm old_map false current stmts = Some result ->\n VM.find id result = VM.find id old_map."
+        },
+        {
+          "kind": "Theorem",
+          "name": "plain_combinational_iteration_holds_registers",
+          "line": 118,
+          "declaration": "Theorem plain_combinational_iteration_holds_registers : forall old_map current result stmts id,\n has_register id stmts = true ->\n value_iter old_map false current stmts = Some result ->\n VM.find id result = VM.find id old_map."
+        }
+      ]
+    },
+    {
+      "module": "NormalizedBit",
+      "asset": "coq/NormalizedBit.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/NormalizedBit.v",
+      "source_relative": "formal/flat-low/NormalizedBit.v",
+      "sha256": "0111a381119271e4f5ae4995f5ccfb742028e0bb6abf0a230160f8b85610e768",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Inductive",
+          "name": "normalized_bit",
+          "line": 3,
+          "declaration": "Inductive normalized_bit : hvalue -> Prop :=\n | normalized_known b : normalized_bit (Gval (Fuint 1) [::b])\n | normalized_pending : normalized_bit (Needtobedefined (Gtyp (Fuint 1)))\n | normalized_uninitialized : normalized_bit (Uninitialized (Gtyp (Fuint 1)))\n | normalized_invalid : normalized_bit (Undefinedonpurpose (Gtyp (Fuint 1)))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "adapted_bit_normalized",
+          "line": 8,
+          "declaration": "Lemma adapted_bit_normalized input result :\n adapt_hvalue_as_type input (Gtyp (Fuint 1)) = Some result -> normalized_bit result."
+        }
+      ]
+    },
+    {
+      "module": "SymbolicBit",
+      "asset": "coq/SymbolicBit.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/SymbolicBit.v",
+      "source_relative": "formal/flat-low/SymbolicBit.v",
+      "sha256": "10828d08af4c5b0c7e3b5dfc128b2cfde43dd90fdf99d90732739e0bb487d1ce",
+      "exact_copy": true,
+      "local_dependencies": [
+        "NormalizedBit"
+      ],
+      "declarations": [
+        {
+          "kind": "Definition",
+          "name": "bit_or_known",
+          "line": 4,
+          "declaration": "Definition bit_or_known value bit :=\n match eval_binop Bor value (Gval (Fuint 1) [::bit]) with\n | Some result => result | None => Needtobedefined (Gtyp (Fuint 1)) end."
+        },
+        {
+          "kind": "Definition",
+          "name": "bit_eq_false",
+          "line": 7,
+          "declaration": "Definition bit_eq_false value :=\n match eval_binop (Bcomp Beq) value (Gval (Fuint 1) [::false]) with\n | Some result => result | None => Needtobedefined (Gtyp (Fuint 1)) end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "bit_or_known_eval",
+          "line": 10,
+          "declaration": "Lemma bit_or_known_eval value bit : normalized_bit value ->\n eval_binop Bor value (Gval (Fuint 1) [::bit]) = Some (bit_or_known value bit)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "bit_or_known_normal",
+          "line": 13,
+          "declaration": "Lemma bit_or_known_normal value bit : normalized_bit value -> normalized_bit (bit_or_known value bit)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "bit_eq_false_eval",
+          "line": 15,
+          "declaration": "Lemma bit_eq_false_eval value : normalized_bit value ->\n eval_binop (Bcomp Beq) value (Gval (Fuint 1) [::false]) = Some (bit_eq_false value)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "bit_eq_false_normal",
+          "line": 18,
+          "declaration": "Lemma bit_eq_false_normal value : normalized_bit value -> normalized_bit (bit_eq_false value)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "normalized_bit_type",
+          "line": 20,
+          "declaration": "Lemma normalized_bit_type value : normalized_bit value -> type_of_val value = Gtyp (Fuint 1)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "normalized_bit_adapt",
+          "line": 22,
+          "declaration": "Lemma normalized_bit_adapt value : normalized_bit value ->\n adapt_hvalue_as_type value (Gtyp (Fuint 1)) = Some value."
+        },
+        {
+          "kind": "Definition",
+          "name": "checker_valid_symbolic",
+          "line": 25,
+          "declaration": "Definition checker_valid_symbolic bubble stall reset := bit_eq_false (bit_or_known (bit_or_known bubble stall) reset)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "checker_valid_symbolic_normal",
+          "line": 26,
+          "declaration": "Lemma checker_valid_symbolic_normal bubble stall reset : normalized_bit bubble ->\n normalized_bit (checker_valid_symbolic bubble stall reset)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "checker_valid_symbolic_true",
+          "line": 29,
+          "declaration": "Lemma checker_valid_symbolic_true bubble stall reset : normalized_bit bubble ->\n checker_valid_symbolic bubble stall reset = Gval (Fuint 1) [::true] ->\n bubble = Gval (Fuint 1) [::false] /\\ stall = false /\\ reset = false."
+        }
+      ]
+    },
+    {
+      "module": "SymbolicUInt",
+      "asset": "coq/SymbolicUInt.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/SymbolicUInt.v",
+      "source_relative": "formal/flat-low/SymbolicUInt.v",
+      "sha256": "8fb411779501bf892045821a72c519774e02e896960fd84d01e4fe7b2e51679f",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "symbolic_uint_concrete",
+          "line": 4,
+          "declaration": "Theorem symbolic_uint_concrete inputs path id width :\n exists bits, size bits = width /\\\n symbolic_register_value inputs path id (Gtyp (Fuint width)) = Gval (Fuint width) bits."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteDecodeOperations",
+      "asset": "coq/ConcreteDecodeOperations.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/ConcreteDecodeOperations.v",
+      "source_relative": "formal/flat-low/ConcreteDecodeOperations.v",
+      "sha256": "a62c82e3aeccc83fb63c94673bb9f61cf6304007ed9cdf5b15ae22593d7b11e9",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "refine_concrete_uint",
+          "line": 5,
+          "declaration": "Lemma refine_concrete_uint known width word :\n refine_boolean_result known (Some (Gval (Fuint width) word)) = Some (Gval (Fuint width) word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_uint_mask",
+          "line": 8,
+          "declaration": "Lemma concrete_uint_mask width1 width2 left right :\n exists word, eval_binop Band (Gval (Fuint width1) left) (Gval (Fuint width2) right) =\n Some (Gval (Fuint (maxn width1 width2)) word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_uint_equal",
+          "line": 14,
+          "declaration": "Lemma concrete_uint_equal width1 width2 left right :\n exists bit, eval_binop (Bcomp Beq) (Gval (Fuint width1) left) (Gval (Fuint width2) right) =\n Some (Gval (Fuint 1) [::bit])."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_uint_mux_const_ref",
+          "line": 20,
+          "declaration": "Lemma concrete_uint_mux_const_ref mm old (condition no : VarOrder.T) bit left_width right_width left right :\n VM.find condition old = Some (Gval (Fuint 1) [::bit]) ->\n VM.find no old = Some (Gval (Fuint right_width) right) ->\n eval_hfexpr_with_memory mm (@Econst VarOrder.T (Fuint left_width) left) old old =\n Some (Gval (Fuint left_width) (zext_to left_width left)) ->\n exists word, eval_hfexpr_with_memory mm\n (@Emux VarOrder.T (@Eref VarOrder.T (@Eid VarOrder.T condition))\n (@Econst VarOrder.T (Fuint left_width) left) (@Eref VarOrder.T (@Eid VarOrder.T no))) old old =\n Some (Gval (Fuint (maxn left_width right_width)) word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_mask_ref_const",
+          "line": 40,
+          "declaration": "Lemma concrete_mask_ref_const mm old (source : VarOrder.T) width word const_width const_word :\n VM.find source old = Some (Gval (Fuint width) word) ->\n eval_hfexpr_with_memory mm (@Econst VarOrder.T (Fuint const_width) const_word) old old =\n Some (Gval (Fuint const_width) (zext_to const_width const_word)) ->\n exists result, eval_hfexpr_with_memory mm\n (@Eprim_binop VarOrder.T Band (@Eref VarOrder.T (@Eid VarOrder.T source))\n (@Econst VarOrder.T (Fuint const_width) const_word)) old old =\n Some (Gval (Fuint (maxn width const_width)) result)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_equal_ref_const",
+          "line": 53,
+          "declaration": "Lemma concrete_equal_ref_const mm old (source : VarOrder.T) width word const_width const_word :\n VM.find source old = Some (Gval (Fuint width) word) ->\n eval_hfexpr_with_memory mm (@Econst VarOrder.T (Fuint const_width) const_word) old old =\n Some (Gval (Fuint const_width) (zext_to const_width const_word)) ->\n exists bit, eval_hfexpr_with_memory mm\n (@Eprim_binop VarOrder.T (Bcomp Beq) (@Eref VarOrder.T (@Eid VarOrder.T source))\n (@Econst VarOrder.T (Fuint const_width) const_word)) old old =\n Some (Gval (Fuint 1) [::bit])."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_equal_const_ref",
+          "line": 67,
+          "declaration": "Lemma concrete_equal_const_ref mm old (source : VarOrder.T) width word const_width const_word :\n VM.find source old = Some (Gval (Fuint width) word) ->\n eval_hfexpr_with_memory mm (@Econst VarOrder.T (Fuint const_width) const_word) old old =\n Some (Gval (Fuint const_width) (zext_to const_width const_word)) ->\n exists bit, eval_hfexpr_with_memory mm\n (@Eprim_binop VarOrder.T (Bcomp Beq) (@Econst VarOrder.T (Fuint const_width) const_word)\n (@Eref VarOrder.T (@Eid VarOrder.T source))) old old =\n Some (Gval (Fuint 1) [::bit])."
+        }
+      ]
+    },
+    {
+      "module": "ScalarNodeFrames",
+      "asset": "coq/ScalarNodeFrames.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/ScalarNodeFrames.v",
+      "source_relative": "formal/flat-low/ScalarNodeFrames.v",
+      "sha256": "737dc82c766cd41c87ded2aa5b65f26912ee3d14d105f3d4c2d3481b174725b8",
+      "exact_copy": true,
+      "local_dependencies": [
+        "RegisterInvariants"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "adapted_uint_is_passive",
+          "line": 11,
+          "declaration": "Lemma adapted_uint_is_passive value width result :\n adapt_hvalue_as_type value (Gtyp (Fuint width)) = Some result ->\n is_passive_value result."
+        },
+        {
+          "kind": "Lemma",
+          "name": "passive_source_unchanged",
+          "line": 26,
+          "declaration": "Lemma passive_source_unchanged old new_value :\n is_passive_value new_value -> replace_writeable Source old new_value = Some old."
+        },
+        {
+          "kind": "Lemma",
+          "name": "unidirectional_connect_preserves_other",
+          "line": 33,
+          "declaration": "Lemma unidirectional_connect_preserves_other node lhs rhs old current result :\n node != HiF.base_ref lhs ->\n unidirectional_connect lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "bidirectional_connect_preserves_other",
+          "line": 47,
+          "declaration": "Lemma bidirectional_connect_preserves_other node lhs rhs old current result :\n node != HiF.base_ref lhs -> node != HiF.base_ref rhs ->\n bidirectional_connect lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Theorem",
+          "name": "bidirectional_connect_preserves_uint_source",
+          "line": 72,
+          "declaration": "Theorem bidirectional_connect_preserves_uint_source node lhs width bits old current result :\n node != HiF.base_ref lhs ->\n VM.find node current = Some (Gval (Fuint width) bits) ->\n bidirectional_connect lhs (@Eid VarOrder.T node) old current = Some result ->\n VM.find node result = Some (Gval (Fuint width) bits)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "bidirectional_connect_preserves_typed_uint_source",
+          "line": 100,
+          "declaration": "Theorem bidirectional_connect_preserves_typed_uint_source node lhs width value old current result :\n type_of_val value = Gtyp (Fuint width) ->\n node != HiF.base_ref lhs ->\n VM.find node current = Some value ->\n bidirectional_connect lhs (@Eid VarOrder.T node) old current = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Theorem",
+          "name": "finish_registers_preserves_nonregister",
+          "line": 129,
+          "declaration": "Theorem finish_registers_preserves_nonregister : forall (stmts : HiF.hfstmt_seq)\n eval old set_regs current result node,\n has_register node stmts = false ->\n finish_registers eval old set_regs current stmts = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Theorem",
+          "name": "policy_iteration_nonregister_projection",
+          "line": 162,
+          "declaration": "Theorem policy_iteration_nonregister_projection invalid mm old set_regs current result stmts node :\n has_register node stmts = false ->\n value_iter_with_memory_policy invalid mm old set_regs current stmts = Some result ->\n exists proposed,\n   value_iter_statements_with_memory_policy invalid [::] 0 mm old set_regs current stmts = Some proposed /\\\n   VM.find node result = VM.find node proposed."
+        },
+        {
+          "kind": "Corollary",
+          "name": "policy_iteration_preserves_computed_node",
+          "line": 176,
+          "declaration": "Corollary policy_iteration_preserves_computed_node invalid mm old set_regs current result stmts node value :\n has_register node stmts = false ->\n (forall proposed,\n   value_iter_statements_with_memory_policy invalid [::] 0 mm old set_regs current stmts = Some proposed ->\n   VM.find node proposed = Some value) ->\n value_iter_with_memory_policy invalid mm old set_regs current stmts = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "undef_ref_preserves_other",
+          "line": 192,
+          "declaration": "Lemma undef_ref_preserves_other node reference make_value old current result :\n node != HiF.base_ref reference ->\n undef_ref reference make_value old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "nonmemory_invalidation_preserves_other",
+          "line": 204,
+          "declaration": "Lemma nonmemory_invalidation_preserves_other mm set_regs node reference make_value old current result :\n node != HiF.base_ref reference ->\n (match reference with\n  | Esubfield (Esubfield (Eid mem) port) field =>\n      is_memory_data_port true mm mem port field = false\n  | _ => True end) ->\n invalidate_ref_with_memory mm set_regs reference make_value old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "invalid_statement_node_projection",
+          "line": 230,
+          "declaration": "Lemma invalid_statement_node_projection invalid scope position mm old set_regs\n current result tail node reference :\n node != HiF.base_ref reference ->\n (match reference with\n  | Esubfield (Esubfield (Eid mem) port) field =>\n      is_memory_data_port true mm mem port field = false\n  | _ => True end) ->\n (forall next,\n   VM.find node next = VM.find node current ->\n   value_iter_statements_with_memory_policy invalid scope (S position)\n     mm old set_regs next tail = Some result ->\n   VM.find node result = VM.find node next) ->\n value_iter_statements_with_memory_policy invalid scope position\n   mm old set_regs current (Qcons (Sinvalid reference) tail) = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "node_statement_evaluation_projection",
+          "line": 257,
+          "declaration": "Lemma node_statement_evaluation_projection invalid scope position mm old set_regs\n current result tail node expression :\n (forall value,\n   eval_hfexpr_with_memory mm expression old old = Some value ->\n   value_iter_statements_with_memory_policy invalid scope (S position)\n     mm old set_regs (VM.add node value current) tail = Some result ->\n   VM.find node result = Some value) ->\n value_iter_statements_with_memory_policy invalid scope position\n   mm old set_regs current (Qcons (Snode node expression) tail) = Some result ->\n VM.find node result = eval_hfexpr_with_memory mm expression old old."
+        },
+        {
+          "kind": "Corollary",
+          "name": "node_statement_preserved_evaluation",
+          "line": 275,
+          "declaration": "Corollary node_statement_preserved_evaluation invalid scope position mm old set_regs\n current result tail node expression :\n (forall value,\n   eval_hfexpr_with_memory mm expression old old = Some value ->\n   value_iter_statements_with_memory_policy invalid scope (S position)\n     mm old set_regs (VM.add node value current) tail = Some result ->\n   VM.find node result = VM.find node (VM.add node value current)) ->\n value_iter_statements_with_memory_policy invalid scope position\n   mm old set_regs current (Qcons (Snode node expression) tail) = Some result ->\n VM.find node result = eval_hfexpr_with_memory mm expression old old."
+        },
+        {
+          "kind": "Lemma",
+          "name": "bidirectional_connect_with_memory_preserves_other",
+          "line": 295,
+          "declaration": "Lemma bidirectional_connect_with_memory_preserves_other mm node lhs rhs old current result :\n node != HiF.base_ref lhs -> node != HiF.base_ref rhs ->\n bidirectional_connect_with_memory mm lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Theorem",
+          "name": "bidirectional_connect_with_memory_preserves_typed_uint_source",
+          "line": 321,
+          "declaration": "Theorem bidirectional_connect_with_memory_preserves_typed_uint_source mm node lhs width value old current result :\n type_of_val value = Gtyp (Fuint width) ->\n node != HiF.base_ref lhs ->\n VM.find node current = Some value ->\n bidirectional_connect_with_memory mm lhs (@Eid VarOrder.T node) old current = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "unidirectional_connect_bundle_preserves_other",
+          "line": 350,
+          "declaration": "Lemma unidirectional_connect_bundle_preserves_other mm node lhs rhs old current result :\n node != HiF.base_ref lhs ->\n unidirectional_connect_bundle mm lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "nonmemory_unidirectional_connect_is_bundle",
+          "line": 364,
+          "declaration": "Lemma nonmemory_unidirectional_connect_is_bundle mm set_regs lhs rhs old current :\n is_memory_writer_ref mm lhs = false ->\n unidirectional_connect_with_memory mm set_regs lhs rhs old current =\n unidirectional_connect_bundle mm lhs rhs old current."
+        },
+        {
+          "kind": "Corollary",
+          "name": "nonmemory_unidirectional_connect_preserves_other",
+          "line": 377,
+          "declaration": "Corollary nonmemory_unidirectional_connect_preserves_other mm set_regs node lhs rhs old current result :\n node != HiF.base_ref lhs ->\n is_memory_writer_ref mm lhs = false ->\n unidirectional_connect_with_memory mm set_regs lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Definition",
+          "name": "connection_preserves_uint_source",
+          "line": 389,
+          "declaration": "Definition connection_preserves_uint_source (node : VarOrder.T) (rhs : HiF.hfexpr) : Prop :=\n match rhs with\n | Eref reference => node != HiF.base_ref reference \\/ reference = Eid node\n | _ => True\n end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "selected_connection_preserves_uint",
+          "line": 395,
+          "declaration": "Lemma selected_connection_preserves_uint mm set_regs node lhs rhs width value old current result :\n type_of_val value = Gtyp (Fuint width) ->\n VM.find node current = Some value ->\n node != HiF.base_ref lhs ->\n is_memory_writer_ref mm lhs = false ->\n connection_preserves_uint_source node rhs ->\n (match rhs with\n  | Eref reference =>\n      if is_memory_writer_ref mm lhs then\n        unidirectional_connect_with_memory mm set_regs lhs rhs old current\n      else bidirectional_connect_with_memory mm lhs reference old current\n  | _ => unidirectional_connect_with_memory mm set_regs lhs rhs old current\n  end) = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Fixpoint",
+          "name": "scalar_suffix_safe",
+          "line": 422,
+          "declaration": "Fixpoint scalar_suffix_safe (mm : memory_map) (node : VarOrder.T)\n (stmts : HiF.hfstmt_seq) : Prop :=\n match stmts with\n | Qnil => True\n | Qcons st tail =>\n   (match st with\n    | Sskip | Sinst _ _ => True\n    | Swire name _ | Sreg name _ | Smem name _ | Snode name _ => node != name\n    | Sfcnct lhs rhs => node != HiF.base_ref lhs /\\\n        is_memory_writer_ref mm lhs = false /\\ connection_preserves_uint_source node rhs\n    | Sinvalid reference => node != HiF.base_ref reference /\\\n        is_memory_writer_ref mm reference = false\n    | Swhen _ _ _ => False\n    end) /\\ scalar_suffix_safe mm node tail\n end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "scalar_suffix_preserves_uint",
+          "line": 438,
+          "declaration": "Lemma scalar_suffix_preserves_uint : forall stmts mm node width value invalid scope position\n old set_regs current result,\n scalar_suffix_safe mm node stmts ->\n type_of_val value = Gtyp (Fuint width) ->\n VM.find node current = Some value ->\n value_iter_statements_with_memory_policy invalid scope position mm old set_regs current stmts = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Theorem",
+          "name": "safe_node_suffix_evaluation",
+          "line": 492,
+          "declaration": "Theorem safe_node_suffix_evaluation invalid scope position mm old set_regs\n current result tail node expression width :\n scalar_suffix_safe mm node tail ->\n (forall value, eval_hfexpr_with_memory mm expression old old = Some value ->\n   type_of_val value = Gtyp (Fuint width)) ->\n value_iter_statements_with_memory_policy invalid scope position mm old set_regs\n   current (Qcons (Snode node expression) tail) = Some result ->\n VM.find node result = eval_hfexpr_with_memory mm expression old old."
+        },
+        {
+          "kind": "Fixpoint",
+          "name": "straight_drop",
+          "line": 516,
+          "declaration": "Fixpoint straight_drop (count : nat) (stmts : HiF.hfstmt_seq) : option HiF.hfstmt_seq :=\n match count, stmts with\n | O, _ => Some stmts\n | S rest, Qcons (Swhen _ _ _) _ => None\n | S rest, Qcons _ tail => straight_drop rest tail\n | _, _ => None\n end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "successful_straight_head",
+          "line": 524,
+          "declaration": "Lemma successful_straight_head invalid scope position mm old set_regs current result st tail :\n (match st with Swhen _ _ _ => False | _ => True end) ->\n value_iter_statements_with_memory_policy invalid scope position mm old set_regs current (Qcons st tail) = Some result ->\n exists next, value_iter_statements_with_memory_policy invalid scope (S position)\n   mm old set_regs next tail = Some result."
+        },
+        {
+          "kind": "Theorem",
+          "name": "successful_straight_prefix",
+          "line": 544,
+          "declaration": "Theorem successful_straight_prefix : forall count stmts suffix invalid scope position mm old set_regs current result,\n straight_drop count stmts = Some suffix ->\n value_iter_statements_with_memory_policy invalid scope position mm old set_regs current stmts = Some result ->\n exists next, value_iter_statements_with_memory_policy invalid scope (position + count)\n   mm old set_regs next suffix = Some result."
+        },
+        {
+          "kind": "Theorem",
+          "name": "full_iteration_node_equation",
+          "line": 565,
+          "declaration": "Theorem full_iteration_node_equation count stmts tail node expression width\n invalid mm old set_regs current result :\n straight_drop count stmts = Some (Qcons (Snode node expression) tail) ->\n scalar_suffix_safe mm node tail ->\n has_register node stmts = false ->\n (forall value, eval_hfexpr_with_memory mm expression old old = Some value ->\n   type_of_val value = Gtyp (Fuint width)) ->\n value_iter_with_memory_policy invalid mm old set_regs current stmts = Some result ->\n VM.find node result = eval_hfexpr_with_memory mm expression old old."
+        }
+      ]
+    },
+    {
+      "module": "MemoryWriteFrames",
+      "asset": "coq/MemoryWriteFrames.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/MemoryWriteFrames.v",
+      "source_relative": "formal/flat-low/MemoryWriteFrames.v",
+      "sha256": "1e9206c49d25f33270c93df1b00621b0fd73242ede59c2c3c6bad803045117e9",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ScalarNodeFrames",
+        "RegisterInvariants"
+      ],
+      "declarations": [
+        {
+          "kind": "Definition",
+          "name": "memory_storage_disjoint",
+          "line": 6,
+          "declaration": "Definition memory_storage_disjoint mm node mem :=\n match VM.find mem mm with Some ml => node != ml_storage_id ml | None => true end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "write_memory_preserves_other",
+          "line": 8,
+          "declaration": "Lemma write_memory_preserves_other mm mem port value phase old current result node :\n memory_storage_disjoint mm node mem ->\n write_memory_data mm mem port value phase old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "memory_connection_preserves_other",
+          "line": 25,
+          "declaration": "Lemma memory_connection_preserves_other mm phase node lhs rhs old current result :\n node != HiF.base_ref lhs -> memory_storage_disjoint mm node (HiF.base_ref lhs) ->\n unidirectional_connect_with_memory mm phase lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "selected_memory_connection_preserves_other",
+          "line": 44,
+          "declaration": "Lemma selected_memory_connection_preserves_other mm phase node lhs rhs value old current result :\n VM.find node current = Some value -> node != HiF.base_ref lhs ->\n memory_storage_disjoint mm node (HiF.base_ref lhs) ->\n (match rhs with Eref r => node != HiF.base_ref r | _ => True end) ->\n (match rhs with Eref r => if is_memory_writer_ref mm lhs then\n   unidirectional_connect_with_memory mm phase lhs rhs old current\n   else bidirectional_connect_with_memory mm lhs r old current\n | _ => unidirectional_connect_with_memory mm phase lhs rhs old current end) = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Fixpoint",
+          "name": "memory_suffix_safe",
+          "line": 60,
+          "declaration": "Fixpoint memory_suffix_safe (mm : memory_map) (node : VarOrder.T)\n (stmts : HiF.hfstmt_seq) : Prop :=\n match stmts with\n | Qnil => True\n | Qcons st tail =>\n   (match st with\n    | Sskip | Sinst _ _ => True\n    | Swire name _ | Sreg name _ | Smem name _ | Snode name _ => node != name\n    | Sfcnct lhs rhs => node != HiF.base_ref lhs /\\\n        memory_storage_disjoint mm node (HiF.base_ref lhs) /\\ (match rhs with Eref reference => node != HiF.base_ref reference | _ => True end)\n    | Sinvalid reference => node != HiF.base_ref reference /\\ is_memory_writer_ref mm reference = false\n    | Swhen _ _ _ => False\n    end) /\\ memory_suffix_safe mm node tail\n end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "memory_suffix_preserves_value",
+          "line": 75,
+          "declaration": "Lemma memory_suffix_preserves_value : forall stmts mm node value invalid scope position\n old set_regs current result,\n memory_suffix_safe mm node stmts ->\n VM.find node current = Some value ->\n value_iter_statements_with_memory_policy invalid scope position mm old set_regs current stmts = Some result ->\n VM.find node result = Some value."
+        }
+      ]
+    },
+    {
+      "module": "ScalarSuffixCertificates",
+      "asset": "coq/ScalarSuffixCertificates.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/ScalarSuffixCertificates.v",
+      "source_relative": "formal/flat-low/ScalarSuffixCertificates.v",
+      "sha256": "5c46f66b7d4d3034cbf43a7978dbd70488e4e34ac58dd85523271a63cde8ef33",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ScalarNodeFrames"
+      ],
+      "declarations": [
+        {
+          "kind": "Definition",
+          "name": "uint_source_safe_b",
+          "line": 6,
+          "declaration": "Definition uint_source_safe_b node rhs :=\n match rhs with\n | Eref (Eid _) => true\n | Eref reference => node != HiF.base_ref reference\n | _ => true end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "uint_source_safe_b_sound",
+          "line": 11,
+          "declaration": "Lemma uint_source_safe_b_sound node rhs :\n uint_source_safe_b node rhs -> connection_preserves_uint_source node rhs."
+        },
+        {
+          "kind": "Fixpoint",
+          "name": "scalar_suffix_safe_b",
+          "line": 21,
+          "declaration": "Fixpoint scalar_suffix_safe_b mm node stmts : bool :=\n match stmts with\n | Qnil => true\n | Qcons st tail =>\n (match st with\n | Sskip | Sinst _ _ => true\n | Swire name _ | Sreg name _ | Smem name _ | Snode name _ => node != name\n | Sfcnct lhs rhs => (node != HiF.base_ref lhs) &&\n   (is_memory_writer_ref mm lhs == false) && uint_source_safe_b node rhs\n | Sinvalid reference => (node != HiF.base_ref reference) && (is_memory_writer_ref mm reference == false)\n | Swhen _ _ _ => false end) && scalar_suffix_safe_b mm node tail\n end."
+        },
+        {
+          "kind": "Theorem",
+          "name": "scalar_suffix_safe_b_sound",
+          "line": 33,
+          "declaration": "Theorem scalar_suffix_safe_b_sound : forall mm node stmts,\n scalar_suffix_safe_b mm node stmts -> scalar_suffix_safe mm node stmts."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteGroundOperations",
+      "asset": "coq/ConcreteGroundOperations.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteGroundOperations.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteGroundOperations.v",
+      "sha256": "a282c5b52e438161f3ed51695c9141947343c61d12a6f52111d3d17361732e1a",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Definition",
+          "name": "concrete_ground_value",
+          "line": 3,
+          "declaration": "Definition concrete_ground_value (value : hvalue) : Prop :=\n exists ground bits, value = Gval ground bits."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_unary_result",
+          "line": 5,
+          "declaration": "Lemma concrete_unary_result op ground bits result :\n eval_unop op (Gval ground bits) = Some result -> concrete_ground_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteBinaryOperations",
+      "asset": "coq/ConcreteBinaryOperations.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteBinaryOperations.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteBinaryOperations.v",
+      "sha256": "c6c6bcab80a1e920fcd854bfbaf0367fd28658f5332c35c97eb06700de5f2b91",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteGroundOperations"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "concrete_binary_basic_result",
+          "line": 4,
+          "declaration": "Lemma concrete_binary_basic_result op left_type left_bits right_type right_bits result :\n eval_binop_basic op (Gval left_type left_bits) (Gval right_type right_bits) = Some result ->\n concrete_ground_value result."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_binary_result",
+          "line": 13,
+          "declaration": "Lemma concrete_binary_result op left_type left_bits right_type right_bits result :\n eval_binop op (Gval left_type left_bits) (Gval right_type right_bits) = Some result ->\n concrete_ground_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteScalarExpressions",
+      "asset": "coq/ConcreteScalarExpressions.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteScalarExpressions.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteScalarExpressions.v",
+      "sha256": "7e53d76548505fa372f056453f4144398ba972372f6ebeb47ad79c5b96cc4519",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteGroundOperations",
+        "ConcreteBinaryOperations"
+      ],
+      "declarations": [
+        {
+          "kind": "Inductive",
+          "name": "scalar_expression_ready",
+          "line": 5,
+          "declaration": "Inductive scalar_expression_ready (old : VM.t hvalue) : hfexpr VarOrder.T -> Prop :=\n | scalar_ready_const ground bits : scalar_expression_ready old (@Econst VarOrder.T ground bits)\n | scalar_ready_ref id ground bits : VM.find id old = Some (Gval ground bits) -> scalar_expression_ready old (Eref (Eid id))\n | scalar_ready_unary op arg : scalar_expression_ready old arg -> scalar_expression_ready old (Eprim_unop op arg)\n | scalar_ready_binary op left right : scalar_expression_ready old left -> scalar_expression_ready old right -> scalar_expression_ready old (Eprim_binop op left right)\n | scalar_ready_cast cast arg : scalar_expression_ready old arg -> scalar_expression_ready old (Ecast cast arg)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "concrete_scalar_expression",
+          "line": 11,
+          "declaration": "Theorem concrete_scalar_expression mm old expression :\n scalar_expression_ready old expression ->\n forall result, eval_hfexpr_with_memory mm expression old old = Some result -> concrete_ground_value result."
+        }
+      ]
+    },
+    {
+      "module": "FormalConcreteScalarExpressions",
+      "asset": "coq/FormalConcreteScalarExpressions.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalConcreteScalarExpressions.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalConcreteScalarExpressions.v",
+      "sha256": "174befdb67e9816c341e128b045a3ea59464917cc69e5205451c7ecb59b6859b",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteGroundOperations",
+        "ConcreteScalarExpressions"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "scalar_formal_evaluation_equal",
+          "line": 5,
+          "declaration": "Lemma scalar_formal_evaluation_equal invalid mm old expression :\n scalar_expression_ready old expression ->\n forall site, eval_hfexpr_validif_policy invalid site mm expression old old = eval_hfexpr_with_memory mm expression old old."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_concrete_scalar_expression",
+          "line": 16,
+          "declaration": "Theorem formal_concrete_scalar_expression invalid site mm old expression result :\n scalar_expression_ready old expression ->\n eval_hfexpr_validif_policy invalid site mm expression old old = Some result ->\n concrete_ground_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteGroundAdapt",
+      "asset": "coq/ConcreteGroundAdapt.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteGroundAdapt.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteGroundAdapt.v",
+      "sha256": "9f4ed370454b89708029542f692430f03375d3d030088e3598cb4e17324b4ded",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteGroundOperations"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "concrete_ground_adapt",
+          "line": 4,
+          "declaration": "Lemma concrete_ground_adapt ground bits typ result :\n adapt_hvalue_as_type (Gval ground bits) typ = Some result -> concrete_ground_value result."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_ground_extend",
+          "line": 11,
+          "declaration": "Lemma concrete_ground_extend ground bits typ result :\n extend_hvalue_as_type (Gval ground bits) typ = Some result -> concrete_ground_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteUIntOperations",
+      "asset": "coq/ConcreteUIntOperations.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteUIntOperations.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteUIntOperations.v",
+      "sha256": "5ce682f961497e1c158054b3e00ae54429d565ce3f91c60a2b95cd6db17e1371",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Definition",
+          "name": "concrete_uint_value",
+          "line": 3,
+          "declaration": "Definition concrete_uint_value (value : hvalue) : Prop :=\n exists width bits, value = Gval (Fuint width) bits."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_uint_binary_basic",
+          "line": 5,
+          "declaration": "Lemma concrete_uint_binary_basic op wa ba wb bb result :\n eval_binop_basic op (Gval (Fuint wa) ba) (Gval (Fuint wb) bb) = Some result ->\n concrete_uint_value result."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_uint_binary",
+          "line": 13,
+          "declaration": "Lemma concrete_uint_binary op wa ba wb bb result :\n eval_binop op (Gval (Fuint wa) ba) (Gval (Fuint wb) bb) = Some result ->\n concrete_uint_value result."
+        },
+        {
+          "kind": "Definition",
+          "name": "x0_uint_unary",
+          "line": 26,
+          "declaration": "Definition x0_uint_unary (op : eunop) : bool :=\n match op with Uextr _ _ | Uorr | Uandr => true | _ => false end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "concrete_uint_unary",
+          "line": 28,
+          "declaration": "Lemma concrete_uint_unary op width bits result :\n x0_uint_unary op ->\n eval_unop op (Gval (Fuint width) bits) = Some result ->\n concrete_uint_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteUIntScalarExpressions",
+      "asset": "coq/ConcreteUIntScalarExpressions.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteUIntScalarExpressions.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteUIntScalarExpressions.v",
+      "sha256": "910136b664e55cf9eb71f6bcdc9faa9940ffc1fadacba7d7c5fef4e3f4b3b7eb",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteUIntOperations"
+      ],
+      "declarations": [
+        {
+          "kind": "Inductive",
+          "name": "uint_scalar_ready",
+          "line": 5,
+          "declaration": "Inductive uint_scalar_ready (old : VM.t hvalue) : hfexpr VarOrder.T -> Prop :=\n| uint_ready_const width bits : uint_scalar_ready old (@Econst VarOrder.T (Fuint width) bits)\n| uint_ready_ref id width bits : VM.find id old = Some (Gval (Fuint width) bits) -> uint_scalar_ready old (Eref (Eid id))\n| uint_ready_unary op e : x0_uint_unary op -> uint_scalar_ready old e -> uint_scalar_ready old (Eprim_unop op e)\n| uint_ready_binary op a b : uint_scalar_ready old a -> uint_scalar_ready old b -> uint_scalar_ready old (Eprim_binop op a b)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_uint_scalar_concrete",
+          "line": 10,
+          "declaration": "Theorem formal_uint_scalar_concrete invalid mm old expression :\n uint_scalar_ready old expression ->\n forall site result, eval_hfexpr_validif_policy invalid site mm expression old old = Some result -> concrete_uint_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteUIntValidIf",
+      "asset": "coq/ConcreteUIntValidIf.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteUIntValidIf.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteUIntValidIf.v",
+      "sha256": "f7fcddf21a5f828ade1dfb20ccb9f8b34870c60f17609fbf7302cf0542be7674",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteUIntOperations",
+        "ConcreteUIntScalarExpressions"
+      ],
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "formal_uint_validif_concrete",
+          "line": 6,
+          "declaration": "Theorem formal_uint_validif_concrete inputs path mm old condition body width :\n uint_scalar_ready old condition ->\n uint_scalar_ready old body ->\n eval_type_of_expr body old = Some (Gtyp (Fuint width)) ->\n forall site result,\n eval_hfexpr_validif_policy (isolated_validif_policy (formal_invalid_policy inputs path)) site mm (Evalidif condition body) old old = Some result ->\n concrete_uint_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteFormalValidIf",
+      "asset": "coq/ConcreteFormalValidIf.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteFormalValidIf.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteFormalValidIf.v",
+      "sha256": "fc3d0b25c84048a75dd17a27824729370152eb92233fb1f446da1a004a359941",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteGroundOperations"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_invalid_ground_concrete",
+          "line": 6,
+          "declaration": "Lemma formal_invalid_ground_concrete inputs path site ground :\n concrete_ground_value (isolated_validif_policy (formal_invalid_policy inputs path) site (Gtyp ground))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "formal_validif_result_concrete",
+          "line": 9,
+          "declaration": "Lemma formal_validif_result_concrete inputs path site ground width bits body result :\n (forall value, body = Some value -> concrete_ground_value value) ->\n validif_policy_result (isolated_validif_policy (formal_invalid_policy inputs path)) site\n (Some (Gval (Fuint width) bits)) (Some (Gtyp ground)) body = Some result ->\n concrete_ground_value result."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_validif_uint_false",
+          "line": 19,
+          "declaration": "Theorem formal_validif_uint_false inputs path site mm old condition body width :\n eval_hfexpr_validif_policy (isolated_validif_policy (formal_invalid_policy inputs path)) (rcons site 0) mm condition old old = Some (Gval (Fuint 1) [::false]) ->\n eval_type_of_expr body old = Some (Gtyp (Fuint width)) ->\n eval_hfexpr_validif_policy (isolated_validif_policy (formal_invalid_policy inputs path)) site mm (Evalidif condition body) old old =\n Some (Gval (Fuint width) (proj1_sig (formal_symbolic_inputs inputs path (validif_source_address site) [::] width)))."
+        }
+      ]
+    },
+    {
+      "module": "ConcreteGroundConditionValidIf",
+      "asset": "coq/ConcreteGroundConditionValidIf.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcreteGroundConditionValidIf.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcreteGroundConditionValidIf.v",
+      "sha256": "0a7d737c5a683cf957c33e40669b752839976ee8b923cb29885ba129405d5409",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteScalarExpressions",
+        "FormalConcreteScalarExpressions",
+        "ConcreteUIntOperations",
+        "ConcreteUIntScalarExpressions"
+      ],
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "formal_ground_condition_uint_validif",
+          "line": 7,
+          "declaration": "Theorem formal_ground_condition_uint_validif inputs path mm old condition body width :\n scalar_expression_ready old condition ->\n uint_scalar_ready old body ->\n eval_type_of_expr body old = Some (Gtyp (Fuint width)) ->\n forall site result,\n eval_hfexpr_validif_policy (isolated_validif_policy (formal_invalid_policy inputs path)) site mm (Evalidif condition body) old old = Some result ->\n concrete_uint_value result."
+        }
+      ]
+    },
+    {
+      "module": "ConcretePolicyMux",
+      "asset": "coq/ConcretePolicyMux.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/ConcretePolicyMux.v",
+      "source_relative": "formal/flat-low/staged-integration/ConcretePolicyMux.v",
+      "sha256": "2db7b57f7cf301a0311fbd5e7ba584101d1dc3c6bae7ee89f933df8f723870eb",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ConcreteGroundOperations",
+        "ConcreteGroundAdapt"
+      ],
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "concrete_policy_mux",
+          "line": 6,
+          "declaration": "Theorem concrete_policy_mux invalid mm old condition yes no :\n (forall site value, eval_hfexpr_validif_policy invalid site mm condition old old = Some value -> concrete_ground_value value) ->\n (forall site value, eval_hfexpr_validif_policy invalid site mm yes old old = Some value -> concrete_ground_value value) ->\n (forall site value, eval_hfexpr_validif_policy invalid site mm no old old = Some value -> concrete_ground_value value) ->\n forall site result, eval_hfexpr_validif_policy invalid site mm (Emux condition yes no) old old = Some result -> concrete_ground_value result."
+        }
+      ]
+    },
+    {
+      "module": "FormalSymbolicInvalidWire",
+      "asset": "coq/FormalSymbolicInvalidWire.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalSymbolicInvalidWire.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalSymbolicInvalidWire.v",
+      "sha256": "c46e889af86f1e39aa2e9f0029f383b4c0a33593cb55e16d6de1880b7699e42a",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_invalid_uint_wire",
+          "line": 4,
+          "declaration": "Lemma formal_invalid_uint_wire inputs path site mm old current node width :\n VM.find node current = Some (Needtobedefined (Gtyp (Fuint width))) ->\n invalidate_ref_with_memory mm false (Eid node)\n (formal_invalid_policy inputs path site) old current =\n Some (VM.add node (formal_invalid_policy inputs path site (Gtyp (Fuint width))) current)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "formal_invalid_uint_word",
+          "line": 16,
+          "declaration": "Lemma formal_invalid_uint_word inputs path site width :\n exists bits,\n formal_invalid_policy inputs path site (Gtyp (Fuint width)) = Gval (Fuint width) bits /\\ size bits = width."
+        }
+      ]
+    },
+    {
+      "module": "BooleanizeTruth",
+      "asset": "coq/BooleanizeTruth.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/BooleanizeTruth.v",
+      "source_relative": "formal/flat-low/staged-integration/BooleanizeTruth.v",
+      "sha256": "ba9a2958bdd82c8a92e0f5f9ace6326fa419def553ec907faab27f5b2825d7cb",
+      "exact_copy": true,
+      "local_dependencies": [
+        "NormalizedBit"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "booleanize_true_source",
+          "line": 6,
+          "declaration": "Lemma booleanize_true_source mm env (condition : VarOrder.T) :\n eval_hfexpr_with_memory mm\n (@Emux VarOrder.T (@Eref VarOrder.T (@Eid VarOrder.T condition))\n (@Econst VarOrder.T (Fuint 1) [::true]) (@Econst VarOrder.T (Fuint 1) [::false])) env env = Some (Gval (Fuint 1) [::true]) ->\n exists width bits, VM.find condition env = Some (Gval (Fuint width) bits) /\\ is_zero bits = false."
+        },
+        {
+          "kind": "Lemma",
+          "name": "booleanize_result_normalized",
+          "line": 21,
+          "declaration": "Lemma booleanize_result_normalized mm env (condition : VarOrder.T) result :\n eval_hfexpr_with_memory mm\n (@Emux VarOrder.T (@Eref VarOrder.T (@Eid VarOrder.T condition))\n (@Econst VarOrder.T (Fuint 1) [::true]) (@Econst VarOrder.T (Fuint 1) [::false])) env env = Some result ->\n normalized_bit result."
+        }
+      ]
+    },
+    {
+      "module": "StagedIterationLemmas",
+      "asset": "coq/StagedIterationLemmas.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/StagedIterationLemmas.v",
+      "source_relative": "formal/flat-low/staged-integration/StagedIterationLemmas.v",
+      "sha256": "c90e16e6ec65ef6fb00492e0b097337925a481378a8bfac429650cc344722a9f",
+      "exact_copy": true,
+      "local_dependencies": [],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_iterations_fixedpoint",
+          "line": 3,
+          "declaration": "Lemma formal_iterations_fixedpoint modules top inputs states n :\n formal_circuit_value_iter (formal_invalid_policy inputs) modules top states false = Some states ->\n circuit_formal_iterations modules top inputs n states = Some states."
+        },
+        {
+          "kind": "Lemma",
+          "name": "formal_iterations_append",
+          "line": 10,
+          "declaration": "Lemma formal_iterations_append modules top inputs first rest states :\n circuit_formal_iterations modules top inputs (Nat.add first rest) states =\n match circuit_formal_iterations modules top inputs first states with\n | Some middle => circuit_formal_iterations modules top inputs rest middle\n | None => None end."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_iterations_settled_tail",
+          "line": 21,
+          "declaration": "Theorem formal_iterations_settled_tail modules top inputs first rest states fixed :\n circuit_formal_iterations modules top inputs first states = Some fixed ->\n formal_circuit_value_iter (formal_invalid_policy inputs) modules top fixed false = Some fixed ->\n circuit_formal_iterations modules top inputs (Nat.add first rest) states = Some fixed."
+        },
+        {
+          "kind": "Lemma",
+          "name": "staged_iterations_last",
+          "line": 31,
+          "declaration": "Lemma staged_iterations_last modules top inputs n states result :\n circuit_formal_iterations modules top inputs (S n) states = Some result ->\n exists previous,\n circuit_formal_iterations modules top inputs n states = Some previous /\\\n formal_circuit_value_iter (formal_invalid_policy inputs) modules top previous false = Some result."
+        }
+      ]
+    },
+    {
+      "module": "FormalConnectionFrames",
+      "asset": "coq/FormalConnectionFrames.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalConnectionFrames.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalConnectionFrames.v",
+      "sha256": "23775b9818ba07987925840934ab04324d0f21d42e6fe154616613402308e992",
+      "exact_copy": true,
+      "local_dependencies": [
+        "RegisterInvariants",
+        "ScalarNodeFrames",
+        "MemoryWriteFrames"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_bundle_preserves_other",
+          "line": 5,
+          "declaration": "Lemma formal_bundle_preserves_other invalid site mm node lhs rhs old current result :\n node != HiF.base_ref lhs ->\n formal_connect_bundle invalid site mm lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "formal_connection_preserves_other",
+          "line": 19,
+          "declaration": "Lemma formal_connection_preserves_other invalid site mm phase node lhs rhs old current result :\n node != HiF.base_ref lhs -> memory_storage_disjoint mm node (HiF.base_ref lhs) ->\n formal_connect invalid site mm phase lhs rhs old current = Some result ->\n VM.find node result = VM.find node current."
+        },
+        {
+          "kind": "Lemma",
+          "name": "formal_selected_connection_preserves_other",
+          "line": 38,
+          "declaration": "Lemma formal_selected_connection_preserves_other invalid site mm phase node lhs rhs value old current result :\n VM.find node current = Some value -> node != HiF.base_ref lhs ->\n memory_storage_disjoint mm node (HiF.base_ref lhs) ->\n (match rhs with Eref r => node != HiF.base_ref r | _ => True end) ->\n (match rhs with Eref r => if is_memory_writer_ref mm lhs then\n   formal_connect invalid site mm phase lhs rhs old current\n   else bidirectional_connect_with_memory mm lhs r old current\n | _ => formal_connect invalid site mm phase lhs rhs old current end) = Some result ->\n VM.find node result = Some value."
+        }
+      ]
+    },
+    {
+      "module": "FormalTypedNodeFrames",
+      "asset": "coq/FormalTypedNodeFrames.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalTypedNodeFrames.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalTypedNodeFrames.v",
+      "sha256": "029240c2debc8354e65e2e3cd3318a5f8303b5d47dedc69cd6f71acfb1bc6136",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ScalarNodeFrames",
+        "RegisterInvariants",
+        "MemoryWriteFrames",
+        "FormalConnectionFrames"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_selected_typed_connection",
+          "line": 6,
+          "declaration": "Lemma formal_selected_typed_connection invalid site mm phase node lhs rhs width value old current result :\n type_of_val value = Gtyp (Fuint width) ->\n VM.find node current = Some value -> node != HiF.base_ref lhs ->\n memory_storage_disjoint mm node (HiF.base_ref lhs) ->\n connection_preserves_uint_source node rhs ->\n (match rhs with Eref r => if is_memory_writer_ref mm lhs then\n   formal_connect invalid site mm phase lhs rhs old current\n   else bidirectional_connect_with_memory mm lhs r old current\n | _ => formal_connect invalid site mm phase lhs rhs old current end) = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Fixpoint",
+          "name": "formal_typed_suffix_safe",
+          "line": 25,
+          "declaration": "Fixpoint formal_typed_suffix_safe (mm : memory_map) (node : VarOrder.T)\n (stmts : HiF.hfstmt_seq) : Prop :=\n match stmts with\n | Qnil => True\n | Qcons st tail =>\n   (match st with\n    | Sskip | Sinst _ _ => True\n    | Swire name _ | Sreg name _ | Smem name _ | Snode name _ => node != name\n    | Sfcnct lhs rhs => node != HiF.base_ref lhs /\\\n        memory_storage_disjoint mm node (HiF.base_ref lhs) /\\ connection_preserves_uint_source node rhs\n    | Sinvalid reference => node != HiF.base_ref reference /\\ is_memory_writer_ref mm reference = false\n    | Swhen _ _ _ => False\n    end) /\\ formal_typed_suffix_safe mm node tail\n end."
+        },
+        {
+          "kind": "Lemma",
+          "name": "formal_typed_suffix_preserves_value",
+          "line": 40,
+          "declaration": "Lemma formal_typed_suffix_preserves_value : forall stmts mm node width value invalid scope position\n old set_regs current result,\n formal_typed_suffix_safe mm node stmts ->\n type_of_val value = Gtyp (Fuint width) ->\n VM.find node current = Some value ->\n formal_statements invalid scope position mm old set_regs current stmts = Some result ->\n VM.find node result = Some value."
+        }
+      ]
+    },
+    {
+      "module": "GroundSourceFrames",
+      "asset": "coq/GroundSourceFrames.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/GroundSourceFrames.v",
+      "source_relative": "formal/flat-low/staged-integration/GroundSourceFrames.v",
+      "sha256": "4b67447be50d3ac881a24a68f6b180f8f798c40220c29c2c7797d5c11c7e73e1",
+      "exact_copy": true,
+      "local_dependencies": [
+        "ScalarNodeFrames",
+        "RegisterInvariants"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "adapted_ground_is_passive",
+          "line": 5,
+          "declaration": "Lemma adapted_ground_is_passive value ground result :\n adapt_hvalue_as_type value (Gtyp ground) = Some result -> is_passive_value result."
+        },
+        {
+          "kind": "Theorem",
+          "name": "bidirectional_connect_with_memory_preserves_typed_ground_source",
+          "line": 15,
+          "declaration": "Theorem bidirectional_connect_with_memory_preserves_typed_ground_source mm node lhs ground value old current result :\n type_of_val value = Gtyp ground ->\n node != HiF.base_ref lhs ->\n VM.find node current = Some value ->\n bidirectional_connect_with_memory mm lhs (@Eid VarOrder.T node) old current = Some result ->\n VM.find node result = Some value."
+        }
+      ]
+    },
+    {
+      "module": "FormalGroundNodeFrames",
+      "asset": "coq/FormalGroundNodeFrames.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalGroundNodeFrames.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalGroundNodeFrames.v",
+      "sha256": "14ec9cf417e497e0a569c1ec6b721d5ccaf0d8ccd258587340521681b16f82c3",
+      "exact_copy": true,
+      "local_dependencies": [
+        "GroundSourceFrames",
+        "FormalTypedNodeFrames",
+        "ScalarNodeFrames",
+        "RegisterInvariants",
+        "MemoryWriteFrames",
+        "FormalConnectionFrames"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_selected_ground_connection",
+          "line": 7,
+          "declaration": "Lemma formal_selected_ground_connection invalid site mm phase node lhs rhs ground value old current result :\n type_of_val value = Gtyp ground ->\n VM.find node current = Some value -> node != HiF.base_ref lhs ->\n memory_storage_disjoint mm node (HiF.base_ref lhs) ->\n connection_preserves_uint_source node rhs ->\n (match rhs with Eref r => if is_memory_writer_ref mm lhs then\n   formal_connect invalid site mm phase lhs rhs old current\n   else bidirectional_connect_with_memory mm lhs r old current\n | _ => formal_connect invalid site mm phase lhs rhs old current end) = Some result ->\n VM.find node result = Some value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "formal_ground_suffix_preserves_value",
+          "line": 26,
+          "declaration": "Lemma formal_ground_suffix_preserves_value : forall stmts mm node ground value invalid scope position\n old set_regs current result,\n formal_typed_suffix_safe mm node stmts ->\n type_of_val value = Gtyp ground ->\n VM.find node current = Some value ->\n formal_statements invalid scope position mm old set_regs current stmts = Some result ->\n VM.find node result = Some value."
+        }
+      ]
+    },
+    {
+      "module": "FormalNodeSuffixFrames",
+      "asset": "coq/FormalNodeSuffixFrames.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalNodeSuffixFrames.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalNodeSuffixFrames.v",
+      "sha256": "241cc3b7f238fdb9b4944c3b4637c9c74568e612fad1732bd481cf55aaadc27d",
+      "exact_copy": true,
+      "local_dependencies": [
+        "RegisterInvariants",
+        "ScalarNodeFrames",
+        "MemoryWriteFrames",
+        "FormalConnectionFrames"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_suffix_preserves_value",
+          "line": 5,
+          "declaration": "Lemma formal_suffix_preserves_value : forall stmts mm node value invalid scope position\n old set_regs current result,\n memory_suffix_safe mm node stmts ->\n VM.find node current = Some value ->\n formal_statements invalid scope position mm old set_regs current stmts = Some result ->\n VM.find node result = Some value."
+        }
+      ]
+    },
+    {
+      "module": "StagedRegisterHold",
+      "asset": "coq/StagedRegisterHold.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/StagedRegisterHold.v",
+      "source_relative": "formal/flat-low/staged-integration/StagedRegisterHold.v",
+      "sha256": "8f01f80f46d657e98da815fad472b96a5f7fc3af1d59a67e3b36e54ab18d9a44",
+      "exact_copy": true,
+      "local_dependencies": [
+        "RegisterInvariants"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "staged_finish_false_equal",
+          "line": 6,
+          "declaration": "Lemma staged_finish_false_equal : forall stmts invalid scope position mm old current eval,\n formal_finish_registers invalid scope position mm old false current stmts =\n finish_registers eval old false current stmts."
+        },
+        {
+          "kind": "Theorem",
+          "name": "staged_combinational_holds_registers",
+          "line": 22,
+          "declaration": "Theorem staged_combinational_holds_registers invalid mm old current result stmts id :\n has_register id stmts = true ->\n formal_value_iter invalid mm old false current stmts = Some result ->\n VM.find id result = VM.find id old."
+        }
+      ]
+    },
+    {
+      "module": "FormalNodeEquation",
+      "asset": "coq/FormalNodeEquation.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalNodeEquation.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalNodeEquation.v",
+      "sha256": "4588019a1a818a57d11b41bda95c9292e65c399fc54548fc7898175884e93446",
+      "exact_copy": true,
+      "local_dependencies": [
+        "RegisterInvariants",
+        "ScalarNodeFrames",
+        "MemoryWriteFrames",
+        "FormalNodeSuffixFrames",
+        "StagedRegisterHold"
+      ],
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "formal_straight_head",
+          "line": 5,
+          "declaration": "Lemma formal_straight_head invalid scope position mm old set_regs current result st tail :\n (match st with Swhen _ _ _ => False | _ => True end) ->\n formal_statements invalid scope position mm old set_regs current (Qcons st tail) = Some result ->\n exists next, formal_statements invalid scope (S position)\n   mm old set_regs next tail = Some result."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_straight_prefix",
+          "line": 25,
+          "declaration": "Theorem formal_straight_prefix : forall count stmts suffix invalid scope position mm old set_regs current result,\n straight_drop count stmts = Some suffix ->\n formal_statements invalid scope position mm old set_regs current stmts = Some result ->\n exists next, formal_statements invalid scope (position + count)\n   mm old set_regs next suffix = Some result."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_combinational_node_equation",
+          "line": 45,
+          "declaration": "Theorem formal_combinational_node_equation count stmts tail node expression\n invalid mm old current result :\n straight_drop count stmts = Some (Qcons (Snode node expression) tail) ->\n memory_suffix_safe mm node tail -> has_register node stmts = false ->\n formal_value_iter invalid mm old false current stmts = Some result ->\n VM.find node result = eval_hfexpr_validif_policy (isolated_validif_policy invalid)\n   (validif_raw_address [::] count 0 [::]) mm expression old old."
+        }
+      ]
+    },
+    {
+      "module": "FormalTypedNodeEquation",
+      "asset": "coq/FormalTypedNodeEquation.v",
+      "source_path": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/formal/flat-low/staged-integration/FormalTypedNodeEquation.v",
+      "source_relative": "formal/flat-low/staged-integration/FormalTypedNodeEquation.v",
+      "sha256": "54a5ca59363c677a2db73c9343a5cff6c33e2ae4cc7486c941ca0617c3a80fd9",
+      "exact_copy": true,
+      "local_dependencies": [
+        "RegisterInvariants",
+        "ScalarNodeFrames",
+        "ScalarSuffixCertificates",
+        "MemoryWriteFrames",
+        "FormalTypedNodeFrames",
+        "FormalNodeEquation",
+        "StagedRegisterHold"
+      ],
+      "declarations": [
+        {
+          "kind": "Fixpoint",
+          "name": "formal_typed_suffix_safe_b",
+          "line": 5,
+          "declaration": "Fixpoint formal_typed_suffix_safe_b mm node stmts : bool :=\n match stmts with\n | Qnil => true\n | Qcons st tail =>\n (match st with\n | Sskip | Sinst _ _ => true\n | Swire name _ | Sreg name _ | Smem name _ | Snode name _ => node != name\n | Sfcnct lhs rhs => (node != HiF.base_ref lhs) &&\n   memory_storage_disjoint mm node (HiF.base_ref lhs) && uint_source_safe_b node rhs\n | Sinvalid reference => (node != HiF.base_ref reference) && (is_memory_writer_ref mm reference == false)\n | Swhen _ _ _ => false end) && formal_typed_suffix_safe_b mm node tail\n end."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_typed_suffix_safe_b_sound",
+          "line": 17,
+          "declaration": "Theorem formal_typed_suffix_safe_b_sound : forall mm node stmts,\n formal_typed_suffix_safe_b mm node stmts -> formal_typed_suffix_safe mm node stmts."
+        },
+        {
+          "kind": "Theorem",
+          "name": "formal_combinational_known_node",
+          "line": 31,
+          "declaration": "Theorem formal_combinational_known_node count stmts tail node expression width value\n invalid mm old current result :\n straight_drop count stmts = Some (Qcons (Snode node expression) tail) ->\n formal_typed_suffix_safe mm node tail -> has_register node stmts = false ->\n eval_hfexpr_validif_policy (isolated_validif_policy invalid)\n   (validif_raw_address [::] count 0 [::]) mm expression old old = Some value ->\n type_of_val value = Gtyp (Fuint width) ->\n formal_value_iter invalid mm old false current stmts = Some result ->\n VM.find node result = Some value."
+        }
+      ]
+    }
+  ],
+  "external_source_and_artifact_snapshot": [
+    {
+      "directory": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+      "files": [
+        {
+          "path": "Env.v",
+          "sha256": "419d08221caa695b186590c8d9d4ebe8b3640026f738dcfa0317089e25f3580d"
+        },
+        {
+          "path": "Env.vo",
+          "sha256": "fb095b45b722e821804601ee30032509fcb5bed8210c8e1cb7915f3cf890863d"
+        },
+        {
+          "path": "FMaps.v",
+          "sha256": "b476293f30f390a6bb554f5178e3a1656d50bed532c15fb8a65c7c83058277b0"
+        },
+        {
+          "path": "FMaps.vo",
+          "sha256": "b4c9b770abd72f457972a5b2777c202ed83a93adafdeca00d571dbb251863c87"
+        },
+        {
+          "path": "FSets.v",
+          "sha256": "053565eec5599ae9d1a43720dc900cb1fbec52e5c12244261d6a0297d2134f9a"
+        },
+        {
+          "path": "FSets.vo",
+          "sha256": "e67ef6248ac120abdf1c79a8d67a4249466c06ee075f70b7327afe930df6ffba"
+        },
+        {
+          "path": "HList.v",
+          "sha256": "95a94ae599c80fca0451c594da10b6bbe6deba5a6e28556ef5202694f17afa25"
+        },
+        {
+          "path": "HList.vo",
+          "sha256": "8101101ddf335c06998c7a0c62629605cfcaa36131d5715d05c4ccaf87629d2d"
+        },
+        {
+          "path": "Lists.v",
+          "sha256": "bda64bacd558fdb099b7eb35a6da55b2d3d0b068f28ca7e6738e845b7b556f83"
+        },
+        {
+          "path": "Lists.vo",
+          "sha256": "9f6c644f5adc04fbee8bbb318494ba5d7b957cbb02ea1848b00be2061eb5b00f"
+        },
+        {
+          "path": "Nats.v",
+          "sha256": "3a6fc8c3b68787af88800fcdbf4d3416a8663bc8bf937fc02cc304289b579fac"
+        },
+        {
+          "path": "Nats.vo",
+          "sha256": "7e0ea437ebfdc258f68016ec9eb614af626f7d8c7701c7a6ae1692f49e1a8f7a"
+        },
+        {
+          "path": "Seqs.v",
+          "sha256": "95f2673180f042562a7cb1e819ff92c41fbb40965288c258f16eaf6c41223437"
+        },
+        {
+          "path": "Seqs.vo",
+          "sha256": "1fc2f10870c7a432b5c2b7d4d05c230f0f06105bc6874baa0211351eadc7c5cb"
+        },
+        {
+          "path": "SsrOrder.v",
+          "sha256": "85bc485f58d5d56f0506fd96a677acda2751895353a26e833f8153bbf5af6534"
+        },
+        {
+          "path": "SsrOrder.vo",
+          "sha256": "6affce213d582957398afea3e5dbd734a6e5fd0f7ebae71c2c8126ca704d9963"
+        },
+        {
+          "path": "Store.v",
+          "sha256": "daa5e0e890c0beefd90c5c1b4cdf5ec1bc117e7e7d99078a064f901ec310fb9c"
+        },
+        {
+          "path": "Store.vo",
+          "sha256": "aba367d71c2076b622437679e2b847946f6ebdf186ae85f079ee00c8db9971dc"
+        },
+        {
+          "path": "Tactics.v",
+          "sha256": "9bf397f265ed0a42f26084c6fe95c3ceca4455d298bb9592bbfaa3abd9cc98ed"
+        },
+        {
+          "path": "Tactics.vo",
+          "sha256": "35f48f5eee805eac6b233d86ca5f4b9e0ac5ec48a3b77fcdfb824cfabd7b3820"
+        },
+        {
+          "path": "Types.v",
+          "sha256": "ba187178d48db22ebc21bae94314fc3ca472695f9fc4e53b31f2b19eb85dbfd0"
+        },
+        {
+          "path": "Types.vo",
+          "sha256": "00b5181175b7156f3eb8674ed879807194aa55328464a566ae634b942d39fe7c"
+        },
+        {
+          "path": "Var.v",
+          "sha256": "88e9b4d185fb5b07172cc0c8de72ea5e3a2293101a62fd1ae5b88ec49910eb6a"
+        },
+        {
+          "path": "Var.vo",
+          "sha256": "6d1d8ce8b97303f7717c1fe6439e321cb5e00e2cd6f365fdec06635d284dc733"
+        },
+        {
+          "path": "ZAriths.v",
+          "sha256": "80417ecd27effce64343a3643df9af37b050f653b14184ea527c278ba411bb7d"
+        },
+        {
+          "path": "ZAriths.vo",
+          "sha256": "f8587cbed150b7ef9847d8b4dbf810be6eda8a35fc829aa37964bdf3aa786aad"
+        }
+      ]
+    },
+    {
+      "directory": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+      "files": [
+        {
+          "path": "AuxLemmas.v",
+          "sha256": "92fb784570b3ca4e4976044900e5d4ea9a026b5110b8e0dc8b3def28f6b48906"
+        },
+        {
+          "path": "AuxLemmas.vo",
+          "sha256": "a7f7cb75bc48b1b6b6c3dfab3ee6f29889d004303d6276ab0d4f23ff5d6ec8b7"
+        },
+        {
+          "path": "NBits.v",
+          "sha256": "d863e00cdb0ee929f8d8f3a9c208b60a0f1cf191dd1fea7f54ae996eb9f63e91"
+        },
+        {
+          "path": "NBits.vo",
+          "sha256": "f2a9214dc1bfeba714253478d1a355cbb0aa361d79a96d180c0c1d0c40a2e7e1"
+        },
+        {
+          "path": "NBitsDef.v",
+          "sha256": "70a3b47addd7bb96b2f22aa5448ba36bc7dd310300020d000ba77113170e260f"
+        },
+        {
+          "path": "NBitsDef.vo",
+          "sha256": "2db03c509c00c248d57ed25000a0a91b4ec3e9eff81d9133578a2cf1bf593bcb"
+        },
+        {
+          "path": "NBitsOp.v",
+          "sha256": "c7cd54b2ff6773a136b7489e9f2024c19fde41b8e572629ded90055bb4000611"
+        },
+        {
+          "path": "NBitsOp.vo",
+          "sha256": "476cb7e42779b17e9a4741ba3a0a7b423c04f79596fe8532980f91796a8d4799"
+        }
+      ]
+    },
+    {
+      "directory": "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+      "files": [
+        {
+          "path": "Env_with_implicit_widths.v",
+          "sha256": "4d8097cf1742b8a531d60c3b5f9a279f65de68d2d2eed31d795282ef45e796b9"
+        },
+        {
+          "path": "Env_with_implicit_widths.vo",
+          "sha256": "90012dbf4bd2fe79052ae67dd88ef7e1f59c8591f305f001895e724ed7c1f03a"
+        },
+        {
+          "path": "Extract.v",
+          "sha256": "759e6bf9caa33efc8c4f1c2b931f3f1d263ab80388c514b0822215d9b48df8e1"
+        },
+        {
+          "path": "Firrtl_with_implicit_widths.v",
+          "sha256": "e8f22370ab86514f7418c486a921062f25a39c936d0e1de615993207ed472d4b"
+        },
+        {
+          "path": "Firrtl_with_implicit_widths.vo",
+          "sha256": "e0f7a4026118f3a62a5be389cd5dd2336551bd7657c818ca67637cb6a2a50d62"
+        },
+        {
+          "path": "FormalInitialization.v",
+          "sha256": "24fa6de05308e44035ca3eb7dd5d2d77cf686a253a3717068b3a136225904009"
+        },
+        {
+          "path": "FormalInitialization.vo",
+          "sha256": "3495407c9b6c0e4ab466480bd15ea3183697bb76b6342740bb0cb879f4ecdc45"
+        },
+        {
+          "path": "FormalInitializationChecks.v",
+          "sha256": "184fc22ed8a47590353fe332af268a797254aa8ba5be8e222307cc706e8cc9ce"
+        },
+        {
+          "path": "FormalInputChecks.v",
+          "sha256": "665369728ee4c43c38ab1c11b951f1b0399b3d32c7ee0e5d1db2ede06d4117d1"
+        },
+        {
+          "path": "HiEnv_with_implicit_widths.v",
+          "sha256": "c672c70f797c83d136c275f0c6294f2f9ff5ecfef2e2e973f0f47425d5a5ab56"
+        },
+        {
+          "path": "HiEnv_with_implicit_widths.vo",
+          "sha256": "cc0aa31e061de6799eb505ad59a12c0365a5e001d155a8d5269a176666cf3c99"
+        },
+        {
+          "path": "HiFirrtl_with_implicit_widths.v",
+          "sha256": "79d337d202f7c72770f95173e2a8937619a17f2beddaf07b17bb39c5ec17aef9"
+        },
+        {
+          "path": "HiFirrtl_with_implicit_widths.vo",
+          "sha256": "558a38285a6d6dedac52aeb2040588c6b9514364ed4b42371dc943f0de372e9c"
+        },
+        {
+          "path": "InvalidIterationChecks.v",
+          "sha256": "a27d9656d8461e654f4857ba6d8a452ad5539c27f4938e473a3938627c2fdbc0"
+        },
+        {
+          "path": "LoCircuit.v",
+          "sha256": "c42482660cd3046fe0456b8ba7459f5f3837a7205d87a9e0497fff891fce0e6a"
+        },
+        {
+          "path": "LoVerification.v",
+          "sha256": "d1a53b011be41f4f74063bd88f33e95b4edc9ce8b8c91affc43c4d3c6d5fe6dc"
+        },
+        {
+          "path": "NodeIterationChecks.v",
+          "sha256": "097a842fd3998459860efd692b60d8b936e1d18cd4d39300df7c46980d25fdc3"
+        },
+        {
+          "path": "ObservationChecks.v",
+          "sha256": "fcc288027af2e993b6a0595e86f828a36f2c043adc259c13ad002af6c601a556"
+        },
+        {
+          "path": "Semantics_for_circuit.v",
+          "sha256": "b55532b90a649975a9e24a67b03da94e314752440d5286f59f8ee19e6ea1ba4d"
+        },
+        {
+          "path": "Semantics_for_circuit.vo",
+          "sha256": "05a121e09f71b13bf76e31b7ad52b64858947c6c073e3dd01408033b647a340b"
+        },
+        {
+          "path": "Semantics_with_implicit_widths.v",
+          "sha256": "c0d6b2eb0d6adb479de5c164e2c41c81fb7e0345c376b709a0ba5b8b17fc8c98"
+        },
+        {
+          "path": "Semantics_with_implicit_widths.vo",
+          "sha256": "6a640b42c5be931b97cf4b29828b04c27b85ce9e8941760b18d85fb91a4a0b71"
+        },
+        {
+          "path": "Semantics_with_memory.v",
+          "sha256": "2ead89273d1d3c42236f2cf0d3addb206c175f3ec7c0a8f374ce3b6063bfbf62"
+        },
+        {
+          "path": "Semantics_with_memory.vo",
+          "sha256": "3efe7bfb22d2522a378a128f9d5a3e70cfa4668898abd37a5b79b93195de7119"
+        },
+        {
+          "path": "TestAdder.v",
+          "sha256": "6a5ed2ecf376c4c9f61a934686405a60cac04c9fdc270e0c740a55e84795df5e"
+        },
+        {
+          "path": "TestLoCircuit.v",
+          "sha256": "3fd6c4f5af002503dd59475694e385349226d33c090d90ff8094205a13ef5e24"
+        },
+        {
+          "path": "TypeEqualityChecks.v",
+          "sha256": "ce3b874718044a6f256ff65c2eb1fc91bf326679988800e6cae9673d90c7ab31"
+        },
+        {
+          "path": "UnsignedSubtractionChecks.v",
+          "sha256": "c89eefc5aa70faa76fcbfc0d2976533b401e4a97cf8249a58e1fe395d1a9a42e"
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "status": "compiled",
+    "build_directory": "/tmp/shared-semantics-check-o_g4omko",
+    "scope": "Asset sources recompiled unchanged against the recorded prebuilt external library artifacts; this does not rebuild or certify the external libraries.",
+    "initial_live_library_failure": [
+      {
+        "module": "RegisterInvariants",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/firrtl2coq/src",
+          "firrtl",
+          "RegisterInvariants.v"
+        ],
+        "returncode": 1,
+        "seconds": 0.802,
+        "log": "/tmp/shared-semantics-check-o_g4omko/RegisterInvariants.log"
+      }
+    ],
+    "compile_order": [
+      "RegisterInvariants",
+      "NormalizedBit",
+      "SymbolicUInt",
+      "ConcreteDecodeOperations",
+      "ConcreteGroundOperations",
+      "ConcreteUIntOperations",
+      "FormalSymbolicInvalidWire",
+      "StagedIterationLemmas",
+      "SymbolicBit",
+      "ScalarNodeFrames",
+      "ConcreteBinaryOperations",
+      "ConcreteGroundAdapt",
+      "ConcreteUIntScalarExpressions",
+      "ConcreteFormalValidIf",
+      "BooleanizeTruth",
+      "StagedRegisterHold",
+      "MemoryWriteFrames",
+      "ScalarSuffixCertificates",
+      "ConcreteScalarExpressions",
+      "ConcreteUIntValidIf",
+      "ConcretePolicyMux",
+      "GroundSourceFrames",
+      "FormalConcreteScalarExpressions",
+      "FormalConnectionFrames",
+      "ConcreteGroundConditionValidIf",
+      "FormalTypedNodeFrames",
+      "FormalNodeSuffixFrames",
+      "FormalGroundNodeFrames",
+      "FormalNodeEquation",
+      "FormalTypedNodeEquation"
+    ],
+    "compilation": [
+      {
+        "module": "RegisterInvariants",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "RegisterInvariants.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.042,
+        "log": "/tmp/shared-semantics-check-o_g4omko/RegisterInvariants.log"
+      },
+      {
+        "module": "NormalizedBit",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "NormalizedBit.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.685,
+        "log": "/tmp/shared-semantics-check-o_g4omko/NormalizedBit.log"
+      },
+      {
+        "module": "SymbolicUInt",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "SymbolicUInt.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.725,
+        "log": "/tmp/shared-semantics-check-o_g4omko/SymbolicUInt.log"
+      },
+      {
+        "module": "ConcreteDecodeOperations",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteDecodeOperations.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.968,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteDecodeOperations.log"
+      },
+      {
+        "module": "ConcreteGroundOperations",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteGroundOperations.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.791,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteGroundOperations.log"
+      },
+      {
+        "module": "ConcreteUIntOperations",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteUIntOperations.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.831,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteUIntOperations.log"
+      },
+      {
+        "module": "FormalSymbolicInvalidWire",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalSymbolicInvalidWire.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.964,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalSymbolicInvalidWire.log"
+      },
+      {
+        "module": "StagedIterationLemmas",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "StagedIterationLemmas.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.874,
+        "log": "/tmp/shared-semantics-check-o_g4omko/StagedIterationLemmas.log"
+      },
+      {
+        "module": "SymbolicBit",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "SymbolicBit.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.795,
+        "log": "/tmp/shared-semantics-check-o_g4omko/SymbolicBit.log"
+      },
+      {
+        "module": "ScalarNodeFrames",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ScalarNodeFrames.v"
+        ],
+        "returncode": 0,
+        "seconds": 3.226,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ScalarNodeFrames.log"
+      },
+      {
+        "module": "ConcreteBinaryOperations",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteBinaryOperations.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.06,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteBinaryOperations.log"
+      },
+      {
+        "module": "ConcreteGroundAdapt",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteGroundAdapt.v"
+        ],
+        "returncode": 0,
+        "seconds": 1.76,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteGroundAdapt.log"
+      },
+      {
+        "module": "ConcreteUIntScalarExpressions",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteUIntScalarExpressions.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.021,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteUIntScalarExpressions.log"
+      },
+      {
+        "module": "ConcreteFormalValidIf",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteFormalValidIf.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.016,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteFormalValidIf.log"
+      },
+      {
+        "module": "BooleanizeTruth",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "BooleanizeTruth.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.282,
+        "log": "/tmp/shared-semantics-check-o_g4omko/BooleanizeTruth.log"
+      },
+      {
+        "module": "StagedRegisterHold",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "StagedRegisterHold.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.111,
+        "log": "/tmp/shared-semantics-check-o_g4omko/StagedRegisterHold.log"
+      },
+      {
+        "module": "MemoryWriteFrames",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "MemoryWriteFrames.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.323,
+        "log": "/tmp/shared-semantics-check-o_g4omko/MemoryWriteFrames.log"
+      },
+      {
+        "module": "ScalarSuffixCertificates",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ScalarSuffixCertificates.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.195,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ScalarSuffixCertificates.log"
+      },
+      {
+        "module": "ConcreteScalarExpressions",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteScalarExpressions.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.183,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteScalarExpressions.log"
+      },
+      {
+        "module": "ConcreteUIntValidIf",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteUIntValidIf.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.028,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteUIntValidIf.log"
+      },
+      {
+        "module": "ConcretePolicyMux",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcretePolicyMux.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.077,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcretePolicyMux.log"
+      },
+      {
+        "module": "GroundSourceFrames",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "GroundSourceFrames.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.373,
+        "log": "/tmp/shared-semantics-check-o_g4omko/GroundSourceFrames.log"
+      },
+      {
+        "module": "FormalConcreteScalarExpressions",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalConcreteScalarExpressions.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.177,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalConcreteScalarExpressions.log"
+      },
+      {
+        "module": "FormalConnectionFrames",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalConnectionFrames.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.261,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalConnectionFrames.log"
+      },
+      {
+        "module": "ConcreteGroundConditionValidIf",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "ConcreteGroundConditionValidIf.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.065,
+        "log": "/tmp/shared-semantics-check-o_g4omko/ConcreteGroundConditionValidIf.log"
+      },
+      {
+        "module": "FormalTypedNodeFrames",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalTypedNodeFrames.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.196,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalTypedNodeFrames.log"
+      },
+      {
+        "module": "FormalNodeSuffixFrames",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalNodeSuffixFrames.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.054,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalNodeSuffixFrames.log"
+      },
+      {
+        "module": "FormalGroundNodeFrames",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalGroundNodeFrames.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.164,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalGroundNodeFrames.log"
+      },
+      {
+        "module": "FormalNodeEquation",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalNodeEquation.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.141,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalNodeEquation.log"
+      },
+      {
+        "module": "FormalTypedNodeEquation",
+        "command": [
+          "/home/stormy/.opam/firrtl2coq/bin/coqc",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/simplssrlib",
+          "simplssrlib",
+          "-Q",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/lib/nbits",
+          "nbits",
+          "-R",
+          "/home/stormy/curricular/Research/HV/code/riscv-mini-proof/.proof-runs/riscv-clean-coq-wgfa57vy/firrtl2coq/src",
+          "firrtl",
+          "FormalTypedNodeEquation.v"
+        ],
+        "returncode": 0,
+        "seconds": 2.168,
+        "log": "/tmp/shared-semantics-check-o_g4omko/FormalTypedNodeEquation.log"
+      }
+    ],
+    "total_compile_seconds": 62.556
+  },
+  "schema_notes": {
+    "modules": "Exact-copy source inventory; asset is relative to this manifest directory. local_dependencies lists unqualified Require Import modules included here.",
+    "declarations": "All top-level Lemma/Theorem/Corollary/Definition/Fixpoint/Inductive declarations. declaration is the source header before Proof for proven declarations; name and source line are available separately.",
+    "validation": "Compile logs live only in build_directory under /tmp. commands compile the copied asset sources, using external libraries from the recorded snapshot; no external library rebuild or recursive kernel certificate is claimed."
+  },
+  "portability_constraints": [
+    "These are exact source copies over shared firrtl2coq semantics, MathComp, simplssrlib and nbits APIs, not standard-library-only templates.",
+    "No imported CoreSocModel, ComparisonNodes, FlatInstances, generated_modules or DUT signal IDs occur in this local closure.",
+    "ConcreteGround/UInt means a Gval constructor, not automatically well-formed bit length or supported width; retain width/size obligations.",
+    "uint_scalar_ready supports only its constructors and the x0_uint_unary operation whitelist (despite the historic x0 name), not all FIRRTL syntax.",
+    "NormalizedBit admits pending/uninitialized/invalid constructors as well as known one-bit Gval; normalized does not mean concrete.",
+    "Fixedpoint lemmas require an actual self-loop under the same input/policy/mode; finite budget is not convergence.",
+    "Frames require their declared suffix, source-disjointness, memory-alias, type and successful-execution premises."
+  ],
+  "declared_proof_escape_scan": {
+    "matches": []
+  },
+  "inventory_counts": {
+    "Lemma": 67,
+    "Fixpoint": 7,
+    "Theorem": 27,
+    "Corollary": 4,
+    "Inductive": 3,
+    "Definition": 9
+  }
+}

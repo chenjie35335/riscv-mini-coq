@@ -1,0 +1,1621 @@
+{
+  "format_version": 1,
+  "source_root_hint": "~/curricular/Research/HV/code/riscv-mini-proof",
+  "extraction": "Exact declarations/proof bodies, imports isolated. File comments are new. This manifest does not certify the source full-DUT aggregate.",
+  "modules": [
+    "DUTBranchArithmetic",
+    "RFUpperSemantics",
+    "RFWriteEffect",
+    "ReferenceControlGroundExpressions",
+    "ReferenceControlGroundOperations",
+    "ReferenceControlGroundValidIf",
+    "ReferenceIllegalFold",
+    "ReferenceImmediateSemantics",
+    "ReferenceInstructionCoverage",
+    "ReferenceInstructionTable",
+    "ReferenceLoadArithmetic",
+    "ReferencePCSequentialValues",
+    "ReferenceRedirectArithmetic",
+    "ReferenceWordSemantics",
+    "StoreDataShiftArithmetic",
+    "StoreMaskArithmetic",
+    "UIntLowExtractRoundtrip",
+    "UIntResizeRoundtrip",
+    "ReferenceEventLogic",
+    "ReferencePCTargetValue",
+    "RFShiftArithmetic"
+  ],
+  "declarations": [
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_mask_low",
+      "kind": "Lemma",
+      "line": 5,
+      "block_sha256": "bcaf47c53b556629a753e85575bc381551f848394510184ee46dc50fcc57aa4f",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_mask8",
+      "kind": "Lemma",
+      "line": 15,
+      "block_sha256": "7c8dcd0d7daf14b3d90fafd61bb8589f41c33659f1bc86d5076e306494deb1ea",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_mask16",
+      "kind": "Lemma",
+      "line": 17,
+      "block_sha256": "a5cf2a6af1773e49ee319edbcb3d862cb69b6bb49703ab09db50955254ae7ed1",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_mask32",
+      "kind": "Lemma",
+      "line": 19,
+      "block_sha256": "fbfe3f933c06d1d41de5aeb6618411e01d10551d690b3796120ad56bd97c6de8",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_masked_extract",
+      "kind": "Theorem",
+      "line": 21,
+      "block_sha256": "8a179066f1ed580aaf60e6552df493e9f150f49513724d9d1424b2f385c3fce8",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_sext_truncate",
+      "kind": "Lemma",
+      "line": 31,
+      "block_sha256": "df1f210a8618edfa736c039e4a6b002a99a1bb9fd891de131a9053f525b85fb4",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_signed32",
+      "kind": "Theorem",
+      "line": 42,
+      "block_sha256": "32ce5532f85f12d67d04a4f01301bc8ca3b5db5a2a49215baca419c6beb42bf4",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_unsigned32",
+      "kind": "Theorem",
+      "line": 49,
+      "block_sha256": "60f9c8858521e7769b554b10fd445ea0bd063da8912b37f405cd989dc11da5e6",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_zext_truncate",
+      "kind": "Lemma",
+      "line": 62,
+      "block_sha256": "af22377578ae6432431c9c9a1c4a1c44b040a718964e8d298acd331efe173dd8",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_padding_extract",
+      "kind": "Theorem",
+      "line": 73,
+      "block_sha256": "d75a209a76536b46ff827dbc971545350bf4bc20d7d2fc29af9ad39ecc8057bf",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadArithmetic.v",
+      "source_sha256": "39c8cacbfd3d9a9a576b4b31107bfbe5557ebf2bfe18fa86d48d80c91e8be1f8",
+      "declaration": "reference_load_padded_masked_extract",
+      "kind": "Theorem",
+      "line": 82,
+      "block_sha256": "e945a96c2173829a478b99f11056558f9b17a41ab68b338fd664f34ace2d2125",
+      "output_module": "ReferenceLoadArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFWriteEffect.v",
+      "source_sha256": "904123522f0fc3d3668ca5b3808a081cfd4f139df8e791d9567455d53b88e8d0",
+      "declaration": "rf_write_effect",
+      "kind": "Inductive",
+      "line": 3,
+      "block_sha256": "3a8fabaea723164555cf02be1df699aa415cd0b820c10dda13f59357875dd221",
+      "output_module": "RFWriteEffect"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFWriteEffect.v",
+      "source_sha256": "904123522f0fc3d3668ca5b3808a081cfd4f139df8e791d9567455d53b88e8d0",
+      "declaration": "rf_bank",
+      "kind": "Definition",
+      "line": 6,
+      "block_sha256": "70faa27cff24d8efd9821df305acb01dadada5c117267c72f5eaa27cfd5660bc",
+      "output_module": "RFWriteEffect"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFWriteEffect.v",
+      "source_sha256": "904123522f0fc3d3668ca5b3808a081cfd4f139df8e791d9567455d53b88e8d0",
+      "declaration": "rf_apply_effect",
+      "kind": "Definition",
+      "line": 7,
+      "block_sha256": "6fa333b9c343ff8dcf624ca5379147d4b8ec7c84e127eb5fdc98bfe5f67573b6",
+      "output_module": "RFWriteEffect"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFWriteEffect.v",
+      "source_sha256": "904123522f0fc3d3668ca5b3808a081cfd4f139df8e791d9567455d53b88e8d0",
+      "declaration": "rf_apply_effect_x0",
+      "kind": "Lemma",
+      "line": 13,
+      "block_sha256": "b7e6d98b573db1e2e07faaf4e22679f0b4717e329773b5fceecc13f65e88895f",
+      "output_module": "RFWriteEffect"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFWriteEffect.v",
+      "source_sha256": "904123522f0fc3d3668ca5b3808a081cfd4f139df8e791d9567455d53b88e8d0",
+      "declaration": "rf_apply_effect_equal",
+      "kind": "Lemma",
+      "line": 15,
+      "block_sha256": "fb3e4f90aeb672dcbc8d99aae9b781e3adc8c91a23621516a1f98caef1dfeec7",
+      "output_module": "RFWriteEffect"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFWriteEffect.v",
+      "source_sha256": "904123522f0fc3d3668ca5b3808a081cfd4f139df8e791d9567455d53b88e8d0",
+      "declaration": "rf_apply_effect_no_write",
+      "kind": "Lemma",
+      "line": 21,
+      "block_sha256": "c660597f5924c65c3c53b099c5d41ca763813350e9c8b99dca8ef9ae5ac953b9",
+      "output_module": "RFWriteEffect"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreDataShiftArithmetic.v",
+      "source_sha256": "8d66a3a54733f357b5e8b87764f737fd9ba67007792e456d33e21d84f76a7fa9",
+      "declaration": "store_shift_slice_cancel",
+      "kind": "Lemma",
+      "line": 4,
+      "block_sha256": "baa4112969115fe7e3b056afc83c0ab3af014622dc6156b1a6a717512dd726a8",
+      "output_module": "StoreDataShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreDataShiftArithmetic.v",
+      "source_sha256": "8d66a3a54733f357b5e8b87764f737fd9ba67007792e456d33e21d84f76a7fa9",
+      "declaration": "store_shift_truncate_cancel",
+      "kind": "Lemma",
+      "line": 13,
+      "block_sha256": "94a07275f3fac0141afd57b82cb9ca793b0eae8b1b2b71fa9525de081b4c0bca",
+      "output_module": "StoreDataShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreDataShiftArithmetic.v",
+      "source_sha256": "8d66a3a54733f357b5e8b87764f737fd9ba67007792e456d33e21d84f76a7fa9",
+      "declaration": "store_shift_selected_low",
+      "kind": "Lemma",
+      "line": 20,
+      "block_sha256": "8c3819e4dae8a56cfbd50b0c77ae7c1df16b544eb7508d08be9c8ac01af7428a",
+      "output_module": "StoreDataShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreDataShiftArithmetic.v",
+      "source_sha256": "8d66a3a54733f357b5e8b87764f737fd9ba67007792e456d33e21d84f76a7fa9",
+      "declaration": "store_mask_prefix",
+      "kind": "Lemma",
+      "line": 28,
+      "block_sha256": "596243abf318042994c7594e6728e7adabb4396b988e1e900d21cb0c3ec15f5d",
+      "output_module": "StoreDataShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreDataShiftArithmetic.v",
+      "source_sha256": "8d66a3a54733f357b5e8b87764f737fd9ba67007792e456d33e21d84f76a7fa9",
+      "declaration": "store_mask_shifted_prefix",
+      "kind": "Lemma",
+      "line": 36,
+      "block_sha256": "b9475373b4f2ba44e779a0a67d35eb5bca606f592bec12a9a516143cdb453456",
+      "output_module": "StoreDataShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreMaskArithmetic.v",
+      "source_sha256": "c8e486b1747fc9133fed140e1bec7e6c961a39fd5965789e3117c9b1c1f60c8a",
+      "declaration": "store_mask_low",
+      "kind": "Lemma",
+      "line": 5,
+      "block_sha256": "ebc7042e5f8531550238165c169a1271d99ca82946d1600d0bdd936521229390",
+      "output_module": "StoreMaskArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreMaskArithmetic.v",
+      "source_sha256": "c8e486b1747fc9133fed140e1bec7e6c961a39fd5965789e3117c9b1c1f60c8a",
+      "declaration": "store_mask_shift_prefix",
+      "kind": "Lemma",
+      "line": 16,
+      "block_sha256": "0b98229d19c3e5d482b24e92268323ae8c2b9bf15885b7b6b6104def5c8a2050",
+      "output_module": "StoreMaskArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/StoreMaskArithmetic.v",
+      "source_sha256": "c8e486b1747fc9133fed140e1bec7e6c961a39fd5965789e3117c9b1c1f60c8a",
+      "declaration": "store_mask_shift_truncated",
+      "kind": "Lemma",
+      "line": 26,
+      "block_sha256": "0b411b21c06747d397f1c8827654da3e36870acb9110c1d9c04cbe328994fbb7",
+      "output_module": "StoreMaskArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceIllegalFold.v",
+      "source_sha256": "75a5ad76464b0644e94517136a48d0563350b7dafc2894f6c920f15b4a756f19",
+      "declaration": "reference_illegal_fold",
+      "kind": "Fixpoint",
+      "line": 2,
+      "block_sha256": "29befabd4b0e5e22a0ab9574f405a04a7e73f0e565398b4a5abff1b66b32a778",
+      "output_module": "ReferenceIllegalFold"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceIllegalFold.v",
+      "source_sha256": "75a5ad76464b0644e94517136a48d0563350b7dafc2894f6c920f15b4a756f19",
+      "declaration": "reference_illegal_fold_match",
+      "kind": "Lemma",
+      "line": 4,
+      "block_sha256": "853697f1a7468b64836d13ce38805770039bdede3a666c73f50c853a1e3b541a",
+      "output_module": "ReferenceIllegalFold"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceIllegalFold.v",
+      "source_sha256": "75a5ad76464b0644e94517136a48d0563350b7dafc2894f6c920f15b4a756f19",
+      "declaration": "reference_illegal_fold_false",
+      "kind": "Lemma",
+      "line": 11,
+      "block_sha256": "b192165dec53fad840825aa21623f40d95b18604922f32a330ff721d27dde543",
+      "output_module": "ReferenceIllegalFold"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/UIntResizeRoundtrip.v",
+      "source_sha256": "ddb3590cf11e11d0f2e32f07035a735a8da0a6a799dce8968063aba8ed33f40f",
+      "declaration": "resize_uint_roundtrip_widen",
+      "kind": "Lemma",
+      "line": 4,
+      "block_sha256": "2acea4b73271148972df1d6e8249b93c501c10fd5dd83a8b32442b2235204ac6",
+      "output_module": "UIntResizeRoundtrip"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/UIntLowExtractRoundtrip.v",
+      "source_sha256": "1e16e3ff4358fea34bf3aaa73a936f3d48e7e87fc74496bb5e84bb961c8d7aef",
+      "declaration": "uint32_low_extract_roundtrip",
+      "kind": "Lemma",
+      "line": 4,
+      "block_sha256": "0b2be85ae4c03942ce7513de2b9bb8d315a7699d6eb2d4c41a00e1d8c74993fb",
+      "output_module": "UIntLowExtractRoundtrip"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_seq_extension",
+      "kind": "Definition",
+      "line": 8,
+      "block_sha256": "02e1bceb25113e660670d4f3a04323d155fbd00581dc62cc214cfdb386576764",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_seq_resize",
+      "kind": "Lemma",
+      "line": 10,
+      "block_sha256": "9cd53c33a57abe6b4ba9f42718b0d798024cab85137d787934d07fad2274950a",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_seq_base",
+      "kind": "Lemma",
+      "line": 19,
+      "block_sha256": "db91f770d88f5300104ed93caa70d3985279ee93466dfa836b000be327cbbd93",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_seq_mux",
+      "kind": "Lemma",
+      "line": 23,
+      "block_sha256": "e1db61992987f774a23fde62ac0f781757474e5c99a977ca5b23a44613da2d68",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_plus_four",
+      "kind": "Definition",
+      "line": 48,
+      "block_sha256": "bd780bb214ac917122bb81655a8b14134a432a045cdaef2c95ef83697f7c441d",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_plus_four_size",
+      "kind": "Lemma",
+      "line": 49,
+      "block_sha256": "8a6ba05db6810c05ee48c8ee8a6dd42ce4d1c2f19508843261b8a9e774632d11",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_seq_zero",
+      "kind": "Lemma",
+      "line": 51,
+      "block_sha256": "bb37f0d187e261a25e040e17e584bc066ae0ec2af84034df042be7142869b9cf",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialValues.v",
+      "source_sha256": "a0506bb8d8b2c477a713788804c09cd0f312d31dd31ca059498cd4553f78b55c",
+      "declaration": "reference_pc_seq_low_extract",
+      "kind": "Lemma",
+      "line": 53,
+      "block_sha256": "7d736f583ae3c4c155f69473e748369a89e0be3c8e73339b216f759194a55982",
+      "output_module": "ReferencePCSequentialValues"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundOperations.v",
+      "source_sha256": "ed47281aa81c462403a43abd0d50969faa56c5dd4ddae48833bdd242a85f819c",
+      "declaration": "reference_control_ground",
+      "kind": "Definition",
+      "line": 4,
+      "block_sha256": "f42d86468dbf27908f5d1aa7a46d2127be2554a2f8ac7734ff776414e81b461d",
+      "output_module": "ReferenceControlGroundOperations"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundOperations.v",
+      "source_sha256": "ed47281aa81c462403a43abd0d50969faa56c5dd4ddae48833bdd242a85f819c",
+      "declaration": "reference_control_unary_ground",
+      "kind": "Lemma",
+      "line": 12,
+      "block_sha256": "0001cd0fe6003af115235758cf41ea8459afce5585e60106828a0f4baeed08c3",
+      "output_module": "ReferenceControlGroundOperations"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundOperations.v",
+      "source_sha256": "ed47281aa81c462403a43abd0d50969faa56c5dd4ddae48833bdd242a85f819c",
+      "declaration": "reference_control_binary_basic_ground",
+      "kind": "Lemma",
+      "line": 18,
+      "block_sha256": "fe6c119c90f1688772f3e9a362844d0681a9ffff2f84c8826cc783ce03931a4e",
+      "output_module": "ReferenceControlGroundOperations"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundOperations.v",
+      "source_sha256": "ed47281aa81c462403a43abd0d50969faa56c5dd4ddae48833bdd242a85f819c",
+      "declaration": "reference_control_binary_ground",
+      "kind": "Lemma",
+      "line": 24,
+      "block_sha256": "78f7f78e73fabe69679938ffe71addd676af79a619107a082f90873d17fe8eef",
+      "output_module": "ReferenceControlGroundOperations"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundOperations.v",
+      "source_sha256": "ed47281aa81c462403a43abd0d50969faa56c5dd4ddae48833bdd242a85f819c",
+      "declaration": "reference_control_adapt_ground",
+      "kind": "Lemma",
+      "line": 37,
+      "block_sha256": "d174c6ad1a39cdd51a30f97ddcde17292623412ce00bd1b9075a7b1b0d3f6d85",
+      "output_module": "ReferenceControlGroundOperations"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundOperations.v",
+      "source_sha256": "ed47281aa81c462403a43abd0d50969faa56c5dd4ddae48833bdd242a85f819c",
+      "declaration": "reference_control_extend_ground",
+      "kind": "Lemma",
+      "line": 44,
+      "block_sha256": "9d06b8780b95891b232c264d7a3768882ad2044367143dac8f48a6c2fe93e1d8",
+      "output_module": "ReferenceControlGroundOperations"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundOperations.v",
+      "source_sha256": "ed47281aa81c462403a43abd0d50969faa56c5dd4ddae48833bdd242a85f819c",
+      "declaration": "reference_control_type_mux_ground",
+      "kind": "Lemma",
+      "line": 51,
+      "block_sha256": "b4597d3eae1a42bdadf046710146a42f615ca28820a3f90e3e010ab45194c827",
+      "output_module": "ReferenceControlGroundOperations"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundValidIf.v",
+      "source_sha256": "dae003ac4ca3c10ae05b8e7f7681c6cbed5458a6f4d66b32747293517667160e",
+      "declaration": "reference_control_validif_ground",
+      "kind": "Lemma",
+      "line": 5,
+      "block_sha256": "5f766a57a827311455df888396a2ac111bcc3b235012fb59211c8caae268834e",
+      "output_module": "ReferenceControlGroundValidIf"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundExpressions.v",
+      "source_sha256": "e3ca0a32aa92bf8b736ff73ad6993c5e396b42e686b86fb88d3f39cfc5e704a2",
+      "declaration": "reference_control_ready",
+      "kind": "Inductive",
+      "line": 7,
+      "block_sha256": "e5ddb3cd2a4f804a6a3986c350e4e1ff28ec153c78c4358723c9bab09eb952e9",
+      "output_module": "ReferenceControlGroundExpressions"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundExpressions.v",
+      "source_sha256": "e3ca0a32aa92bf8b736ff73ad6993c5e396b42e686b86fb88d3f39cfc5e704a2",
+      "declaration": "reference_control_nonbranch_raw_type",
+      "kind": "Lemma",
+      "line": 15,
+      "block_sha256": "45348909227c553935012e04f3f55d44be1dfd6d68856fdbdc491d46c23244ff",
+      "output_module": "ReferenceControlGroundExpressions"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundExpressions.v",
+      "source_sha256": "e3ca0a32aa92bf8b736ff73ad6993c5e396b42e686b86fb88d3f39cfc5e704a2",
+      "declaration": "reference_control_ready_raw_type",
+      "kind": "Lemma",
+      "line": 24,
+      "block_sha256": "4a30e95070e55d053bde99f8b8d71b3f6d7fe9403104a5b0369ebd34adb040e5",
+      "output_module": "ReferenceControlGroundExpressions"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundExpressions.v",
+      "source_sha256": "e3ca0a32aa92bf8b736ff73ad6993c5e396b42e686b86fb88d3f39cfc5e704a2",
+      "declaration": "reference_control_ready_type",
+      "kind": "Lemma",
+      "line": 44,
+      "block_sha256": "4f901ff4dda615a95c0141bb2c233502cc3e67b2f55942af968493f1d30ec05e",
+      "output_module": "ReferenceControlGroundExpressions"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceControlGroundExpressions.v",
+      "source_sha256": "e3ca0a32aa92bf8b736ff73ad6993c5e396b42e686b86fb88d3f39cfc5e704a2",
+      "declaration": "reference_control_expression_ground",
+      "kind": "Theorem",
+      "line": 53,
+      "block_sha256": "c2e4a740393825840e8ac0dce377d91faf2548be6ee1cc654928eda98a44ee19",
+      "output_module": "ReferenceControlGroundExpressions"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_width",
+      "kind": "Definition",
+      "line": 13,
+      "block_sha256": "731a818c5c37ecda614265762a9671eabdbcca8f4a65dcc313b61064afcbe861",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_mask",
+      "kind": "Definition",
+      "line": 19,
+      "block_sha256": "0b234b8f678c02692eab04657183e6751b718d2761124e9094c5ea2f07e63c1e",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_shift",
+      "kind": "Definition",
+      "line": 130,
+      "block_sha256": "6c545b41940d2e09adeafa95b11ffc97cc9866da557d3f6b8b681f9dd5a3591b",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_shift_size",
+      "kind": "Lemma",
+      "line": 169,
+      "block_sha256": "343a4ac32ff4724302959e91bb53eb8e7b9d523fa8b3f7884cb863992f9670f8",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_remove_mask",
+      "kind": "Lemma",
+      "line": 174,
+      "block_sha256": "eb020bfd8be3d252114b78f390cfc7d290b40a1b3da1bc5dece8799c0bdd91fe",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_sign_bit",
+      "kind": "Lemma",
+      "line": 198,
+      "block_sha256": "e39bde20fadc521ab6b6411d64be01a4ee75da73e524653e5626eaca2e10c236",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_extend",
+      "kind": "Definition",
+      "line": 207,
+      "block_sha256": "40ef4369a6026c17c748c363a7ecf0481ad254505f3af39025e3481c67f8e7e4",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "source_sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "declaration": "reference_load_address",
+      "kind": "Definition",
+      "line": 320,
+      "block_sha256": "85ed8a9513d07b1ec5eb82405119c640fa18c878146c4b7ad76217040d630e8d",
+      "output_module": "ReferenceWordSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFUpperSemantics.v",
+      "source_sha256": "847295347eff2fd3c7d73f93f21b94ce11f909a32aad0226526de5b12743d547",
+      "declaration": "rf_upper_class",
+      "kind": "Definition",
+      "line": 5,
+      "block_sha256": "eeb0438d2166f676f204e4bc32221a7491eb4daa996bacf352efec7cc18722d7",
+      "output_module": "RFUpperSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFUpperSemantics.v",
+      "source_sha256": "847295347eff2fd3c7d73f93f21b94ce11f909a32aad0226526de5b12743d547",
+      "declaration": "rf_upper_immediate",
+      "kind": "Definition",
+      "line": 6,
+      "block_sha256": "edd443b362a8942bc233ecac7ed63555c5cdd46eb76e06cd027c11e8a2f3da91",
+      "output_module": "RFUpperSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFUpperSemantics.v",
+      "source_sha256": "847295347eff2fd3c7d73f93f21b94ce11f909a32aad0226526de5b12743d547",
+      "declaration": "cycle_upper_semantics",
+      "kind": "Definition",
+      "line": 7,
+      "block_sha256": "04776fc7a396d34521063d766ebdf5df0d25ad1ef78f1cce92d7b2fcc888f102",
+      "output_module": "RFUpperSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFUpperSemantics.v",
+      "source_sha256": "847295347eff2fd3c7d73f93f21b94ce11f909a32aad0226526de5b12743d547",
+      "declaration": "rf_upper_class_bound",
+      "kind": "Lemma",
+      "line": 8,
+      "block_sha256": "433fb3f5a2806dd84ef6a85b1f6b7dc730ec7a07ba4e949ba889882fa11d90e6",
+      "output_module": "RFUpperSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFUpperSemantics.v",
+      "source_sha256": "847295347eff2fd3c7d73f93f21b94ce11f909a32aad0226526de5b12743d547",
+      "declaration": "rf_upper_immediate_size",
+      "kind": "Lemma",
+      "line": 10,
+      "block_sha256": "8ca02196902a240ca589af96c9fb6428846f9c6f2bd5da1a773ff01b222274cf",
+      "output_module": "RFUpperSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFUpperSemantics.v",
+      "source_sha256": "847295347eff2fd3c7d73f93f21b94ce11f909a32aad0226526de5b12743d547",
+      "declaration": "cycle_upper_semantics_size",
+      "kind": "Lemma",
+      "line": 12,
+      "block_sha256": "c6668b2c10f17b295fddf6cb32cd4803702023e4c29dcc6644c0bb049898ce23",
+      "output_module": "RFUpperSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1306",
+      "kind": "Definition",
+      "line": 9,
+      "block_sha256": "a0b7191ca273cf9c710bcd081c50a1a8818818178a35d3372f54300375a499f6",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1309",
+      "kind": "Definition",
+      "line": 11,
+      "block_sha256": "eb0fc978e16837c20f939b42b061e39516f0a4f4fcef249ffa39e5afdae8df1e",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1310",
+      "kind": "Definition",
+      "line": 12,
+      "block_sha256": "6dbd247e86a36afda1ab4023f95a1ab976ceb015bb860b8c527ffc24b0afee1a",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1311",
+      "kind": "Definition",
+      "line": 13,
+      "block_sha256": "34213e1e33499d493a7bc7bf85fd9b88ba29026f2c2a93d00336b17774669d87",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1312",
+      "kind": "Definition",
+      "line": 14,
+      "block_sha256": "1d2e9d09f7c75fce1b22359beca36bb09d2b247b6079a1daae72e8b32963f8fb",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1313",
+      "kind": "Definition",
+      "line": 15,
+      "block_sha256": "5cc9c932308222afec3529c5a2329cd4556326f8edd5b2111955ac2149c782de",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1314",
+      "kind": "Definition",
+      "line": 16,
+      "block_sha256": "f2a691b65924fa880054374c27a79e5b34058f7ad7c7e6d592e0ef8e82d4ec86",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1315",
+      "kind": "Definition",
+      "line": 17,
+      "block_sha256": "4945ea2bb5655e43c6152c730724a3a6aa6fc6d07626d081b235a54006505e33",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1316",
+      "kind": "Definition",
+      "line": 18,
+      "block_sha256": "4449b9d27f3e8dde068e9439e0692429de46bc49aeb7e6012475ae5dff497a35",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1317",
+      "kind": "Definition",
+      "line": 19,
+      "block_sha256": "891d3829b2e57ca029f1369854328c90badd158899cc01053ce018b0edda6490",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1318",
+      "kind": "Definition",
+      "line": 20,
+      "block_sha256": "f07ff476ba7181dc03db8279d70c675f345b771c52acc4248f0818972f70ffd6",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1319",
+      "kind": "Definition",
+      "line": 21,
+      "block_sha256": "ea0ac4ed5a016af823a1b0f7b450b676ecb96aedfc513e6984e211f9b6d54d7b",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1320",
+      "kind": "Definition",
+      "line": 22,
+      "block_sha256": "de57bbd26313f7d8a69a6a9f7e90352189077efdca9d3600ad3bcc7d16b1622e",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1321",
+      "kind": "Definition",
+      "line": 23,
+      "block_sha256": "793e9ce1260d64e52c976261131dc2e81e05c77bec1597f30bb3e7f8fdbbdee2",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1322",
+      "kind": "Definition",
+      "line": 24,
+      "block_sha256": "b3b4bc5a3d6131a17b2f785d7b578528f5400a7b1df169d06ca124e45cfd8d12",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1323",
+      "kind": "Definition",
+      "line": 25,
+      "block_sha256": "2438a313137e084861b32d949a552ebf2577a91ca64776b4b3e51a61bd76e02e",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1324",
+      "kind": "Definition",
+      "line": 26,
+      "block_sha256": "212c188ca428adbcf1a51a74ffa292fd06294580ce459335343b345677b506bf",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1325",
+      "kind": "Definition",
+      "line": 27,
+      "block_sha256": "07de4e8795b2ac0f52f820aa1f53cb51c1727d12b7687b2e412f8448b0fabc23",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1326",
+      "kind": "Definition",
+      "line": 28,
+      "block_sha256": "488c618311dc3a16557161d06d30c20be0fccc98b0590fda309125d185106adc",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1327",
+      "kind": "Definition",
+      "line": 29,
+      "block_sha256": "f3525ba58113ee5f324105d77b0b836554df719e106c9b3d6bcac0cddc03a220",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1328",
+      "kind": "Definition",
+      "line": 30,
+      "block_sha256": "ca5c400257c159ca7c1cdb11bd14647518889522be5b8f5dd8cd407aca367c6e",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1329",
+      "kind": "Definition",
+      "line": 31,
+      "block_sha256": "35d395d4a1aa3068c29063d68c59ed48594a180da41ced7212a1df289baecaa5",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1330",
+      "kind": "Definition",
+      "line": 32,
+      "block_sha256": "1e1a655d661ac6520c5a6d4414dd217d48b80e61d5f347c0abe1c47a85276cef",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1331",
+      "kind": "Definition",
+      "line": 33,
+      "block_sha256": "5596a73c6d61eb8c708ad470962967c4546492bb84df2e8d8e33234749b4cd9c",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1332",
+      "kind": "Definition",
+      "line": 34,
+      "block_sha256": "0c23c235865ef56a4e8d69931e03814b1c94d3b52499d4a872b6e81028fb2bb2",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1333",
+      "kind": "Definition",
+      "line": 35,
+      "block_sha256": "2bf86e5f2f01e0346f2ede4ec1e6ec9544c251987f6bc9cfd60aef0c021009ff",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1334",
+      "kind": "Definition",
+      "line": 36,
+      "block_sha256": "c23c90815923c464a1c65650bf16263b5cf53730c66786bdc57557e018a29228",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1335",
+      "kind": "Definition",
+      "line": 37,
+      "block_sha256": "36ca71fc44e12fd98a61594d28a317115c01eacb4602a17d66e0640a6e8e13fe",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_word_1336",
+      "kind": "Definition",
+      "line": 38,
+      "block_sha256": "bbe8edcb621c4fa54cd950f457d68c603eb0fb803fb4e2ba7d92c784e2dba77c",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_i_immediate",
+      "kind": "Definition",
+      "line": 904,
+      "block_sha256": "3c3909ba3e74c0669ba1c50915ae2ac167d733290818dabce079a22e369a00f8",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_resize_id",
+      "kind": "Lemma",
+      "line": 905,
+      "block_sha256": "726bbc02d26019b7413cd0cfc11a69740c296d412d65ea9c63276cddba4e6964",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_imm_resize_size",
+      "kind": "Lemma",
+      "line": 907,
+      "block_sha256": "ae3eea316bf0c9f3110d4833292b3d32fe98f11caddb4b1d286a975b3d3fe758",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LoadImmediateSemantics.v",
+      "source_sha256": "74dbc186e4b6886319da07a07081a7f8e02848beb8e75f936d27b5a1792ad5b7",
+      "declaration": "load_i_immediate_size",
+      "kind": "Lemma",
+      "line": 941,
+      "block_sha256": "a34696bda524f43bff7bacf9184201af5b942f94af7e856e388bee9748f3a39c",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_s_immediate",
+      "kind": "Definition",
+      "line": 213,
+      "block_sha256": "9af768b0cb2af12dfb8504c71e06c4b87b68e4a93a5361eaf2021c1e8bbad1af",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_b_immediate",
+      "kind": "Definition",
+      "line": 214,
+      "block_sha256": "5b42d580d27a63eec6e66794cbfc124dd24493bb8fe9c8f288a0eaa707e8c130",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_j_immediate",
+      "kind": "Definition",
+      "line": 215,
+      "block_sha256": "83673698ce30ca65a890cb87ce1fa8fe0de651ba2c4beae768d32b290402dd0c",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_imm_result",
+      "kind": "Definition",
+      "line": 216,
+      "block_sha256": "b9b50421234f7caa61f72a1fb36d4746ac5382099cbe27c2b7f1b1741c172fd3",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_imm_s_payload_size",
+      "kind": "Lemma",
+      "line": 219,
+      "block_sha256": "861105cc7be8a15273e099f3417c20c092c1db9258245b0bc26fb66d52401473",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_imm_b_payload_size",
+      "kind": "Lemma",
+      "line": 221,
+      "block_sha256": "d1350d08ce5d1c4341e55a4a9970aca7b5fee12737df534bebe810c300f321ce",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_imm_j_payload_size",
+      "kind": "Lemma",
+      "line": 223,
+      "block_sha256": "b0a51ec4f1e58889dd3e51b749e213b4cc3087a3b7c0f27f9b964ee136db3f21",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_imm_result_size",
+      "kind": "Lemma",
+      "line": 225,
+      "block_sha256": "633d022b3b1f0e3741530ed487c5f2e8e78f585bf84abf897e0d1a7e36b5d33b",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_imm_extend_12_13_32",
+      "kind": "Lemma",
+      "line": 233,
+      "block_sha256": "5c0b3e0679dbc2c876506331fce9237e2535408d23a9aa87bc089c2d9a77760a",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_s_immediate_bits",
+      "kind": "Lemma",
+      "line": 275,
+      "block_sha256": "0d2170cfc28c90752bb064a2ee8660742089f80228beff982955a553712bc16d",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_b_immediate_bits",
+      "kind": "Lemma",
+      "line": 278,
+      "block_sha256": "b04666017ae6347dbf7ffae77a6208fd56ff9fdafc34e3c6ecbec62484ff0e27",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTImmediateModes.v",
+      "source_sha256": "343d670b0be9bc6a113ad4de9278cbf92129dcffd0fbaf7837c72eebfe9a4769",
+      "declaration": "dut_j_immediate_bits",
+      "kind": "Lemma",
+      "line": 282,
+      "block_sha256": "97d50ddbbe4fb0934038231fbbd83dbde3baf75a4c09594697cea185fa30e330",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceBranchImmediate.v",
+      "source_sha256": "d5910a220ba9f44a1dc2b230d0055b240b0757c9e08bc19ecec6571a269d27f5",
+      "declaration": "dut_j_immediate_canonical",
+      "kind": "Lemma",
+      "line": 589,
+      "block_sha256": "c4d47cc6d4f51259356c0f6c046a42f2ae5417977b447cf0f3a61d290c6da281",
+      "output_module": "ReferenceImmediateSemantics"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LegalInstructionClass.v",
+      "source_sha256": "1ed30c564fe76edf9b732862d9b1bbe70566654a4f661c0d699274c3bf5cc3e6",
+      "declaration": "legal_instruction_classes",
+      "kind": "Definition",
+      "line": 2135,
+      "block_sha256": "f7979e355e5136580c95e7b657e485548204439b2092f48c51a33c1a4fad8265",
+      "output_module": "ReferenceInstructionCoverage"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/LegalInstructionClass.v",
+      "source_sha256": "1ed30c564fe76edf9b732862d9b1bbe70566654a4f661c0d699274c3bf5cc3e6",
+      "declaration": "legal_instruction_classified",
+      "kind": "Definition",
+      "line": 2136,
+      "block_sha256": "6864a52b94765a786f7e41eb80abd8ad28aa0221581bc481bcc487b19f92d09e",
+      "output_module": "ReferenceInstructionCoverage"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionCoverage.v",
+      "source_sha256": "5972a859cb98c6a0393e779cc66e47aafacc485daabe4908256faf9a0b7e385e",
+      "declaration": "reference_instruction_codes",
+      "kind": "Definition",
+      "line": 6,
+      "block_sha256": "7390ec8515a941b1da669ef914d2f0d25c8aacbde99b6660c23c1f427dff5a93",
+      "output_module": "ReferenceInstructionCoverage"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionCoverage.v",
+      "source_sha256": "5972a859cb98c6a0393e779cc66e47aafacc485daabe4908256faf9a0b7e385e",
+      "declaration": "legal_reference_mask_coverage",
+      "kind": "Theorem",
+      "line": 7,
+      "block_sha256": "d2149b644c75f7f3da138a9738c77e1dfe6684dc4449fbd72513b79fae784c76",
+      "output_module": "ReferenceInstructionCoverage"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionCoverage.v",
+      "source_sha256": "5972a859cb98c6a0393e779cc66e47aafacc485daabe4908256faf9a0b7e385e",
+      "declaration": "classified_reference_decode",
+      "kind": "Theorem",
+      "line": 51,
+      "block_sha256": "22a0d10fc937443c0eec5b2e3101230d3feae7b6cea76217293b250a16a17b82",
+      "output_module": "ReferenceInstructionCoverage"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_codes",
+      "kind": "Definition",
+      "line": 11,
+      "block_sha256": "e39a9cfd69b474eaebb05ba075fc279342a88a2e9c283b4a50a6a7fdf7334186",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_code_widths",
+      "kind": "Definition",
+      "line": 12,
+      "block_sha256": "f400856791490bce7d8fa78ddb1c6aefb70033423b1b1e6e3caa92fd4bc62146",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_masks",
+      "kind": "Definition",
+      "line": 13,
+      "block_sha256": "23cfb2afffdabe60f3b73375c7a86ddd42d26a3a1b6c0579724d0233696a35bb",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_mask_widths",
+      "kind": "Definition",
+      "line": 14,
+      "block_sha256": "9d81cbfc88429cb68ff242dbb2a5ea0bbede89e45f52116a016c1a6aa7ddd9e7",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_code",
+      "kind": "Definition",
+      "line": 21,
+      "block_sha256": "73eba57713f8391b62ad8ef809d946c31b42f4e36f356304e40202c980b31519",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_code_width",
+      "kind": "Definition",
+      "line": 22,
+      "block_sha256": "b2823a6b950bf3b00962270bba270ffbc9353ec04906acaf25b7ba978fa5a646",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_mask",
+      "kind": "Definition",
+      "line": 23,
+      "block_sha256": "4eab7618a6eae0b406750adb8c5c366274a1afa10f77a1f52fdad64be5edc01b",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "source_sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "declaration": "reference_instruction_mask_width",
+      "kind": "Definition",
+      "line": 24,
+      "block_sha256": "328b60f1f477435ef1ee59c202b057cee5bb281c7a19bb51099d995f20f4d3c5",
+      "output_module": "ReferenceInstructionTable"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSpine.v",
+      "source_sha256": "eab552faa53f3dc05461c61b1b6a43155c3fb12b4ef8241368960dd71044f535",
+      "declaration": "redirect_to_N_cons",
+      "kind": "Lemma",
+      "line": 32,
+      "block_sha256": "8acef173b6c482abf4edb46e68d772a253ad51594b8a69e6386a20a3ce355541",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSpine.v",
+      "source_sha256": "eab552faa53f3dc05461c61b1b6a43155c3fb12b4ef8241368960dd71044f535",
+      "declaration": "redirect_to_N_and_nil",
+      "kind": "Lemma",
+      "line": 35,
+      "block_sha256": "c021f99aad28612011dd8953f3f564b341d3b8c7b6701585716b66fdc426adaa",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSpine.v",
+      "source_sha256": "eab552faa53f3dc05461c61b1b6a43155c3fb12b4ef8241368960dd71044f535",
+      "declaration": "redirect_to_N_and",
+      "kind": "Lemma",
+      "line": 41,
+      "block_sha256": "d75f4cb1df45bd90fa9bda2b19a2a2a85a15437bc6a28a9f3643dd9dbbc9618c",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSpine.v",
+      "source_sha256": "eab552faa53f3dc05461c61b1b6a43155c3fb12b4ef8241368960dd71044f535",
+      "declaration": "redirect_N_eqb",
+      "kind": "Lemma",
+      "line": 72,
+      "block_sha256": "e7f383936e5831851edadf2da586f9b0e7355756f8c7ad8c680720d01b61bb19",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSpine.v",
+      "source_sha256": "eab552faa53f3dc05461c61b1b6a43155c3fb12b4ef8241368960dd71044f535",
+      "declaration": "redirect_to_N_testbit",
+      "kind": "Lemma",
+      "line": 90,
+      "block_sha256": "1c2ddda29b2fce28880a68a5f179b539a4f01ee5096b1b08d6f8ebe4a87a3d51",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSpine.v",
+      "source_sha256": "eab552faa53f3dc05461c61b1b6a43155c3fb12b4ef8241368960dd71044f535",
+      "declaration": "redirect_msb_nth",
+      "kind": "Lemma",
+      "line": 101,
+      "block_sha256": "a717d08918949d0f14d556d621733bca579a02cf01e8d7b03fa0432b141f8a4d",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_aligned",
+      "kind": "Definition",
+      "line": 11,
+      "block_sha256": "832ce831c7ec4dbc3c37b8f26b515c8a395acaf35300767025fa14805c08f28c",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_signed",
+      "kind": "Definition",
+      "line": 13,
+      "block_sha256": "957ca62a956ecc313685beddeb7c1e1b46c4ec72c4812b8de83900128196ca64",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_function",
+      "kind": "Definition",
+      "line": 15,
+      "block_sha256": "80b450a46762199ffb46ba2da98675ff864ecaa0e332bd246d0ccf46d5286f58",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_guards",
+      "kind": "Definition",
+      "line": 29,
+      "block_sha256": "78929bfa4bc2d3412722df1e942b71cf6b497ed836dfa54c840b67a481205d9d",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_guards_normalize",
+      "kind": "Lemma",
+      "line": 195,
+      "block_sha256": "5431c1ff237aca4dbbf35af6d40d1d51a7ad0d9843b1b86d9301d79cd08bfa64",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_signed32",
+      "kind": "Lemma",
+      "line": 499,
+      "block_sha256": "f6de8570a53a2c1e1987219403a7fae473591216e50c55a3be6812d801eee1a8",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_aligned_bits",
+      "kind": "Lemma",
+      "line": 509,
+      "block_sha256": "c4dcd7ed686f369d7f90ad0c73572ae3de7735a8b895408e3710a16ed93714cf",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_alignment_select",
+      "kind": "Lemma",
+      "line": 516,
+      "block_sha256": "d0ed331a804183541372fa7d559cd6f7f23b52a48c03e3334de47ef6193f22b5",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_aligned_take32_from33",
+      "kind": "Lemma",
+      "line": 525,
+      "block_sha256": "300a6662c432ae6d4a5108c4162e375940d5f8b860cb2d042ca3be11571bb2f2",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_aligned_jalr",
+      "kind": "Lemma",
+      "line": 536,
+      "block_sha256": "adfa136545a2b80d57020e29c9968eafc78b8e13a331d4f2ca11c4858810a08d",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceRedirectSemantics.v",
+      "source_sha256": "8ae74b6fec34113c19224b947b521ddb23804cfa925333d86a8d20b72a54f13a",
+      "declaration": "reference_redirect_adapt_word",
+      "kind": "Lemma",
+      "line": 960,
+      "block_sha256": "26ff8f7a56d9d012c450e6b0fa7610486e3d1be4eb7c739ecf9c6b1cf9490187",
+      "output_module": "ReferenceRedirectArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_from_Zneg_inv",
+      "kind": "Lemma",
+      "line": 9,
+      "block_sha256": "664aff6a75e5993d319007856f9534c7bb142fa70d5056adf92c617fa679ea67",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_from_Z33_value",
+      "kind": "Lemma",
+      "line": 15,
+      "block_sha256": "be12923864066211fa469e3beab3ae00b0191b9883cd0314b075886dddfc0a6c",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_branch_difference",
+      "kind": "Definition",
+      "line": 28,
+      "block_sha256": "46e903580c49bb870a47e4ddde25f7a7c375430a522b3de27bc5594ff026243c",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_branch_difference_subB",
+      "kind": "Lemma",
+      "line": 30,
+      "block_sha256": "7a32061595552e5f02be464d8645d33fd827395ac8e1a5727f01964ab01e4a4f",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_unsigned_compare",
+      "kind": "Lemma",
+      "line": 56,
+      "block_sha256": "36df813103f1eb680cb5c08119bc491a5934352357537441f12b142242ddad73",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_signed_compare",
+      "kind": "Lemma",
+      "line": 65,
+      "block_sha256": "2db6b61b9a314b7ef801b90d06032a22166badbbd09642a835c7f738f4755cc8",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_sub_zero",
+      "kind": "Lemma",
+      "line": 80,
+      "block_sha256": "55d08420b150cf07d3c39d21e2d9ad2b1543c1c4afb676aac9517cb85d6d6df2",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_eq_numeric",
+      "kind": "Lemma",
+      "line": 94,
+      "block_sha256": "fc5e8076a2d0aaddbb0b475464823373bf2836ffd3784f03c71fddd005162332",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_reduction_or",
+      "kind": "Lemma",
+      "line": 104,
+      "block_sha256": "175909d8bc54882d39d4d0d63deb5ea0cf28f9e16963314c451f81813bd5a9fe",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_sign_extract",
+      "kind": "Lemma",
+      "line": 109,
+      "block_sha256": "ab3f234000947ea318e5b3cb36a3af529ccde9f1fc5e8ae4cd7f2b8e2ab52c9f",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_branch_bit_function",
+      "kind": "Definition",
+      "line": 119,
+      "block_sha256": "ef804ce38b6d4f748dfb150fdb825e4113c2694aaac44eef6bbc733ace91318c",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_branch_function",
+      "kind": "Definition",
+      "line": 127,
+      "block_sha256": "ce58ac058bcf8d2033a5a4e483a67a6255de6b4333cc0587b2ceb5c2a855d96a",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_redirect_function",
+      "kind": "Definition",
+      "line": 132,
+      "block_sha256": "8dc2911f78773ad70b07c62619670b725ff7c861daee977cf1c55d7dda508c1d",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_branch_numeric",
+      "kind": "Lemma",
+      "line": 134,
+      "block_sha256": "a4ea1646896e3e9f9c0d834276af18b11551fd562ab80332c6c64e9f58c1ca23",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_boolean_binop",
+      "kind": "Lemma",
+      "line": 145,
+      "block_sha256": "99a08af4960cf61f2c66209bc4a32b9c2090226972dfe3dda64a077d325fe05a",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_operand_tests_match",
+      "kind": "Definition",
+      "line": 480,
+      "block_sha256": "b5b8efacf3504e76482aadb375ffd483318951ac8f62d2efad5b67f223d23792",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_operand_tests_branch",
+      "kind": "Lemma",
+      "line": 486,
+      "block_sha256": "8337ced4b671e40c2bbd3123e5edbad50b38beb787a3acdeb6575ab5d76e5e0b",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_redirect_controls_match",
+      "kind": "Definition",
+      "line": 497,
+      "block_sha256": "b2bf4435b53e0e027368e4a2217654ac497f3add7557cf0e98a24b0bdbea585d",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_reference_taken",
+      "kind": "Definition",
+      "line": 506,
+      "block_sha256": "b9c4a9bb4c395448c5062cfe1cbae43987c8209de828f61e61f25492839874e2",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_redirect_decode",
+      "kind": "Lemma",
+      "line": 513,
+      "block_sha256": "c9a133d812a140da0ed4efc2165e2382563d58ad059bed54001bb4f6b2b80758",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_reference_alignment",
+      "kind": "Lemma",
+      "line": 522,
+      "block_sha256": "e60d27392628de63ddf05c540fe8972d4d2d3233f0a0fcb18da3b20c294342b0",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_redirect_gate",
+      "kind": "Lemma",
+      "line": 527,
+      "block_sha256": "aa13a6c05919af96546e7c3743e2faabb44f0a4592902b65e34a325993ec9c35",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+      "source_sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+      "declaration": "dut_redirect_reference",
+      "kind": "Theorem",
+      "line": 531,
+      "block_sha256": "e60acdbeeb3a5c2baab6700dda242b4f91c2908632ea766912327a0eac67a040",
+      "output_module": "DUTBranchArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceEventSpine.v",
+      "source_sha256": "90c9c872142168d2f2556c26843617faa443292c13aab5a4d9d3cee2a6e09794",
+      "declaration": "reference_event_value",
+      "kind": "Definition",
+      "line": 15,
+      "block_sha256": "d10671c02cc676b9a1011333821b38a3be87298a72b14db9b446113429782b54",
+      "output_module": "ReferenceEventLogic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceEventConditions.v",
+      "source_sha256": "b82994e9a0a89005eae362fe3847cb395cf6cfbe4d2113c718ee8a1e4e8501ee",
+      "declaration": "reference_event_safe",
+      "kind": "Definition",
+      "line": 6,
+      "block_sha256": "233d9da56f18e43176cbd14492112ff7b06acb493de37221d2383bc6d9a05896",
+      "output_module": "ReferenceEventLogic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferenceEventConditions.v",
+      "source_sha256": "b82994e9a0a89005eae362fe3847cb395cf6cfbe4d2113c718ee8a1e4e8501ee",
+      "declaration": "reference_event_safe_false",
+      "kind": "Theorem",
+      "line": 24,
+      "block_sha256": "b3337f2df5ee68ea2e2e1c479a9ad7471ac71e3112f59634c80468d9816f6694",
+      "output_module": "ReferenceEventLogic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCTargetSemantics.v",
+      "source_sha256": "8a2ba573a4bbdea6fa9dc84d847f9f1b2bdefacf13045560fcfae37e9c3c6fbb",
+      "declaration": "ref_pc_target_resize32",
+      "kind": "Lemma",
+      "line": 9,
+      "block_sha256": "bf992863e2e9f7f0d4ec2d704d8ec729a838074707f51f4f297bf27350d918f3",
+      "output_module": "ReferencePCTargetValue"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/ReferencePCTargetSemantics.v",
+      "source_sha256": "8a2ba573a4bbdea6fa9dc84d847f9f1b2bdefacf13045560fcfae37e9c3c6fbb",
+      "declaration": "reference_pc_target_value",
+      "kind": "Definition",
+      "line": 12,
+      "block_sha256": "c14082be90d2ecafe23215eb6a3808ab4e48d1e73afa90c4d2f613171aca768f",
+      "output_module": "ReferencePCTargetValue"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFShiftCenter.v",
+      "source_sha256": "2ea29b3555d66bb2e4d029a2e9520d71f62ea1caf867e76904be919e38d5a4fd",
+      "declaration": "rf_shift_center_word",
+      "kind": "Definition",
+      "line": 9,
+      "block_sha256": "275a24ac08b4996249d5dd0928714f9469c6c59a6c3960c1c72ad7a75ac8a9d1",
+      "output_module": "RFShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFShiftALUHistory.v",
+      "source_sha256": "5e38817bb90111251a0479b42435aa9794aae43ba69e0076af4f06cadbd4996a",
+      "declaration": "rf_shift_word",
+      "kind": "Definition",
+      "line": 9,
+      "block_sha256": "3b77d603034a5e1c6fdd043f354c9233bb59a59264cb80421c2534ce3e849b97",
+      "output_module": "RFShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFShiftSemantics.v",
+      "source_sha256": "a341bc5a5745a204cbfb52541480e40ab75b12f9c286618bf5a9f02feb2a421c",
+      "declaration": "rf_shift_at",
+      "kind": "Definition",
+      "line": 6,
+      "block_sha256": "a3ed951e2f08691c165327a69b579b40d6ef07480baa7bf32d062972f05e0023",
+      "output_module": "RFShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFShiftSemantics.v",
+      "source_sha256": "a341bc5a5745a204cbfb52541480e40ab75b12f9c286618bf5a9f02feb2a421c",
+      "declaration": "rf_shift_spec",
+      "kind": "Definition",
+      "line": 10,
+      "block_sha256": "89bddaedfe448603e4ef103ad755f10536b570fa46be813198cdeaa5ba01a368",
+      "output_module": "RFShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFShiftSemantics.v",
+      "source_sha256": "a341bc5a5745a204cbfb52541480e40ab75b12f9c286618bf5a9f02feb2a421c",
+      "declaration": "rf_shift_word_at",
+      "kind": "Lemma",
+      "line": 13,
+      "block_sha256": "4237570d4e99d8778bdfb70d243b494dbf9f7bec46ac1af05a7f95e1c765809e",
+      "output_module": "RFShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFShiftSemantics.v",
+      "source_sha256": "a341bc5a5745a204cbfb52541480e40ab75b12f9c286618bf5a9f02feb2a421c",
+      "declaration": "rf_shift_at_correct",
+      "kind": "Lemma",
+      "line": 16,
+      "block_sha256": "8d0410e6a9f9b6ebc7c7cc3e6edce09670bd2f6956f4a3e392c1ceb51b9db70a",
+      "output_module": "RFShiftArithmetic"
+    },
+    {
+      "source": "formal/flat-low/staged-integration/RFShiftSemantics.v",
+      "source_sha256": "a341bc5a5745a204cbfb52541480e40ab75b12f9c286618bf5a9f02feb2a421c",
+      "declaration": "rf_shift_word_correct",
+      "kind": "Theorem",
+      "line": 25,
+      "block_sha256": "b05f306f187a83022fc564d615c48c375f5b26d092e367cd558afb820253817d",
+      "output_module": "RFShiftArithmetic"
+    }
+  ],
+  "shared_dependencies": [
+    "ConcreteDecodeOperations",
+    "ConcreteGroundAdapt",
+    "ConcreteGroundOperations",
+    "ConcreteUIntOperations"
+  ],
+  "shared_dependency_source": "../shared-semantics/coq"
+}

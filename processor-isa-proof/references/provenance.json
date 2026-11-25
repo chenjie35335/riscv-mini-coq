@@ -1,0 +1,290 @@
+{
+  "format_version": 1,
+  "source_repository_hint": "../riscv-mini-proof",
+  "source_commit": "6666776a8018b54c1b8993b4cdc2528925f1278a",
+  "library_commit": "13b46e17d2d9cc3fde4541f7d4ed10d74a161927",
+  "identity_note": "Hashes identify inspected working-tree files, including possible uncommitted changes. Commit identifiers alone are not their identity.",
+  "proof_status_note": "Read-only extraction of processor sources; no full DUT rebuild. Generic assets are separately checked by scripts/check_templates.py.",
+  "files": [
+    {
+      "path": "formal/flat-low/staged-integration/CycleView.v",
+      "sha256": "49d3c36abe7c2745ceba36e992319882c0dd35f1a305a70171e3e05f4678fcc4",
+      "declarations": [
+        {
+          "name": "cycle_view",
+          "line": 9
+        },
+        {
+          "name": "cycle_view_at",
+          "line": 31
+        },
+        {
+          "name": "cycle_transition",
+          "line": 60
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CycleJointBase.v",
+      "sha256": "29698010cd176696e8808a14ae3c58d89bd799b9ba138c4eb4c5e8d7124b4bec",
+      "declarations": [
+        {
+          "name": "cycle_joint_initial",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CycleJointStep.v",
+      "sha256": "64f989f3c885a53a254453b7fa76b036949f36368133095876d53e478271ed67",
+      "declarations": [
+        {
+          "name": "cycle_joint_step",
+          "line": 70
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CycleJointInvariant.v",
+      "sha256": "42a268aec0d9d89c267519d88afe290fb3b340e766f46b62468c11651a8bef05",
+      "declarations": [
+        {
+          "name": "cycle_joint_observed_invariant",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/RFWriteEffect.v",
+      "sha256": "904123522f0fc3d3668ca5b3808a081cfd4f139df8e791d9567455d53b88e8d0",
+      "declarations": [
+        {
+          "name": "rf_apply_effect",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/RFAddPendingInvariant.v",
+      "sha256": "64c7e0d14ec8961e858b0ed2f920823d7fb132277622fb6005fe1da33e398cf3",
+      "declarations": [
+        {
+          "name": "cycle_add_pending_forwarded",
+          "line": 31
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/MemoryPendingInvariant.v",
+      "sha256": "963f43a6f9345b7e7ae2f48dd38638a4858e42c1a3dc493bc410df492cf99f1c",
+      "declarations": [
+        {
+          "name": "cycle_reference_effect_step",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/RFReadPorts.v",
+      "sha256": "823117d25a422cf0915843b7f2a0bd49d6256e2ecb08551bfb184961c9d14321",
+      "declarations": [
+        {
+          "name": "rf_actual_forwarding_observed",
+          "line": 361
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CommitPCControlledPropagation.v",
+      "sha256": "91b2afe2db6aada1bf814a99037cec87a93e01107c717a8e4985028d124b6442",
+      "declarations": [
+        {
+          "name": "commit_pc_controlled_after_four",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CycleInstructionCoverage.v",
+      "sha256": "b8fcf42531350256e8a7a4e57043b413f1c02cd065d2cb47515f25556092211e",
+      "declarations": [
+        {
+          "name": "cycle_commit_instruction_coverage",
+          "line": 61
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CycleISAReferenceAdvance.v",
+      "sha256": "8296ab2a9b1407ab3d84ee2c56b3207ab12c2dae5fd598a773278b6ce1b7fd50",
+      "declarations": [
+        {
+          "name": "cycle_isa_reference_advance",
+          "line": 25
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CycleRFOriginalAssertions.v",
+      "sha256": "ad40c9f2907ef8d562d0bbff404c52ee6584339e29e4b91aa16bb9adbb33f654",
+      "declarations": [
+        {
+          "name": "cycle_rf_original_assertion_normal",
+          "line": 15
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/FormalObservationCommit.v",
+      "sha256": "82387809c8677172df64d9d92292a1dec47b2f86910e678db09e637f64c61be9",
+      "declarations": [
+        {
+          "name": "observation_then_commit",
+          "line": 16
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/FormalLocalHistory.v",
+      "sha256": "11dc080f61e511f9cafc713ee56b0fa137539259e85345a32962ced45bd788e8",
+      "declarations": [
+        {
+          "name": "local_iteration_history",
+          "line": 39
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/FormalTypedNodeEquation.v",
+      "sha256": "54a5ca59363c677a2db73c9343a5cff6c33e2ae4cc7486c941ca0617c3a80fd9",
+      "declarations": [
+        {
+          "name": "formal_combinational_known_node",
+          "line": 31
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/FormalNodeSuffixFrames.v",
+      "sha256": "241cc3b7f238fdb9b4944c3b4637c9c74568e612fad1732bd481cf55aaadc27d",
+      "declarations": [
+        {
+          "name": "formal_suffix_preserves_value",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/DependencyRankSoundness.v",
+      "sha256": "eab0648d9a34a7eca620a03d2a3daec06c11e2d06cc44169ee3cb7d08c9dc127",
+      "declarations": [
+        {
+          "name": "dependency_ranks_valid_sound",
+          "line": 15
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/CheckedDependencyHistory.v",
+      "sha256": "14b343c28afc9025061ff2da45a40520dfed493b51663662b60837420b0bd1f7",
+      "declarations": [
+        {
+          "name": "checked_dependency_history",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/ALUInputStability.v",
+      "sha256": "69e1a0832e81529a9ad76a4319d9a8d8087b0a5767ccbf7db47c0e11c7f72900",
+      "declarations": [
+        {
+          "name": "alu_stability_from_roots",
+          "line": 884
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/StagedIterationLemmas.v",
+      "sha256": "c90e16e6ec65ef6fb00492e0b097337925a481378a8bfac429650cc344722a9f",
+      "declarations": [
+        {
+          "name": "formal_iterations_settled_tail",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/ComparisonTruth.v",
+      "sha256": "fe28b52c0264e188f11dbd2941e848e85bd8b7c750965686d89b2730e8c16181",
+      "declarations": [
+        {
+          "name": "uint_equal_comparison",
+          "line": 8
+        },
+        {
+          "name": "comparison_inputs_agree",
+          "line": 37
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/FormalAssertionDischarge.v",
+      "sha256": "b7c19a5265fba2ec2e33e071e7f9d19e61cac169ccb726d54988e2b0ebec0d08",
+      "declarations": [
+        {
+          "name": "assertion_0_from_enabled_agreement",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/EventAssertionSemantics.v",
+      "sha256": "9d3da15ca37f86433c95b5a8f7d2a233809ded398725d709855c0488a64d7489",
+      "declarations": [
+        {
+          "name": "event_dut_valid_false_observed",
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/staged-integration/AllOriginalAssertions.v",
+      "sha256": "1410aefe70e4f681cc638bf8b10f9bd852f638d97fb822a7c29124665ef65223",
+      "declarations": [
+        {
+          "name": "all_original_assertions",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "firrtl2coq/src/HiEnv_with_implicit_widths.v",
+      "sha256": "c672c70f797c83d136c275f0c6294f2f9ff5ecfef2e2e973f0f47425d5a5ab56",
+      "declarations": [
+        {
+          "name": "ftype_eqn_eq",
+          "line": 116
+        },
+        {
+          "name": "ffield_eqn_eq",
+          "line": 117
+        }
+      ]
+    },
+    {
+      "path": "formal/flat-low/CoreSocModel.v",
+      "sha256": "a247aa94ea2c65d727033fd34d9f889dbc05dc27fee96c7d667f8a7b59f05ec6",
+      "declarations": [
+        {
+          "name": "generated_hvalue_true",
+          "line": 85
+        },
+        {
+          "name": "generated_legal_trace",
+          "line": 197
+        }
+      ]
+    }
+  ]
+}

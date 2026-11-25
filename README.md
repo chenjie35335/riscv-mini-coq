@@ -288,3 +288,38 @@ Library sources in `mini-proof/` are kept byte-for-byte identical to the origina
 `firrtl2coq/` libraries, including existing unproved declarations. Final theorem
 dependencies are assessed with `Print Assumptions`. Experimental library
 versions that proved or removed declarations are excluded from the delivery.
+
+## Proof Effort Statistics
+
+The following figures come from two recorded task goals:
+
+| Phase | Recorded token usage | Elapsed time |
+| --- | ---: | ---: |
+| FIRRTL-to-Coq conversion, proofs of all 45 assertions, and initial full verification | 18,078,608 | 56 h 55 min 44 s |
+| Final kernel-check monitoring after proof-package organization | 87,724 | 3 h 3 min 30 s |
+| **Combined recorded totals** | **18,166,332** | **59 h 59 min 14 s** |
+
+Elapsed time includes tool execution and waiting. These figures cover the two
+recorded goals, not the entire conversation: intervening README edits, file
+archiving, and some recompilation work were outside those goals. Recorded token
+usage is not necessarily the same as billable token usage.
+
+The final proof package covers **45 original assertions**, contains **1,183 local
+Coq source files** (including 25 library files), and has **1,499 kernel-checked
+modules** (1,183 local modules and 316 external dependencies). The final theorem
+depends on the two explicitly accepted, pre-existing library assumptions,
+`HiEnv_with_implicit_widths.ftype_eqn_eq` and
+`HiEnv_with_implicit_widths.ffield_eqn_eq`.
+
+## Current formal instruction scope
+
+The assumption uses riscv-spec-core AssumeHelper through
+`mini.FormalInstructionSet`: 37 ordinary RV32 integer classes,
+six Zicsr classes and ECALL/EBREAK (45 classes in total). Trap-producing traces
+are admitted; the former `!rvfi.trap` restriction has been removed. Both reference
+configurations enable Zicsr, without Zifencei, M or modern privileged-return
+decoding. FENCE.I, FENCE and legacy ERET/WFI remain excluded. See the
+[scope audit](formal/ASSUME_SCOPE.md) for capabilities, remaining exclusions and
+known legacy CSR/exception differences. This expands the verification scope;
+it does not establish that the new assertions pass. Existing Coq proof results
+apply to their recorded model and assumptions.

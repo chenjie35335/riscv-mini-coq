@@ -1,0 +1,4 @@
+interface:
+  display_name: "Processor ISA Proofs"
+  short_description: "Reuse reference proofs and coordinate processor proof agents"
+  default_prompt: "Use $processor-isa-proof to reuse the shared reference proofs, divide the proof work among agents, and prove this DUT agrees with the reference model."

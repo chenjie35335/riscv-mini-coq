@@ -1,0 +1,965 @@
+{
+  "description": "Inventory of original high-value fixed-reference proofs, not yet all isolated/ported. An entry is not a claim that this original module compiles for a new DUT.",
+  "modules": [
+    {
+      "family": "register-read",
+      "module": "ReferenceRegisterRead",
+      "source": "formal/flat-low/staged-integration/ReferenceRegisterRead.v",
+      "sha256": "6178b9e66c8b81eb8da77a1939af6257c783b836ef86c116c8a2d394d79810b0",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_stage_member",
+          "line": 20,
+          "statement": "Lemma reference_bank_read_stage_member (index:nat) : (index < 32)%coq_nat ->\n List.In (reference_bank_read_stage index,reference_bank_read_stage_expr index) (if Nat.ltb index 5 then reference_control_0_nodes else reference_control_1_nodes)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_safe_position",
+          "line": 57,
+          "statement": "Lemma reference_bank_read_safe_position index : (index<32)%coq_nat -> exists count tail,\n straight_drop count flat_statements = Some (Qcons (Snode (reference_bank_read_stage index) (reference_bank_read_stage_expr index)) tail) /\\\n formal_typed_suffix_safe flat_memories (reference_bank_read_stage index) tail /\\ has_register (reference_bank_read_stage index) flat_statements = false."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_condition_value",
+          "line": 66,
+          "statement": "Lemma reference_bank_read_condition_value index invalid site mm old address :\n (index < 32)%coq_nat -> VM.find (reference_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n eval_hfexpr_validif_policy (isolated_validif_policy invalid) site mm (reference_bank_read_condition index) old old =\n Some (Gval (Fuint 1) [::index == to_nat address])."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_base_type",
+          "line": 78,
+          "statement": "Lemma reference_bank_read_base_type inputs path site mm old address word value :\n VM.find (reference_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n VM.find 2177 old = Some (Gval (Fuint 32) word) ->\n eval_hfexpr_validif_policy (isolated_validif_policy (formal_invalid_policy inputs path)) site mm (reference_bank_read_stage_expr 0) old old = Some value ->\n type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_base_step_type",
+          "line": 94,
+          "statement": "Lemma reference_bank_read_base_step_type inputs path old result address word :\n VM.find (reference_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n VM.find 2177 old = Some (Gval (Fuint 32) word) ->\n formal_value_iter (formal_invalid_policy inputs path) flat_memories old false old flat_statements = Some result ->\n exists value, VM.find (reference_bank_read_stage 0) result = Some value /\\ type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_base_step_zero",
+          "line": 106,
+          "statement": "Lemma reference_bank_read_base_step_zero invalid old result address word :\n VM.find (reference_bank_read_address_port) old = Some (Gval (Fuint 5) address) -> to_nat address = 0%nat ->\n VM.find 2177 old = Some (Gval (Fuint 32) word) ->\n formal_value_iter invalid flat_memories old false old flat_statements = Some result ->\n VM.find (reference_bank_read_stage 0) result = Some (Gval (Fuint 32) word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_successor_step_type",
+          "line": 119,
+          "statement": "Lemma reference_bank_read_successor_step_type index invalid old result left right :\n (S index < 32)%coq_nat ->\n VM.find (N.of_nat (Nat.sub 2177 (S index))) old = Some left -> type_of_val left = Gtyp (Fuint 32) ->\n VM.find (reference_bank_read_stage index) old = Some right -> type_of_val right = Gtyp (Fuint 32) ->\n formal_value_iter invalid flat_memories old false old flat_statements = Some result ->\n exists value, VM.find (reference_bank_read_stage (S index)) result = Some value /\\ type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_successor_step_exact",
+          "line": 136,
+          "statement": "Lemma reference_bank_read_successor_step_exact index invalid old result address left right word :\n (S index < 32)%coq_nat ->\n VM.find (reference_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n VM.find (N.of_nat (Nat.sub 2177 (S index))) old = Some left -> type_of_val left = Gtyp (Fuint 32) ->\n VM.find (reference_bank_read_stage index) old = Some right -> type_of_val right = Gtyp (Fuint 32) ->\n (if S index == to_nat address then left else right) = Gval (Fuint 32) word -> size word = 32%nat ->\n formal_value_iter invalid flat_memories old false old flat_statements = Some result ->\n VM.find (reference_bank_read_stage (S index)) result = Some (Gval (Fuint 32) word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_stage_history_type",
+          "line": 153,
+          "statement": "Lemma reference_bank_read_stage_history_type inputs path history (limit start:nat) bank address :\n (forall t index, (start <= t)%coq_nat -> (t <= limit)%coq_nat -> (index < 32)%coq_nat -> size (bank index)=32%nat /\\ VM.find (N.of_nat (Nat.sub 2177 index)) (history t)=Some(Gval(Fuint 32)(bank index))) ->\n (forall time, (time < limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history time) false (history time) flat_statements = Some (history (S time))) ->\n (forall time, (start <= time)%coq_nat -> (time <= limit)%coq_nat -> VM.find (reference_bank_read_address_port) (history time) = Some (Gval (Fuint 5) address)) ->\n forall index time, (index < 32)%coq_nat -> (Nat.add (Nat.add start index) 1 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n exists value, VM.find (reference_bank_read_stage index) (history time) = Some value /\\ type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_bank_read_stage_history_exact",
+          "line": 167,
+          "statement": "Lemma reference_bank_read_stage_history_exact inputs path history (limit start:nat) bank address :\n (forall t index, (start <= t)%coq_nat -> (t <= limit)%coq_nat -> (index < 32)%coq_nat -> size (bank index)=32%nat /\\ VM.find (N.of_nat (Nat.sub 2177 index)) (history t)=Some(Gval(Fuint 32)(bank index))) ->\n (forall time, (time < limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history time) false (history time) flat_statements = Some (history (S time))) ->\n (forall time, (start <= time)%coq_nat -> (time <= limit)%coq_nat -> VM.find (reference_bank_read_address_port) (history time) = Some (Gval (Fuint 5) address)) ->\n forall index time, (index < 32)%coq_nat -> (to_nat address <= index)%coq_nat -> (Nat.add (Nat.add start index) 1 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n VM.find (reference_bank_read_stage index) (history time) = Some (Gval (Fuint 32) (bank (to_nat address)))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_register_read_history",
+          "line": 191,
+          "statement": "Theorem reference_register_read_history inputs path history limit start bank address :\n rf_reference_bank_at (history 0%nat) bank -> size address=5%nat -> (2<=start)%coq_nat ->\n (forall t,(t<limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history t) false (history t) flat_statements=Some(history(S t))) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 2145(history t)=Some(Gval(Fuint 5)address)) ->\n forall t,(Nat.add start 32<=t)%coq_nat ->(t<=limit)%coq_nat ->\n VM.find 2209(history t)=Some(Gval(Fuint 32)(bank(to_nat address)))."
+        }
+      ]
+    },
+    {
+      "family": "register-read",
+      "module": "ReferenceSecondRegisterRead",
+      "source": "formal/flat-low/staged-integration/ReferenceSecondRegisterRead.v",
+      "sha256": "81e1194ade2f075e1c055c6290133b60803bd973363c09076df10a898ba72ffa",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_stage_member",
+          "line": 20,
+          "statement": "Lemma reference_second_bank_read_stage_member (index:nat) : (index < 32)%coq_nat ->\n List.In (reference_second_bank_read_stage index,reference_second_bank_read_stage_expr index) (if Nat.ltb index 10 then reference_control_2_nodes else reference_control_2_nodes)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_safe_position",
+          "line": 57,
+          "statement": "Lemma reference_second_bank_read_safe_position index : (index<32)%coq_nat -> exists count tail,\n straight_drop count flat_statements = Some (Qcons (Snode (reference_second_bank_read_stage index) (reference_second_bank_read_stage_expr index)) tail) /\\\n formal_typed_suffix_safe flat_memories (reference_second_bank_read_stage index) tail /\\ has_register (reference_second_bank_read_stage index) flat_statements = false."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_condition_value",
+          "line": 66,
+          "statement": "Lemma reference_second_bank_read_condition_value index invalid site mm old address :\n (index < 32)%coq_nat -> VM.find (reference_second_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n eval_hfexpr_validif_policy (isolated_validif_policy invalid) site mm (reference_second_bank_read_condition index) old old =\n Some (Gval (Fuint 1) [::index == to_nat address])."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_base_type",
+          "line": 78,
+          "statement": "Lemma reference_second_bank_read_base_type inputs path site mm old address word value :\n VM.find (reference_second_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n VM.find 2177 old = Some (Gval (Fuint 32) word) ->\n eval_hfexpr_validif_policy (isolated_validif_policy (formal_invalid_policy inputs path)) site mm (reference_second_bank_read_stage_expr 0) old old = Some value ->\n type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_base_step_type",
+          "line": 94,
+          "statement": "Lemma reference_second_bank_read_base_step_type inputs path old result address word :\n VM.find (reference_second_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n VM.find 2177 old = Some (Gval (Fuint 32) word) ->\n formal_value_iter (formal_invalid_policy inputs path) flat_memories old false old flat_statements = Some result ->\n exists value, VM.find (reference_second_bank_read_stage 0) result = Some value /\\ type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_base_step_zero",
+          "line": 106,
+          "statement": "Lemma reference_second_bank_read_base_step_zero invalid old result address word :\n VM.find (reference_second_bank_read_address_port) old = Some (Gval (Fuint 5) address) -> to_nat address = 0%nat ->\n VM.find 2177 old = Some (Gval (Fuint 32) word) ->\n formal_value_iter invalid flat_memories old false old flat_statements = Some result ->\n VM.find (reference_second_bank_read_stage 0) result = Some (Gval (Fuint 32) word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_successor_step_type",
+          "line": 119,
+          "statement": "Lemma reference_second_bank_read_successor_step_type index invalid old result left right :\n (S index < 32)%coq_nat ->\n VM.find (N.of_nat (Nat.sub 2177 (S index))) old = Some left -> type_of_val left = Gtyp (Fuint 32) ->\n VM.find (reference_second_bank_read_stage index) old = Some right -> type_of_val right = Gtyp (Fuint 32) ->\n formal_value_iter invalid flat_memories old false old flat_statements = Some result ->\n exists value, VM.find (reference_second_bank_read_stage (S index)) result = Some value /\\ type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_successor_step_exact",
+          "line": 136,
+          "statement": "Lemma reference_second_bank_read_successor_step_exact index invalid old result address left right word :\n (S index < 32)%coq_nat ->\n VM.find (reference_second_bank_read_address_port) old = Some (Gval (Fuint 5) address) ->\n VM.find (N.of_nat (Nat.sub 2177 (S index))) old = Some left -> type_of_val left = Gtyp (Fuint 32) ->\n VM.find (reference_second_bank_read_stage index) old = Some right -> type_of_val right = Gtyp (Fuint 32) ->\n (if S index == to_nat address then left else right) = Gval (Fuint 32) word -> size word = 32%nat ->\n formal_value_iter invalid flat_memories old false old flat_statements = Some result ->\n VM.find (reference_second_bank_read_stage (S index)) result = Some (Gval (Fuint 32) word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_stage_history_type",
+          "line": 153,
+          "statement": "Lemma reference_second_bank_read_stage_history_type inputs path history (limit start:nat) bank address :\n (forall t index, (start <= t)%coq_nat -> (t <= limit)%coq_nat -> (index < 32)%coq_nat -> size (bank index)=32%nat /\\ VM.find (N.of_nat (Nat.sub 2177 index)) (history t)=Some(Gval(Fuint 32)(bank index))) ->\n (forall time, (time < limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history time) false (history time) flat_statements = Some (history (S time))) ->\n (forall time, (start <= time)%coq_nat -> (time <= limit)%coq_nat -> VM.find (reference_second_bank_read_address_port) (history time) = Some (Gval (Fuint 5) address)) ->\n forall index time, (index < 32)%coq_nat -> (Nat.add (Nat.add start index) 1 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n exists value, VM.find (reference_second_bank_read_stage index) (history time) = Some value /\\ type_of_val value = Gtyp (Fuint 32)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_second_bank_read_stage_history_exact",
+          "line": 167,
+          "statement": "Lemma reference_second_bank_read_stage_history_exact inputs path history (limit start:nat) bank address :\n (forall t index, (start <= t)%coq_nat -> (t <= limit)%coq_nat -> (index < 32)%coq_nat -> size (bank index)=32%nat /\\ VM.find (N.of_nat (Nat.sub 2177 index)) (history t)=Some(Gval(Fuint 32)(bank index))) ->\n (forall time, (time < limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history time) false (history time) flat_statements = Some (history (S time))) ->\n (forall time, (start <= time)%coq_nat -> (time <= limit)%coq_nat -> VM.find (reference_second_bank_read_address_port) (history time) = Some (Gval (Fuint 5) address)) ->\n forall index time, (index < 32)%coq_nat -> (to_nat address <= index)%coq_nat -> (Nat.add (Nat.add start index) 1 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n VM.find (reference_second_bank_read_stage index) (history time) = Some (Gval (Fuint 32) (bank (to_nat address)))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_second_register_read_history",
+          "line": 191,
+          "statement": "Theorem reference_second_register_read_history inputs path history limit start bank address :\n rf_reference_bank_at (history 0%nat) bank -> size address=5%nat -> (2<=start)%coq_nat ->\n (forall t,(t<limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history t) false (history t) flat_statements=Some(history(S t))) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 2622(history t)=Some(Gval(Fuint 5)address)) ->\n forall t,(Nat.add start 32<=t)%coq_nat ->(t<=limit)%coq_nat ->\n VM.find 2804(history t)=Some(Gval(Fuint 32)(bank(to_nat address)))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_second_register_read_observed",
+          "line": 209,
+          "statement": "Theorem reference_second_register_read_observed memory inputs k observed bank address :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n rf_reference_bank_at(top_environment observed)bank ->size address=5%nat ->\n VM.find 2622(top_environment observed)=Some(Gval(Fuint 5)address) ->\n VM.find 2804(top_environment observed)=Some(Gval(Fuint 32)(bank(to_nat address)))."
+        }
+      ]
+    },
+    {
+      "family": "register-write",
+      "module": "RFReferenceWriteEffect",
+      "source": "formal/flat-low/staged-integration/RFReferenceWriteEffect.v",
+      "sha256": "2a374b0cfad1b42e8324b5df2863a0788cf9f149f9203f138569454bf103db8b",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_low_word_size",
+          "line": 13,
+          "statement": "Lemma rf_reference_low_word_size word value :rf_reference_low_word word value ->size word=32%nat."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_take_extension",
+          "line": 15,
+          "statement": "Lemma rf_reference_take_extension raw amount : (32<=size raw)%nat ->take 32(zext amount raw)=take 32 raw."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_low_resize",
+          "line": 22,
+          "statement": "Lemma rf_reference_low_resize word value width :rf_reference_low_word word value ->\n (forall source raw,value=Gval(Fuint source)raw ->(source<=width)%nat) ->\n exists adapted,adapt_hvalue_as_type value(Gtyp(Fuint width))=Some adapted /\\rf_reference_low_word word adapted."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_low_mux",
+          "line": 35,
+          "statement": "Lemma rf_reference_low_mux mm old condition (yes no:VarOrder.T) invalid site bit left right left_word right_word :\n (forall subsite,eval_hfexpr_validif_policy(isolated_validif_policy invalid)subsite mm condition old old=Some(Gval(Fuint 1)[::bit])) ->\n VM.find yes old=Some left ->rf_reference_low_word left_word left ->\n VM.find no old=Some right ->rf_reference_low_word right_word right ->\n exists value,eval_hfexpr_validif_policy(isolated_validif_policy invalid)site mm\n (@Emux VarOrder.T condition(@Eref VarOrder.T(@Eid VarOrder.T yes))(@Eref VarOrder.T(@Eid VarOrder.T no)))old old=Some value /\\\n rf_reference_low_word(if bit then left_word else right_word)value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_write_positions",
+          "line": 78,
+          "statement": "Lemma rf_reference_write_positions : select_node_offsets rf_reference_write_offsets flat_statements=Some rf_reference_write_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_write_safety",
+          "line": 80,
+          "statement": "Lemma rf_reference_write_safety : selected_node_safety flat_memories flat_statements rf_reference_write_offsets flat_statements=true."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_write_member",
+          "line": 83,
+          "statement": "Lemma rf_reference_write_member index stage slot : (1<=index)%coq_nat ->(index<32)%coq_nat ->(stage<36)%coq_nat ->(slot<rf_reference_write_depth stage)%coq_nat ->\n List.In(rf_reference_write_selector index stage slot,rf_reference_write_expr index stage slot)rf_reference_write_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_condition_exact",
+          "line": 94,
+          "statement": "Lemma rf_reference_condition_exact index invalid site mm old rd : (1<=index)%coq_nat ->(index<32)%coq_nat ->\n VM.find 3221 old=Some(Gval(Fuint 5)rd) ->\n eval_hfexpr_validif_policy(isolated_validif_policy invalid)site mm(rf_reference_entry_condition index)old old=Some(Gval(Fuint 1)[::index==to_nat rd])."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_write_step",
+          "line": 108,
+          "statement": "Theorem rf_reference_write_step index stage slot invalid old result bit left right left_word right_word :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->(stage<36)%coq_nat ->(slot<rf_reference_write_depth stage)%coq_nat ->\n (forall site,eval_hfexpr_validif_policy(isolated_validif_policy invalid)site flat_memories(rf_reference_write_condition index stage slot)old old=Some(Gval(Fuint 1)[::bit])) ->\n VM.find(rf_reference_write_input index stage slot)old=Some left ->rf_reference_low_word left_word left ->\n VM.find(rf_reference_write_prior index stage)old=Some right ->rf_reference_low_word right_word right ->\n formal_value_iter invalid flat_memories old false old flat_statements=Some result ->\n exists value,VM.find(rf_reference_write_selector index stage slot)result=Some value /\\rf_reference_low_word(if bit then left_word else right_word)value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_gate_base",
+          "line": 127,
+          "statement": "Lemma rf_reference_gate_base stage :(0<stage)%coq_nat ->(stage<36)%coq_nat ->rf_reference_write_final_base stage=rf_reference_gate_yes_base stage."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_gate_expression",
+          "line": 129,
+          "statement": "Lemma rf_reference_gate_expression index stage : (stage<36)%coq_nat ->\n rf_reference_chain_expr index stage=@Emux VarOrder.T(@Eref VarOrder.T(@Eid VarOrder.T(rf_reference_chain_guard stage)))\n (@Eref VarOrder.T(@Eid VarOrder.T(rf_reference_write_selector index stage(rf_reference_write_depth stage-1))))\n (@Eref VarOrder.T(@Eid VarOrder.T(rf_reference_write_prior index stage)))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_gate_step",
+          "line": 142,
+          "statement": "Lemma rf_reference_gate_step index stage invalid old result bit chosen prior chosen_word prior_word :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->(stage<36)%coq_nat ->\n VM.find(rf_reference_chain_guard stage)old=Some(Gval(Fuint 1)[::bit]) ->\n VM.find(rf_reference_write_selector index stage(rf_reference_write_depth stage-1))old=Some chosen ->rf_reference_low_word chosen_word chosen ->\n VM.find(rf_reference_write_prior index stage)old=Some prior ->rf_reference_low_word prior_word prior ->\n formal_value_iter invalid flat_memories old false old flat_statements=Some result ->\n exists value,VM.find(rf_reference_chain_node index stage)result=Some value /\\rf_reference_low_word(if bit then chosen_word else prior_word)value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_write_depth_cases",
+          "line": 160,
+          "statement": "Lemma rf_reference_write_depth_cases stage : (stage<36)%coq_nat ->rf_reference_write_depth stage=1%nat \\/rf_reference_write_depth stage=2%nat."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_write_stage_three_steps",
+          "line": 162,
+          "statement": "Theorem rf_reference_write_stage_three_steps index stage invalid s0 s1 s2 s3 rd opcode permitted data_word prior_word :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->(stage<36)%coq_nat ->\n VM.find 3221 s0=Some(Gval(Fuint 5)rd) ->VM.find 3221 s1=Some(Gval(Fuint 5)rd) ->\n (exists value,VM.find(rf_reference_write_data stage)s0=Some value /\\rf_reference_low_word data_word value) ->\n (exists value,VM.find(rf_reference_write_data stage)s1=Some value /\\rf_reference_low_word data_word value) ->\n (exists value,VM.find(rf_reference_write_prior index stage)s0=Some value /\\rf_reference_low_word prior_word value) ->\n (exists value,VM.find(rf_reference_write_prior index stage)s1=Some value /\\rf_reference_low_word prior_word value) ->\n (exists value,VM.find(rf_reference_write_prior index stage)s2=Some value /\\rf_reference_low_word prior_word value) ->\n (rf_reference_write_depth stage=2%nat ->VM.find(rf_reference_permission_node stage)s1=Some(Gval(Fuint 1)[::permitted])) ->\n VM.find(rf_reference_chain_guard stage)s2=Some(Gval(Fuint 1)[::opcode]) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements=Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements=Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements=Some s3 ->\n exists value,VM.find(rf_reference_chain_node index stage)s3=Some value /\\\n rf_reference_low_word(if opcode && rf_reference_permission_value stage permitted && (index==to_nat rd) then data_word else prior_word)value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_low_adapt32",
+          "line": 204,
+          "statement": "Lemma rf_reference_low_adapt32 word value :rf_reference_low_word word value ->\n adapt_hvalue_as_type value(Gtyp(Fuint 32))=Some(Gval(Fuint 32)word)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_fold_miss",
+          "line": 219,
+          "statement": "Lemma rf_reference_fold_miss guards permissions words destination index initial count : (index==destination)=false ->\n rf_reference_fold_word guards permissions words destination index initial count=initial."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_fold_effect",
+          "line": 222,
+          "statement": "Lemma rf_reference_fold_effect guards permissions words destination index bank count :(1<=index)%coq_nat ->\n rf_reference_fold_word guards permissions words destination index(bank index)count=rf_apply_effect bank(rf_reference_effect guards permissions words destination count)index."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_prior_fold",
+          "line": 234,
+          "statement": "Lemma rf_reference_prior_fold index stage :rf_reference_write_prior index stage=rf_reference_fold_node index stage."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_effect_history",
+          "line": 236,
+          "statement": "Theorem rf_reference_effect_history invalid history (limit start:nat) index rd initial guards permissions words :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 3221(history t)=Some(Gval(Fuint 5)rd)) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->exists value,VM.find(N.of_nat(2177-index)%nat)(history t)=Some value /\\rf_reference_low_word initial value) ->\n (forall stage t,(stage<36)%coq_nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->exists value,VM.find(rf_reference_write_data stage)(history t)=Some value /\\rf_reference_low_word(words stage)value) ->\n (forall stage t,(stage<36)%coq_nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_chain_guard stage)(history t)=Some(Gval(Fuint 1)[::guards stage])) ->\n (forall stage t,(stage<36)%coq_nat ->rf_reference_write_depth stage=2%nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_permission_node stage)(history t)=Some(Gval(Fuint 1)[::permissions stage])) ->\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n forall count time,(count<=36)%coq_nat ->(Nat.add start(Nat.mul 3 count)<=time)%coq_nat ->(time<=limit)%coq_nat ->\n exists value,VM.find(rf_reference_fold_node index count)(history time)=Some value /\\\n rf_reference_low_word(rf_reference_fold_word guards permissions words(to_nat rd)index initial count)value."
+        },
+        {
+          "kind": "Lemma",
+          "name": "rf_reference_final_node",
+          "line": 268,
+          "statement": "Lemma rf_reference_final_node index :rf_reference_chain_node index 35=rf_exit_node 3614 index."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_effect_exit",
+          "line": 270,
+          "statement": "Theorem rf_reference_effect_exit index invalid s0 s1 s2 s3 active chosen prior chosen_word prior_word :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->\n VM.find 1707 s0=Some(Gval(Fuint 1)[::active]) ->\n VM.find(rf_reference_chain_node index 35)s0=Some chosen ->rf_reference_low_word chosen_word chosen ->\n VM.find(N.of_nat(2177-index)%nat)s0=Some prior ->rf_reference_low_word prior_word prior ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements=Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements=Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements=Some s3 ->\n VM.find(rf_exit_port index)s3=Some(Gval(Fuint 32)(if active then chosen_word else prior_word))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_effect_preview_history",
+          "line": 297,
+          "statement": "Theorem rf_reference_effect_preview_history invalid history (limit start:nat) index rd bank guards permissions words active :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 3221(history t)=Some(Gval(Fuint 5)rd)) ->\n (2<=start)%coq_nat ->rf_reference_bank_at(history 0%nat)bank ->\n (forall stage t,(stage<36)%coq_nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->exists value,VM.find(rf_reference_write_data stage)(history t)=Some value /\\rf_reference_low_word(words stage)value) ->\n (forall stage t,(stage<36)%coq_nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_chain_guard stage)(history t)=Some(Gval(Fuint 1)[::guards stage])) ->\n (forall stage t,(stage<36)%coq_nat ->rf_reference_write_depth stage=2%nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_permission_node stage)(history t)=Some(Gval(Fuint 1)[::permissions stage])) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 1707(history t)=Some(Gval(Fuint 1)[::active])) ->\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n forall time,(Nat.add start 112<=time)%coq_nat ->(time<=limit)%coq_nat ->\n let word:=rf_apply_effect bank(if active then rf_reference_effect guards permissions words(to_nat rd)36 else RFNoWrite)index in\n size word=32%nat /\\VM.find(N.of_nat(Nat.add 1597 index))(history time)=Some(Gval(Fuint 32)word)."
+        }
+      ]
+    },
+    {
+      "family": "register-write",
+      "module": "ReferenceBankGuardedCommit",
+      "source": "formal/flat-low/staged-integration/ReferenceBankGuardedCommit.v",
+      "sha256": "61a4017e053d83f2e851f155da5c8d3c210b96fa2bed3318bd928363b3208f67",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_guarded_stage_three_steps",
+          "line": 9,
+          "statement": "Theorem rf_reference_guarded_stage_three_steps index stage invalid s0 s1 s2 s3 rd opcode permitted data_word prior_word :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->(stage<36)%coq_nat ->\n VM.find 3221 s0=Some(Gval(Fuint 5)rd) ->VM.find 3221 s1=Some(Gval(Fuint 5)rd) ->\n (opcode=true ->exists value,VM.find(rf_reference_write_data stage)s0=Some value /\\rf_reference_low_word data_word value) ->\n (opcode=true ->exists value,VM.find(rf_reference_write_data stage)s1=Some value /\\rf_reference_low_word data_word value) ->\n (exists value,VM.find(rf_reference_write_prior index stage)s0=Some value /\\rf_reference_low_word prior_word value) ->\n (exists value,VM.find(rf_reference_write_prior index stage)s1=Some value /\\rf_reference_low_word prior_word value) ->\n (exists value,VM.find(rf_reference_write_prior index stage)s2=Some value /\\rf_reference_low_word prior_word value) ->\n (opcode=true ->rf_reference_write_depth stage=2%nat ->VM.find(rf_reference_permission_node stage)s1=Some(Gval(Fuint 1)[::permitted])) ->\n VM.find(rf_reference_chain_guard stage)s2=Some(Gval(Fuint 1)[::opcode]) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements=Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements=Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements=Some s3 ->\n exists value,VM.find(rf_reference_chain_node index stage)s3=Some value /\\\n rf_reference_low_word(if opcode && rf_reference_permission_value stage permitted && (index==to_nat rd) then data_word else prior_word)value."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_guarded_effect_history",
+          "line": 31,
+          "statement": "Theorem rf_reference_guarded_effect_history invalid history (limit start:nat) index rd initial guards permissions words :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 3221(history t)=Some(Gval(Fuint 5)rd)) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->exists value,VM.find(N.of_nat(2177-index)%nat)(history t)=Some value /\\rf_reference_low_word initial value) ->\n (forall stage t,(stage<36)%coq_nat ->guards stage=true ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->exists value,VM.find(rf_reference_write_data stage)(history t)=Some value /\\rf_reference_low_word(words stage)value) ->\n (forall stage t,(stage<36)%coq_nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_chain_guard stage)(history t)=Some(Gval(Fuint 1)[::guards stage])) ->\n (forall stage t,(stage<36)%coq_nat ->guards stage=true ->rf_reference_write_depth stage=2%nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_permission_node stage)(history t)=Some(Gval(Fuint 1)[::permissions stage])) ->\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n forall count time,(count<=36)%coq_nat ->(Nat.add start(Nat.mul 3 count)<=time)%coq_nat ->(time<=limit)%coq_nat ->\n exists value,VM.find(rf_reference_fold_node index count)(history time)=Some value /\\\n rf_reference_low_word(rf_reference_fold_word guards permissions words(to_nat rd)index initial count)value."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_guarded_nonzero_effect_commit",
+          "line": 61,
+          "statement": "Theorem rf_reference_guarded_nonzero_effect_commit invalid history (limit start:nat) index rd bank guards permissions words active result :\n (1<=index)%coq_nat ->(index<32)%coq_nat ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 3221(history t)=Some(Gval(Fuint 5)rd)) ->\n (2<=start)%coq_nat ->rf_reference_bank_at(history 0%nat)bank ->\n (forall stage t,(stage<36)%coq_nat ->guards stage=true ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->exists value,VM.find(rf_reference_write_data stage)(history t)=Some value /\\rf_reference_low_word(words stage)value) ->\n (forall stage t,(stage<36)%coq_nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_chain_guard stage)(history t)=Some(Gval(Fuint 1)[::guards stage])) ->\n (forall stage t,(stage<36)%coq_nat ->guards stage=true ->rf_reference_write_depth stage=2%nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_permission_node stage)(history t)=Some(Gval(Fuint 1)[::permissions stage])) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 1707(history t)=Some(Gval(Fuint 1)[::active])) ->\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n (Nat.add start 111<=limit)%coq_nat ->VM.find 1515(history limit)=Some(Gval(Fuint 1)[::false]) ->\n formal_value_iter invalid flat_memories(history limit)true(history limit)flat_statements=Some result ->\n VM.find(N.of_nat(7299+index)%nat)result=Some(Gval(Fuint 32)\n (rf_apply_effect bank(if active then rf_reference_effect guards permissions words(to_nat rd)36 else RFNoWrite)index))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "rf_reference_guarded_bank_effect_commit",
+          "line": 95,
+          "statement": "Theorem rf_reference_guarded_bank_effect_commit invalid history (limit start:nat) rd bank guards permissions words active result :\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 3221(history t)=Some(Gval(Fuint 5)rd)) ->\n (2<=start)%coq_nat ->rf_reference_bank_at(history 0%nat)bank ->bank 0%nat=nseq 32 false ->\n (forall stage t,(stage<36)%coq_nat ->guards stage=true ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->exists value,VM.find(rf_reference_write_data stage)(history t)=Some value /\\rf_reference_low_word(words stage)value) ->\n (forall stage t,(stage<36)%coq_nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_chain_guard stage)(history t)=Some(Gval(Fuint 1)[::guards stage])) ->\n (forall stage t,(stage<36)%coq_nat ->guards stage=true ->rf_reference_write_depth stage=2%nat ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find(rf_reference_permission_node stage)(history t)=Some(Gval(Fuint 1)[::permissions stage])) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 1707(history t)=Some(Gval(Fuint 1)[::active])) ->\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n (Nat.add start 111<=limit)%coq_nat ->VM.find 1515(history limit)=Some(Gval(Fuint 1)[::false]) ->\n formal_value_iter invalid flat_memories(history limit)true(history limit)flat_statements=Some result ->\n rf_reference_bank_at result(rf_apply_effect bank(if active then rf_reference_effect guards permissions words(to_nat rd)36 else RFNoWrite))."
+        }
+      ]
+    },
+    {
+      "family": "register-write",
+      "module": "ReferenceBankGuardedObserved",
+      "source": "formal/flat-low/staged-integration/ReferenceBankGuardedObserved.v",
+      "sha256": "84b9d1a739c4af667b3eeda670c806c71d35ae82ca1e8112e79b5a956f985f5c",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "reference_bank_guarded_effect_commit",
+          "line": 13,
+          "statement": "Theorem reference_bank_guarded_effect_commit memory inputs k observed bank result :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n VM.find 1(formal_external_inputs(generated_observation_input inputs k))=Some(Gval(Fuint 1)[::false]) ->\n rf_reference_bank_at(top_environment observed)bank ->bank 0%nat=nseq 32 false ->\n ref_bank_guarded_controls(top_environment observed) ->\n ref_write_selected_data_concrete(top_environment observed) ->\n VM.find 3221(top_environment observed)=Some(Gval(Fuint 5)(ref_write_destination(top_environment observed))) ->\n formal_value_iter(formal_invalid_policy(generated_observation_input inputs k)nil)flat_memories(top_environment observed)true(top_environment observed)flat_statements=Some result ->\n rf_reference_bank_at result(rf_apply_effect bank(ref_write_effect(top_environment observed)))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_bank_guarded_effect_next",
+          "line": 61,
+          "statement": "Theorem reference_bank_guarded_effect_next memory inputs k observed committed next bank :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n generated_run memory inputs(S k)=Some committed ->generated_observe memory inputs(S k)=Some next ->\n VM.find 1(formal_external_inputs(generated_observation_input inputs k))=Some(Gval(Fuint 1)[::false]) ->\n rf_reference_bank_at(top_environment observed)bank ->bank 0%nat=nseq 32 false ->\n ref_bank_guarded_controls(top_environment observed) ->ref_write_selected_data_concrete(top_environment observed) ->\n VM.find 3221(top_environment observed)=Some(Gval(Fuint 5)(ref_write_destination(top_environment observed))) ->\n rf_reference_bank_at(top_environment next)(rf_apply_effect bank(ref_write_effect(top_environment observed)))."
+        }
+      ]
+    },
+    {
+      "family": "pc",
+      "module": "ReferencePCSequentialHistory",
+      "source": "formal/flat-low/staged-integration/ReferencePCSequentialHistory.v",
+      "sha256": "defe5a42e55a84adddb51d508132d281dc7530663d89515553c0756286277cb3",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_sequential_payload_after_nine",
+          "line": 9,
+          "statement": "Theorem reference_pc_sequential_payload_after_nine invalid s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 pc :\n size pc = 32%nat ->\n VM.find 7331 s0 = Some (Gval (Fuint 32) pc) ->\n VM.find 6507 s0 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 6780 s0 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1707 s1 = Some (Gval (Fuint 1) [::true]) ->\n VM.find 6780 s5 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1707 s6 = Some (Gval (Fuint 1) [::true]) ->\n formal_flat_local_step invalid s0 s1 -> formal_flat_local_step invalid s1 s2 ->\n formal_flat_local_step invalid s2 s3 -> formal_flat_local_step invalid s3 s4 ->\n formal_flat_local_step invalid s4 s5 -> formal_flat_local_step invalid s5 s6 ->\n formal_flat_local_step invalid s6 s7 -> formal_flat_local_step invalid s7 s8 ->\n formal_flat_local_step invalid s8 s9 ->\n VM.find 1819 s9 = Some (Gval (Fuint 32) (reference_pc_plus_four pc))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_sequential_commit_after_nine",
+          "line": 47,
+          "statement": "Theorem reference_pc_sequential_commit_after_nine invalid s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 result pc :\n size pc = 32%nat ->\n VM.find 7331 s0 = Some (Gval (Fuint 32) pc) ->\n VM.find 6507 s0 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 6780 s0 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1707 s1 = Some (Gval (Fuint 1) [::true]) ->\n VM.find 6780 s5 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1707 s6 = Some (Gval (Fuint 1) [::true]) ->\n VM.find 1515 s9 = Some (Gval (Fuint 1) [::false]) ->\n formal_flat_local_step invalid s0 s1 -> formal_flat_local_step invalid s1 s2 ->\n formal_flat_local_step invalid s2 s3 -> formal_flat_local_step invalid s3 s4 ->\n formal_flat_local_step invalid s4 s5 -> formal_flat_local_step invalid s5 s6 ->\n formal_flat_local_step invalid s6 s7 -> formal_flat_local_step invalid s7 s8 ->\n formal_flat_local_step invalid s8 s9 ->\n formal_value_iter invalid flat_memories s9 true s9 flat_statements = Some result ->\n VM.find 7331 result = Some (Gval (Fuint 32) (reference_pc_plus_four pc))."
+        }
+      ]
+    },
+    {
+      "family": "pc",
+      "module": "ReferencePCStutterCommit",
+      "source": "formal/flat-low/staged-integration/ReferencePCStutterCommit.v",
+      "sha256": "9b3fd4dd9801a6d3d80e937172c2c89a95d840424ba062fd0825a62a0bbb24b3",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_disabled_payload_after_five",
+          "line": 8,
+          "statement": "Theorem reference_pc_disabled_payload_after_five invalid s0 s1 s2 s3 s4 s5 bits :\n size bits = 32%nat ->\n VM.find 7331 s0 = Some (Gval (Fuint 32) bits) ->\n VM.find 1707 s2 = Some (Gval (Fuint 1) [::false]) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements = Some s3 ->\n formal_value_iter invalid flat_memories s3 false s3 flat_statements = Some s4 ->\n formal_value_iter invalid flat_memories s4 false s4 flat_statements = Some s5 ->\n VM.find 1819 s5 = Some (Gval (Fuint 32) bits)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_disabled_commit_after_five",
+          "line": 26,
+          "statement": "Theorem reference_pc_disabled_commit_after_five invalid s0 s1 s2 s3 s4 s5 result bits :\n size bits = 32%nat ->\n VM.find 7331 s0 = Some (Gval (Fuint 32) bits) ->\n VM.find 1707 s2 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1515 s5 = Some (Gval (Fuint 1) [::false]) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements = Some s3 ->\n formal_value_iter invalid flat_memories s3 false s3 flat_statements = Some s4 ->\n formal_value_iter invalid flat_memories s4 false s4 flat_statements = Some s5 ->\n formal_value_iter invalid flat_memories s5 true s5 flat_statements = Some result ->\n VM.find 7331 result = Some (Gval (Fuint 32) bits)."
+        }
+      ]
+    },
+    {
+      "family": "pc",
+      "module": "ReferencePCRedirectCommit",
+      "source": "formal/flat-low/staged-integration/ReferencePCRedirectCommit.v",
+      "sha256": "6a790e8e52fd8599afcbdec1377c228f45e287808e7213d46eff45f8cafdbe53",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_pc_redirect_mux_6810",
+          "line": 9,
+          "statement": "Lemma reference_pc_redirect_mux_6810 invalid old current result base input :\n reference_pc_seq_extension base input ->\n VM.find 6807 old = Some (Gval (Fuint 1) [::false]) -> VM.find 6508 old = Some input ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n exists value, VM.find 6810 result = Some value /\\ reference_pc_seq_extension base value."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_redirect_payload_after_five",
+          "line": 23,
+          "statement": "Theorem reference_pc_redirect_payload_after_five invalid s0 s1 s2 s3 s4 s5 target :\n size target = 32%nat ->\n VM.find 6508 s0 = Some (Gval (Fuint 32) target) ->\n VM.find 6807 s0 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 6780 s1 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1707 s2 = Some (Gval (Fuint 1) [::true]) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements = Some s3 ->\n formal_value_iter invalid flat_memories s3 false s3 flat_statements = Some s4 ->\n formal_value_iter invalid flat_memories s4 false s4 flat_statements = Some s5 ->\n VM.find 1819 s5 = Some (Gval (Fuint 32) target)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_redirect_commit_after_five",
+          "line": 48,
+          "statement": "Theorem reference_pc_redirect_commit_after_five invalid s0 s1 s2 s3 s4 s5 result target old_value :\n size target = 32%nat ->\n VM.find 6508 s0 = Some (Gval (Fuint 32) target) ->\n VM.find 6807 s0 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 6780 s1 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1707 s2 = Some (Gval (Fuint 1) [::true]) ->\n VM.find 7331 s5 = Some old_value -> type_of_val old_value = Gtyp (Fuint 32) ->\n VM.find 1515 s5 = Some (Gval (Fuint 1) [::false]) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements = Some s3 ->\n formal_value_iter invalid flat_memories s3 false s3 flat_statements = Some s4 ->\n formal_value_iter invalid flat_memories s4 false s4 flat_statements = Some s5 ->\n formal_value_iter invalid flat_memories s5 true s5 flat_statements = Some result ->\n VM.find 7331 result = Some (Gval (Fuint 32) target)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_pc_redirect_nonzero_test",
+          "line": 69,
+          "statement": "Lemma reference_pc_redirect_nonzero_test invalid old current result input :\n reference_pc_seq_extension [::true] input -> VM.find 6806 old = Some input ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find 6807 result = Some (Gval (Fuint 1) [::false])."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_redirect_flag_after_four",
+          "line": 83,
+          "statement": "Theorem reference_pc_redirect_flag_after_four invalid s0 s1 s2 s3 s4 :\n VM.find 6507 s0 = Some (Gval (Fuint 1) [::true]) ->\n VM.find 6780 s0 = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1707 s1 = Some (Gval (Fuint 1) [::true]) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements = Some s3 ->\n formal_value_iter invalid flat_memories s3 false s3 flat_statements = Some s4 ->\n VM.find 6807 s4 = Some (Gval (Fuint 1) [::false])."
+        }
+      ]
+    },
+    {
+      "family": "pc",
+      "module": "ReferencePCTargetSemantics",
+      "source": "formal/flat-low/staged-integration/ReferencePCTargetSemantics.v",
+      "sha256": "8a2ba573a4bbdea6fa9dc84d847f9f1b2bdefacf13045560fcfae37e9c3c6fbb",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "ref_pc_target_resize32",
+          "line": 9,
+          "statement": "Lemma ref_pc_target_resize32 word :size word=32%nat ->zext_to 32(take 32 word)=word."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_target_semantics",
+          "line": 56,
+          "statement": "Theorem reference_pc_target_semantics inputs path history limit reset time guards pc immediate rs1 :\n (forall t,(t<=limit)%coq_nat ->VM.find 1(history t)=Some(Gval(Fuint 1)[::reset])) ->\n (forall t,(t<limit)%coq_nat ->formal_value_iter(formal_invalid_policy inputs path)flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n (225<=time)%coq_nat ->(time<limit)%coq_nat ->size pc=32%nat ->size rs1=32%nat ->\n VM.find 2812(history time)=Some(Gval(Fuint 32)pc) ->\n VM.find 2552(history time)=Some(Gval(Fuint 32)immediate) ->\n VM.find 2209(history time)=Some(Gval(Fuint 32)rs1) ->\n (forall node,List.In node reference_pc_target_guard_nodes ->VM.find node(history time)=Some(Gval(Fuint 1)[::guards node])) ->\n VM.find 6508(history time)=Some(Gval(Fuint 32)(reference_pc_target_value guards pc immediate rs1))."
+        }
+      ]
+    },
+    {
+      "family": "pc",
+      "module": "ReferencePCTargetObserved",
+      "source": "formal/flat-low/staged-integration/ReferencePCTargetObserved.v",
+      "sha256": "75662ce3b59ef8cf2b1d8d92239e12df032737a87c959f545a30f88d5c7b2557",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_target_function_history",
+          "line": 32,
+          "statement": "Theorem reference_pc_target_function_history inputs path history limit reset time instruction rs1 rs2 immediate pc csr :\n (forall i, (i <= limit)%coq_nat -> VM.find 1 (history i) = Some (Gval (Fuint 1) [::reset])) ->\n (forall i, (i < limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n (225 <= time)%coq_nat -> (time < limit)%coq_nat ->\n VM.find 1884 (history time) = Some (Gval (Fuint 32) instruction) ->\n VM.find 2209 (history time) = Some (Gval (Fuint 32) rs1) ->\n VM.find 2804 (history time) = Some (Gval (Fuint 32) rs2) ->\n VM.find 2552 (history time) = Some (Gval (Fuint 32) immediate) ->\n VM.find 7331 (history time) = Some (Gval (Fuint 32) pc) ->\n VM.find 7332 (history time) = Some (Gval (Fuint 32) csr) ->\n size rs1 = 32%nat -> size rs2 = 32%nat -> size pc = 32%nat -> size csr = 32%nat ->\n VM.find 6508(history time)=Some(Gval(Fuint 32)(reference_pc_target_function instruction rs1 rs2 immediate pc csr))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_target_function_observed",
+          "line": 64,
+          "statement": "Theorem reference_pc_target_function_observed memory inputs k observed instruction rs1 rs2 immediate pc csr :\n generated_observe memory inputs k = Some observed ->\n generated_legal_trace memory inputs k ->\n VM.find 1884 (top_environment observed) = Some (Gval (Fuint 32) instruction) ->\n VM.find 2209 (top_environment observed) = Some (Gval (Fuint 32) rs1) ->\n VM.find 2804 (top_environment observed) = Some (Gval (Fuint 32) rs2) ->\n VM.find 2552 (top_environment observed) = Some (Gval (Fuint 32) immediate) ->\n VM.find 7331 (top_environment observed) = Some (Gval (Fuint 32) pc) ->\n VM.find 7332 (top_environment observed) = Some (Gval (Fuint 32) csr) ->\n size rs1 = 32%nat -> size rs2 = 32%nat -> size pc = 32%nat -> size csr = 32%nat ->\n VM.find 6508(top_environment observed)=Some(Gval(Fuint 32)(reference_pc_target_function instruction rs1 rs2 immediate pc csr))."
+        }
+      ]
+    },
+    {
+      "family": "pc",
+      "module": "ReferencePCNormalCommit",
+      "source": "formal/flat-low/staged-integration/ReferencePCNormalCommit.v",
+      "sha256": "cfd8ae55e2739ec33d70d29965caf8022bdc58aa6ec60e4b01a54f126cc7fe55",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "reference_pc_formal_normal_commit",
+          "line": 7,
+          "statement": "Theorem reference_pc_formal_normal_commit invalid old current result old_value word :\n VM.find 7331 old = Some old_value -> type_of_val old_value = Gtyp (Fuint 32) ->\n VM.find 1515 old = Some (Gval (Fuint 1) [::false]) ->\n VM.find 1819 old = Some (Gval (Fuint 32) word) -> size word = 32%nat ->\n formal_value_iter invalid flat_memories old true current flat_statements = Some result ->\n VM.find 7331 result = Some (Gval (Fuint 32) word)."
+        }
+      ]
+    },
+    {
+      "family": "decode",
+      "module": "ReferenceInstructionDecode",
+      "source": "formal/flat-low/staged-integration/ReferenceInstructionDecode.v",
+      "sha256": "14bc97e87eb6863d749e3e4247c029489d1ae1b99567b8a7b980b22230a74e18",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_instruction_positions",
+          "line": 15,
+          "statement": "Lemma reference_instruction_positions : select_node_offsets reference_instruction_offsets flat_statements = Some reference_instruction_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_instruction_safety",
+          "line": 17,
+          "statement": "Lemma reference_instruction_safety : selected_node_safety flat_memories flat_statements reference_instruction_offsets flat_statements = true."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_instruction_decode_certificates",
+          "line": 29,
+          "statement": "Lemma reference_instruction_decode_certificates row : (row < 48)%coq_nat ->\n List.In (reference_instruction_guard row - 1,reference_instruction_mask_expression row) reference_instruction_nodes /\\\n List.In (reference_instruction_guard row,reference_instruction_guard_expression row) reference_instruction_nodes /\\\n to_N (from_N (reference_instruction_code_width row) (reference_instruction_code row)) = reference_instruction_code row /\\\n to_N (from_N (reference_instruction_mask_width row) (reference_instruction_mask row)) = reference_instruction_mask row."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_instruction_decode_history",
+          "line": 326,
+          "statement": "Theorem reference_instruction_decode_history invalid history limit instruction row :\n (row < 48)%coq_nat ->\n (forall i, (i < limit)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n (forall i, (i <= limit)%coq_nat -> VM.find 1884 (history i) = Some (Gval (Fuint 32) instruction)) ->\n forall time, (2 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n VM.find (reference_instruction_guard row) (history time) = Some (Gval (Fuint 1) [::N.eqb (reference_instruction_code row) (N.land (to_N instruction) (reference_instruction_mask row))])."
+        }
+      ]
+    },
+    {
+      "family": "decode",
+      "module": "ReferenceIllegalSpine",
+      "source": "formal/flat-low/staged-integration/ReferenceIllegalSpine.v",
+      "sha256": "47992f92eafadaaeae279e58f2ab2b5f1fda9bda85df10e1b2ea30bfc452ace8",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_illegal_member",
+          "line": 13,
+          "statement": "Lemma reference_illegal_member row : (row < 48)%coq_nat ->\n List.In (2993+N.of_nat row, reference_illegal_expression row) reference_control_3_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_illegal_step",
+          "line": 66,
+          "statement": "Lemma reference_illegal_step row guards invalid old result :\n (row < 48)%coq_nat ->\n VM.find (reference_instruction_guard row) old = Some (Gval (Fuint 1) [::guards row]) ->\n (row <> 0%nat -> VM.find (2992+N.of_nat row) old = Some (Gval (Fuint 1) [::reference_illegal_fold guards row])) ->\n formal_value_iter invalid flat_memories old false old flat_statements = Some result ->\n VM.find (2993+N.of_nat row) result = Some (Gval (Fuint 1) [::reference_illegal_fold guards (S row)])."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_illegal_prefix_history",
+          "line": 84,
+          "statement": "Theorem reference_illegal_prefix_history invalid history limit start guards :\n (forall i, (i < limit)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n (forall row i, (row < 48)%coq_nat -> (start <= i)%coq_nat -> (i <= limit)%coq_nat -> VM.find (reference_instruction_guard row) (history i) = Some (Gval (Fuint 1) [::guards row])) ->\n forall count, (0 < count)%coq_nat -> (count <= 48)%coq_nat ->\n forall time, (Nat.add start count <= time)%coq_nat -> (time <= limit)%coq_nat ->\n VM.find (2992+N.of_nat count) (history time) = Some (Gval (Fuint 1) [::reference_illegal_fold guards count])."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_illegal_output_history",
+          "line": 97,
+          "statement": "Theorem reference_illegal_output_history invalid history limit start guards enabled :\n (forall i, (i < limit)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n (forall row i, (row < 48)%coq_nat -> (start <= i)%coq_nat -> (i <= limit)%coq_nat -> VM.find (reference_instruction_guard row) (history i) = Some (Gval (Fuint 1) [::guards row])) ->\n (forall i, (start <= i)%coq_nat -> (i <= limit)%coq_nat -> VM.find 1707 (history i) = Some (Gval (Fuint 1) [::enabled])) ->\n forall time, (Nat.add start 50 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n VM.find 3042 (history time) = Some (Gval (Fuint 1) [::if enabled then reference_illegal_fold guards 48 else false])."
+        }
+      ]
+    },
+    {
+      "family": "decode",
+      "module": "ReferenceSystemDecode",
+      "source": "formal/flat-low/staged-integration/ReferenceSystemDecode.v",
+      "sha256": "2feef0f2726817e559af081c30f82b25243bdb5f4a8a688b726bb6e9173c1a48",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "reference_system_decode_history",
+          "line": 8,
+          "statement": "Theorem reference_system_decode_history invalid s0 s1 s2 instruction breakpoint :\n size instruction = 32%nat ->\n VM.find 1884 s0 = Some (Gval (Fuint 32) instruction) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n VM.find (if breakpoint then 1937 else 1933) s2 = Some (Gval (Fuint 1)\n [::N.eqb (to_N instruction) (if breakpoint then 1048691 else 115)])."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_system_decode_observed",
+          "line": 36,
+          "statement": "Theorem reference_system_decode_observed memory inputs k observed instruction enabled breakpoint :\n generated_observe memory inputs k = Some observed -> generated_legal_trace memory inputs k ->\n VM.find 7750 (top_environment observed) = Some (Gval (Fuint 32) instruction) ->\n VM.find 1707 (top_environment observed) = Some (Gval (Fuint 1) [::enabled]) ->\n VM.find (if breakpoint then 1937 else 1933) (top_environment observed) =\n Some (Gval (Fuint 1) [::N.eqb (to_N (memory_reference_instruction instruction enabled)) (if breakpoint then 1048691 else 115)])."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_system_absent_observed",
+          "line": 58,
+          "statement": "Theorem reference_system_absent_observed memory inputs k observed instruction enabled breakpoint :\n generated_observe memory inputs k = Some observed -> generated_legal_trace memory inputs k ->\n VM.find 1 (formal_external_inputs (generated_observation_input inputs k)) = Some (Gval (Fuint 1) [::false]) ->\n VM.find 7750 (top_environment observed) = Some (Gval (Fuint 32) instruction) ->\n VM.find 1707 (top_environment observed) = Some (Gval (Fuint 1) [::enabled]) ->\n VM.find (if breakpoint then 1937 else 1933) (top_environment observed) = Some (Gval (Fuint 1) [::false])."
+        }
+      ]
+    },
+    {
+      "family": "load",
+      "module": "ReferenceLoadSemantics",
+      "source": "formal/flat-low/staged-integration/ReferenceLoadSemantics.v",
+      "sha256": "42bf000be492a7b848a5dc8c3277526a333a282f8c5e09291e14db827122313f",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_load_positions",
+          "line": 20,
+          "statement": "Lemma reference_load_positions : select_node_offsets reference_load_offsets flat_statements = Some reference_load_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_load_safety",
+          "line": 22,
+          "statement": "Lemma reference_load_safety : selected_node_safety flat_memories flat_statements reference_load_offsets flat_statements = true."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_load_member",
+          "line": 24,
+          "statement": "Lemma reference_load_member lane stage : (lane < 5)%coq_nat -> (stage < reference_load_length lane)%coq_nat ->\n List.In (reference_load_node lane stage,reference_load_expression lane stage) reference_load_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_load_address_member",
+          "line": 32,
+          "statement": "Lemma reference_load_address_member lane stage : (lane < 5)%coq_nat -> (stage < 3)%coq_nat ->\n List.In (reference_load_address_node lane stage,reference_load_address_expression lane stage) reference_load_nodes."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_node_step",
+          "line": 41,
+          "statement": "Theorem reference_load_node_step invalid old current result lane stage ground word :\n (lane < 5)%coq_nat -> (stage < reference_load_length lane)%coq_nat ->\n (forall site, eval_hfexpr_validif_policy (isolated_validif_policy invalid) site flat_memories\n (reference_load_expression lane stage) old old = Some (Gval ground word)) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane stage) result = Some (Gval ground word)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_guard_step",
+          "line": 57,
+          "statement": "Theorem reference_load_guard_step invalid old current result lane which :\n (lane < 5)%coq_nat -> (which < 4)%coq_nat ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane (Nat.add 3 which)) result = Some (Gval (Fuint 1) [::reference_load_guard lane which])."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_mask_step",
+          "line": 69,
+          "statement": "Theorem reference_load_mask_step invalid old current result lane stage :\n (lane < 5)%coq_nat -> (stage < 4)%coq_nat ->\n VM.find (reference_load_node lane (Nat.sub 6 stage)) old = Some (Gval (Fuint 1) [::reference_load_guard lane (Nat.sub 3 stage)]) ->\n (stage = 0%nat \\/ VM.find (reference_load_node lane (Nat.add 6 stage)) old = Some (Gval (Fuint 64) (reference_load_partial_mask lane (Nat.sub stage 1)))) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane (Nat.add 7 stage)) result = Some (Gval (Fuint 64) (reference_load_partial_mask lane stage))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_mask_history",
+          "line": 88,
+          "statement": "Theorem reference_load_mask_history invalid history lane :\n (lane < 5)%coq_nat ->\n (forall i, (i < 5)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n VM.find (reference_load_node lane 10) (history 5%nat) = Some (Gval (Fuint 64) (reference_load_mask lane))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_low_step",
+          "line": 106,
+          "statement": "Theorem reference_load_low_step invalid old current result lane address :\n (lane < 5)%coq_nat ->\n VM.find (reference_load_base lane - 1) old = Some (Gval (Fuint 32) address) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane 0) result = Some (Gval (Fuint 2) (take 2 address))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_offset_step",
+          "line": 118,
+          "statement": "Theorem reference_load_offset_step invalid old current result lane address :\n (lane < 5)%coq_nat ->\n VM.find (reference_load_node lane 0) old = Some (Gval (Fuint 2) (take 2 address)) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane 1) result = Some (Gval (Fuint 5) (zeros 3 ++ take 2 address))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_shift_step",
+          "line": 131,
+          "statement": "Theorem reference_load_shift_step invalid old current result lane address raw :\n (lane < 5)%coq_nat ->\n VM.find (reference_load_node lane 1) old = Some (Gval (Fuint 5) (zeros 3 ++ take 2 address)) ->\n VM.find 3347 old = Some (Gval (Fuint 32) raw) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane 2) result = Some (Gval (Fuint 32) (reference_load_shift raw address))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_and_step",
+          "line": 144,
+          "statement": "Theorem reference_load_and_step invalid old current result lane shifted :\n (lane < 5)%coq_nat ->\n VM.find (reference_load_node lane 2) old = Some (Gval (Fuint 32) shifted) ->\n VM.find (reference_load_node lane 10) old = Some (Gval (Fuint 64) (reference_load_mask lane)) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane 11) result = Some (Gval (Fuint 64) (andB shifted (reference_load_mask lane)))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_slice_step",
+          "line": 157,
+          "statement": "Theorem reference_load_slice_step invalid old current result lane word :\n (lane < 5)%coq_nat ->\n VM.find (reference_load_node lane 11) old = Some (Gval (Fuint 64) word) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_node lane 12) result = Some (Gval (Fuint (reference_load_width lane)) (take (reference_load_width lane) word))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_load_shift_size",
+          "line": 169,
+          "statement": "Lemma reference_load_shift_size raw address : size raw = 32%nat -> size (reference_load_shift raw address) = 32%nat."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_load_remove_mask",
+          "line": 174,
+          "statement": "Lemma reference_load_remove_mask lane shifted : (lane < 5)%coq_nat -> size shifted = 32%nat ->\n take (reference_load_width lane) (andB shifted (reference_load_mask lane)) = take (reference_load_width lane) shifted."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_extract_history",
+          "line": 182,
+          "statement": "Theorem reference_load_extract_history invalid history lane address raw :\n (lane < 5)%coq_nat -> size raw = 32%nat ->\n VM.find (reference_load_base lane - 1) (history 3%nat) = Some (Gval (Fuint 32) address) ->\n VM.find 3347 (history 5%nat) = Some (Gval (Fuint 32) raw) ->\n (forall i, (i < 8)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n VM.find (reference_load_node lane 12) (history 8%nat) = Some (Gval (Fuint (reference_load_width lane)) (take (reference_load_width lane) (reference_load_shift raw address)))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_load_sign_bit",
+          "line": 198,
+          "statement": "Lemma reference_load_sign_bit width word : size word = width -> (0 < width)%nat ->\n drop (width-1)%nat (take width word) = [::msb word]."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_unsigned_extension",
+          "line": 210,
+          "statement": "Theorem reference_load_unsigned_extension invalid s0 s1 s2 lane word :\n (lane < 3)%coq_nat -> size word = reference_load_width lane ->\n VM.find (reference_load_node lane 12) s0 = Some (Gval (Fuint (reference_load_width lane)) word) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n VM.find (reference_load_node lane 14) s2 = Some (Gval (Fuint 32) (reference_load_extend lane word))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_signed_extension",
+          "line": 231,
+          "statement": "Theorem reference_load_signed_extension invalid s0 s1 s2 s3 s4 s5 (lane : nat) word :\n ((3 <= lane)%coq_nat /\\ (lane < 5)%coq_nat) -> size word = reference_load_width lane ->\n VM.find (reference_load_node lane 12) s0 = Some (Gval (Fuint (reference_load_width lane)) word) ->\n VM.find (reference_load_node lane 12) s3 = Some (Gval (Fuint (reference_load_width lane)) word) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements = Some s3 ->\n formal_value_iter invalid flat_memories s3 false s3 flat_statements = Some s4 ->\n formal_value_iter invalid flat_memories s4 false s4 flat_statements = Some s5 ->\n VM.find (reference_load_node lane 17) s5 = Some (Gval (Fuint 32) (reference_load_extend lane word))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_lane_history",
+          "line": 282,
+          "statement": "Theorem reference_load_lane_history invalid history lane address raw :\n (lane < 5)%coq_nat -> size raw = 32%nat ->\n (forall i, (i <= 6)%coq_nat -> VM.find (reference_load_base lane - 1) (history i) = Some (Gval (Fuint 32) address)) ->\n (forall i, (i <= 8)%coq_nat -> VM.find 3347 (history i) = Some (Gval (Fuint 32) raw)) ->\n (forall i, (i < 13)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n VM.find (reference_load_output lane) (history 13%nat) = Some (Gval (Fuint 32)\n (reference_load_extend lane (take (reference_load_width lane) (reference_load_shift raw address))))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_address_node_step",
+          "line": 306,
+          "statement": "Theorem reference_load_address_node_step invalid old current result lane stage ground word :\n (lane < 5)%coq_nat -> (stage < 3)%coq_nat ->\n (forall site, eval_hfexpr_validif_policy (isolated_validif_policy invalid) site flat_memories\n (reference_load_address_expression lane stage) old old = Some (Gval ground word)) ->\n formal_value_iter invalid flat_memories old false current flat_statements = Some result ->\n VM.find (reference_load_address_node lane stage) result = Some (Gval ground word)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_address_history",
+          "line": 321,
+          "statement": "Theorem reference_load_address_history invalid s0 s1 s2 s3 lane rs1 immediate :\n (lane < 5)%coq_nat ->\n VM.find 2209 s0 = Some (Gval (Fuint 32) rs1) ->\n VM.find 2552 s1 = Some (Gval (Fuint 32) immediate) ->\n formal_value_iter invalid flat_memories s0 false s0 flat_statements = Some s1 ->\n formal_value_iter invalid flat_memories s1 false s1 flat_statements = Some s2 ->\n formal_value_iter invalid flat_memories s2 false s2 flat_statements = Some s3 ->\n VM.find (reference_load_base lane - 1) s3 = Some (Gval (Fuint 32) (reference_load_address rs1 immediate))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_sources_history",
+          "line": 348,
+          "statement": "Theorem reference_load_sources_history invalid history lane rs1 immediate raw :\n (lane < 5)%coq_nat -> size raw = 32%nat ->\n (forall i, (i <= 6)%coq_nat -> VM.find 2209 (history i) = Some (Gval (Fuint 32) rs1)) ->\n (forall i, (i <= 7)%coq_nat -> VM.find 2552 (history i) = Some (Gval (Fuint 32) immediate)) ->\n (forall i, (i <= 11)%coq_nat -> VM.find 3347 (history i) = Some (Gval (Fuint 32) raw)) ->\n (forall i, (i < 16)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n VM.find (reference_load_output lane) (history 16%nat) = Some (Gval (Fuint 32)\n (reference_load_extend lane (take (reference_load_width lane) (reference_load_shift raw (reference_load_address rs1 immediate)))))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_raw_history",
+          "line": 365,
+          "statement": "Theorem reference_load_raw_history invalid history limit raw :\n size raw = 32%nat -> VM.find 9222 (history 0%nat) = Some (Gval (Fuint 32) raw) ->\n (forall i, (i < limit)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n forall time, (9 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n VM.find 3347 (history time) = Some (Gval (Fuint 32) raw)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_function_history",
+          "line": 379,
+          "statement": "Theorem reference_load_function_history inputs path history limit reset start lane rs1 immediate raw :\n (lane < 5)%coq_nat -> size raw = 32%nat ->\n (forall i, (i <= limit)%coq_nat -> VM.find 1 (history i) = Some (Gval (Fuint 1) [::reset])) ->\n (forall i, (i < limit)%coq_nat -> formal_value_iter (formal_invalid_policy inputs path) flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n (97 <= start)%coq_nat -> (Nat.add start 16 <= limit)%coq_nat ->\n VM.find 2209 (history (Nat.add start 16)) = Some (Gval (Fuint 32) rs1) ->\n VM.find 2552 (history (Nat.add start 16)) = Some (Gval (Fuint 32) immediate) ->\n VM.find 9222 (history 0%nat) = Some (Gval (Fuint 32) raw) ->\n VM.find (reference_load_output lane) (history (Nat.add start 16)) = Some (Gval (Fuint 32)\n (reference_load_extend lane (take (reference_load_width lane) (reference_load_shift raw (reference_load_address rs1 immediate)))))."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_load_function_observed",
+          "line": 399,
+          "statement": "Theorem reference_load_function_observed memory inputs k observed lane rs1 immediate raw :\n generated_observe memory inputs k = Some observed -> generated_legal_trace memory inputs k ->\n (lane < 5)%coq_nat -> size raw = 32%nat ->\n VM.find 2209 (top_environment observed) = Some (Gval (Fuint 32) rs1) ->\n VM.find 2552 (top_environment observed) = Some (Gval (Fuint 32) immediate) ->\n VM.find 9222 (top_environment observed) = Some (Gval (Fuint 32) raw) ->\n VM.find (reference_load_output lane) (top_environment observed) = Some (Gval (Fuint 32)\n (reference_load_extend lane (take (reference_load_width lane) (reference_load_shift raw (reference_load_address rs1 immediate)))))."
+        }
+      ]
+    },
+    {
+      "family": "store",
+      "module": "ReferenceStoreRequestData",
+      "source": "formal/flat-low/staged-integration/ReferenceStoreRequestData.v",
+      "sha256": "abdd5a3f849fe9f3c496f4bc57fec1da6809f8360829e5b8d045848dca8e9c39",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_data_positions",
+          "line": 10,
+          "statement": "Lemma reference_store_request_data_positions : select_node_offsets reference_store_request_data_offsets flat_statements=Some reference_store_request_data_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_data_safety",
+          "line": 12,
+          "statement": "Lemma reference_store_request_data_safety : selected_node_safety flat_memories flat_statements reference_store_request_data_offsets flat_statements=true."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_wire_1716",
+          "line": 14,
+          "statement": "Lemma reference_store_request_wire_1716 : declared_wire_check flat_memories flat_statements 1795 5560 1716 7190 32=true."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_wire_1526",
+          "line": 16,
+          "statement": "Lemma reference_store_request_wire_1526 : declared_wire_check flat_memories flat_statements 1605 6137 1526 1716 32=true."
+        },
+        {
+          "kind": "Lemma",
+          "name": "store_data_mux_eval",
+          "line": 20,
+          "statement": "Lemma store_data_mux_eval invalid site old condition yes no width y n result bit :\n (width<=32)%nat ->size n=32%nat ->\n VM.find condition old=Some(Gval(Fuint 1)[::bit]) ->\n VM.find yes old=Some(Gval(Fuint width)y) ->VM.find no old=Some(Gval(Fuint 32)n) ->\n adapt_hvalue_as_type(Gval(Fuint width)y)(Gtyp(Fuint 32))=Some(Gval(Fuint 32)result) ->\n eval_hfexpr_validif_policy(isolated_validif_policy invalid)site flat_memories\n (@Emux VarOrder.T(@Eref VarOrder.T(@Eid VarOrder.T condition))(@Eref VarOrder.T(@Eid VarOrder.T yes))(@Eref VarOrder.T(@Eid VarOrder.T no)))old old=\n Some(Gval(Fuint 32)(if bit then result else n))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_piece_size",
+          "line": 37,
+          "statement": "Lemma reference_store_request_piece_size width word :size(reference_store_request_piece width word)=32%nat."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_store_request_data_history",
+          "line": 49,
+          "statement": "Theorem reference_store_request_data_history invalid history limit start guards word :\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 2804(history t)=Some(Gval(Fuint 32)word)) ->\n (forall node t,List.In node reference_store_request_data_guards ->(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find node(history t)=Some(Gval(Fuint 1)[::guards node])) ->\n forall t,(Nat.add start 8<=t)%coq_nat ->(t<=limit)%coq_nat ->\n VM.find 7115(history t)=Some(Gval(Fuint 32)(reference_store_request_word guards word))."
+        }
+      ]
+    },
+    {
+      "family": "store",
+      "module": "ReferenceStoreRequestObserved",
+      "source": "formal/flat-low/staged-integration/ReferenceStoreRequestObserved.v",
+      "sha256": "f210cbf6ba428382af88e5534612136ceef9c5f65aa776f73346e281dc20c90f",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_word_size",
+          "line": 9,
+          "statement": "Lemma reference_store_request_word_size guards word :size(reference_store_request_word guards word)=32%nat."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_store_request_alias_history",
+          "line": 11,
+          "statement": "Theorem reference_store_request_alias_history invalid history limit start word :size word=32%nat ->\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n (forall t,(start<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 7115(history t)=Some(Gval(Fuint 32)word)) ->\n forall t,(Nat.add start 3<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 1526(history t)=Some(Gval(Fuint 32)word)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_store_request_data_observed",
+          "line": 24,
+          "statement": "Theorem reference_store_request_data_observed memory inputs k observed guards word :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n VM.find 2804(top_environment observed)=Some(Gval(Fuint 32)word) ->\n (forall node,List.In node reference_store_request_data_guards ->VM.find node(top_environment observed)=Some(Gval(Fuint 1)[::guards node])) ->\n VM.find 1526(top_environment observed)=Some(Gval(Fuint 32)(reference_store_request_word guards word))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_word_selected",
+          "line": 50,
+          "statement": "Lemma reference_store_request_word_selected instruction lane address word :\n (lane<3)%coq_nat ->store_type_is_store instruction lane ->reference_store_request_aligned lane address=true ->\n reference_store_request_word(memory_request_observed_guards instruction true address)word=\n reference_store_request_piece(reference_store_data_width lane)word."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_store_request_data_bank_observed",
+          "line": 59,
+          "statement": "Theorem reference_store_request_data_bank_observed memory inputs k observed instruction lane bank :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n VM.find 1(formal_external_inputs(generated_observation_input inputs k))=Some(Gval(Fuint 1)[::false]) ->\n (lane<3)%coq_nat ->VM.find 7750(top_environment observed)=Some(Gval(Fuint 32)instruction) ->store_type_is_store instruction lane ->\n rf_reference_bank_at(top_environment observed)bank ->\n reference_store_request_aligned lane(store_reference_address bank instruction)=true ->\n VM.find 1526(top_environment observed)=Some(Gval(Fuint 32)(reference_store_request_piece(reference_store_data_width lane)(bank(to_nat(rf_instruction_address true instruction)))))."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_store_request_alignment_from_address",
+          "line": 78,
+          "statement": "Lemma reference_store_request_alignment_from_address memory inputs k observed instruction half bank address :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n VM.find 1(formal_external_inputs(generated_observation_input inputs k))=Some(Gval(Fuint 1)[::false]) ->\n VM.find 7750(top_environment observed)=Some(Gval(Fuint 32)instruction) ->store_type_is_store instruction(if half then 1%nat else 0%nat) ->\n rf_reference_bank_at(top_environment observed)bank ->size address=32%nat ->\n VM.find 7752(top_environment observed)=Some(Gval(Fuint 32)address) ->take 2 address=take 2(store_reference_address bank instruction) ->\n reference_store_request_aligned(if half then 1%nat else 0%nat)(store_reference_address bank instruction)=true."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_store_request_data_from_address",
+          "line": 92,
+          "statement": "Theorem reference_store_request_data_from_address memory inputs k observed instruction lane bank address :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n VM.find 1(formal_external_inputs(generated_observation_input inputs k))=Some(Gval(Fuint 1)[::false]) ->\n (lane<3)%coq_nat ->VM.find 7750(top_environment observed)=Some(Gval(Fuint 32)instruction) ->store_type_is_store instruction lane ->\n rf_reference_bank_at(top_environment observed)bank ->size address=32%nat ->\n VM.find 7752(top_environment observed)=Some(Gval(Fuint 32)address) ->take 2 address=take 2(store_reference_address bank instruction) ->\n VM.find 1526(top_environment observed)=Some(Gval(Fuint 32)(reference_store_request_piece(reference_store_data_width lane)(bank(to_nat(rf_instruction_address true instruction)))))."
+        }
+      ]
+    },
+    {
+      "family": "events",
+      "module": "ReferenceEventSpine",
+      "source": "formal/flat-low/staged-integration/ReferenceEventSpine.v",
+      "sha256": "90c9c872142168d2f2556c26843617faa443292c13aab5a4d9d3cee2a6e09794",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "reference_event_positions",
+          "line": 9,
+          "statement": "Lemma reference_event_positions : select_node_offsets reference_event_offsets flat_statements = Some reference_event_nodes."
+        },
+        {
+          "kind": "Lemma",
+          "name": "reference_event_safety",
+          "line": 11,
+          "statement": "Lemma reference_event_safety : selected_node_safety flat_memories flat_statements reference_event_offsets flat_statements = true."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_event_spine_history",
+          "line": 63,
+          "statement": "Theorem reference_event_spine_history guards invalid history limit start :\n (forall i, (i < limit)%coq_nat -> formal_value_iter invalid flat_memories (history i) false (history i) flat_statements = Some (history (S i))) ->\n (forall node i, List.In node reference_event_guards -> (start <= i)%coq_nat -> (i <= limit)%coq_nat -> VM.find node (history i) = Some (Gval (Fuint 1) [::guards node])) ->\n forall time, (Nat.add start 46 <= time)%coq_nat -> (time <= limit)%coq_nat ->\n VM.find 6780 (history time) = Some (Gval (Fuint 1) [::reference_event_value guards])."
+        }
+      ]
+    },
+    {
+      "family": "events",
+      "module": "ReferenceEventConditions",
+      "source": "formal/flat-low/staged-integration/ReferenceEventConditions.v",
+      "sha256": "b82994e9a0a89005eae362fe3847cb395cf6cfbe4d2113c718ee8a1e4e8501ee",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Theorem",
+          "name": "reference_event_safe_false",
+          "line": 24,
+          "statement": "Theorem reference_event_safe_false g :\n reference_event_safe g -> reference_event_value g = false."
+        }
+      ]
+    },
+    {
+      "family": "csr",
+      "module": "ReferenceMISAConcrete",
+      "source": "formal/flat-low/staged-integration/ReferenceMISAConcrete.v",
+      "sha256": "3d730669dc44e629aeb2028c157446c0d731cdb6ce85dc9beb899f7a38532cdb",
+      "reuse": "reference-cone/history proof preserved via proved structural and evaluator adapters; combined-cycle wrappers must be reconnected",
+      "declarations": [
+        {
+          "kind": "Lemma",
+          "name": "misa_present",
+          "line": 8,
+          "statement": "Lemma misa_present : has_register 7332 flat_statements=true."
+        },
+        {
+          "kind": "Lemma",
+          "name": "misa_initial_safe",
+          "line": 10,
+          "statement": "Lemma misa_initial_safe : initial_register_safe 7332 flat_statements."
+        },
+        {
+          "kind": "Lemma",
+          "name": "misa_uint_declarations",
+          "line": 12,
+          "statement": "Lemma misa_uint_declarations : uint_register_declarations 7332 32 flat_statements."
+        },
+        {
+          "kind": "Lemma",
+          "name": "misa_symbolic_init",
+          "line": 14,
+          "statement": "Lemma misa_symbolic_init inputs path state :map_uint_concrete 7332 32(initialize_symbolic_registers inputs path flat_statements state)."
+        },
+        {
+          "kind": "Lemma",
+          "name": "misa_normal_history",
+          "line": 18,
+          "statement": "Lemma misa_normal_history invalid history limit word :\n (forall t,(t<limit)%coq_nat ->formal_value_iter invalid flat_memories(history t)false(history t)flat_statements=Some(history(S t))) ->\n size word=32%nat ->VM.find 7332(history 0%nat)=Some(Gval(Fuint 32)word) ->\n forall t,(4<=t)%coq_nat ->(t<=limit)%coq_nat ->VM.find 1820(history t)=Some(Gval(Fuint 32)word)."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_misa_cycle_concrete",
+          "line": 31,
+          "statement": "Theorem reference_misa_cycle_concrete inputs previous result bit :\n reference_misa_concrete previous ->VM.find 1(formal_external_inputs inputs)=Some(Gval(Fuint 1)[::bit]) ->\n circuit_formal_cycle generated_modules generated_top(Some previous)inputs=Some result ->reference_misa_concrete result."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_misa_initial_concrete",
+          "line": 60,
+          "statement": "Theorem reference_misa_initial_concrete memory inputs states :\n circuit_symbolic_initial_state generated_modules generated_top memory inputs=Some states ->reference_misa_concrete states."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_misa_run_zero",
+          "line": 65,
+          "statement": "Theorem reference_misa_run_zero memory inputs states :generated_run memory inputs 0=Some states ->reference_misa_concrete states."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_misa_run_concrete",
+          "line": 75,
+          "statement": "Theorem reference_misa_run_concrete memory inputs k states :\n generated_run memory inputs k=Some states ->generated_legal_trace memory inputs k ->reference_misa_concrete states."
+        },
+        {
+          "kind": "Theorem",
+          "name": "reference_misa_observed_concrete",
+          "line": 85,
+          "statement": "Theorem reference_misa_observed_concrete memory inputs k observed :\n generated_observe memory inputs k=Some observed ->generated_legal_trace memory inputs k ->\n map_uint_concrete 7332 32(top_environment observed)."
+        }
+      ]
+    }
+  ]
+}
