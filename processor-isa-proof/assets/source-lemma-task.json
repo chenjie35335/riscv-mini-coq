@@ -1,0 +1,14 @@
+{
+  "purpose": "Instantiate for source-guided lemma discovery; not a proven theorem.",
+  "required_fields": {
+    "configuration": "Actual module variants, XLEN, reset and memory interface",
+    "processor_source": "Path/hash/line and relevant expression/register updates",
+    "candidate_kind": "combinational identity | cycle contract | reachable invariant",
+    "candidate_statement": "Explicit widths, priorities, stage, legality and success conditions",
+    "shared_lemmas": "Existing reference/math/evaluation declarations",
+    "flat_mapping": "Flat FIRRTL and Coq AST locations, expression and write/alias/policy obligations",
+    "owned_files": "Assigned files; public interfaces have one owner",
+    "proof_status": "candidate | mathematical-core-proved | flat-local-proved | cycle-proved | integrated",
+    "evidence": "Commands/results/assumptions and remaining hypotheses"
+  }
+}

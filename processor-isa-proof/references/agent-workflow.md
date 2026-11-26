@@ -24,6 +24,7 @@ x0、reset、bubble/NOP等容易独立闭合的义务可先完成并共享；之
 
 | 角色 | 输入 | 交付的定理/证据 | 共享边界 |
 |---|---|---|---|
+| Source analysis（可与DUT contracts合并） | 实际elaboration配置、处理器源码、当前缺失义务 | 局部规格/候选不变式、源码到flat cone线索、可复用lemma清单 | 依[源码提取流程](source-guided-lemmas.md)，不把候选当作已证明前提 |
 | Reference | 固定参考模型、复用包、允许的ISA域 | 已有参考定理的复用入口；缺失语义与relocation清单 | 不按新DUT重新证明参考算法 |
 | Semantics | shared evaluator/库、生成AST | typed node equation、frame、成功history、rank soundness | 不证明某条指令的架构正确性 |
 | DUT contracts | DUT AST/RTL说明、冻结的View接口 | reset/hold/advance/flush/read/write/旁路每周期契约 | 接口不暴露整周期内部迭代history |

@@ -1,16 +1,62 @@
 {
   "purpose": "Reusable task specifications; instantiate scope, target declarations and owned files before delegation. This file is not a record of completed proofs.",
-  "common_input_fields": ["reference_profile", "target_model", "scope", "public_contracts", "owned_files", "dependencies", "build_directory"],
-  "common_deliverables": ["public theorem statements", "changed files", "compilation evidence", "assumption report", "remaining hypotheses", "new shared lemma candidates"],
+  "common_input_fields": [
+    "reference_profile",
+    "target_model",
+    "scope",
+    "public_contracts",
+    "owned_files",
+    "dependencies",
+    "build_directory"
+  ],
+  "common_deliverables": [
+    "public theorem statements",
+    "changed files",
+    "compilation evidence",
+    "assumption report",
+    "remaining hypotheses",
+    "new shared lemma candidates"
+  ],
   "roles": [
-    {"role": "reference", "prompt": "Reuse the fixed reference proof library first. Map this obligation to existing decoder, immediate, ALU, RF, PC, memory or event lemmas. Prove only genuinely missing reference facts. For generated-node theorems, list the exact embedding/renaming and phase adapter obligations; do not discard the theorem merely because node IDs differ."},
-    {"role": "semantics", "prompt": "Prove shared evaluator/frame/history/settling contracts required by the assigned target. Reuse assets/shared-semantics. Ground every history in successful actual execution, retain invalid-choice policy and memory alias conditions. Expose reusable node or cycle contracts; report which target certificates remain."},
-    {"role": "dut_contracts", "prompt": "From the selected flattened DUT model derive reset, hold, advance, flush, read, forwarding and writeback cycle contracts for the assigned signals. Bind values and widths in ViewAt, keep correctness relations separate. Use shared evaluator lemmas; prove node-location/suffix/alias certificates for this DUT."},
-    {"role": "rf_alu", "prompt": "For the assigned instruction families prove operand and pending-effect correctness using stable cycle contracts and the fixed reference semantics. Share effect preservation and zero/forwarding facts across all RF indices. Return conditional local step lemmas when Joint components are supplied; do not assume an unproved global PC reachability theorem."},
-    {"role": "pc_pipeline", "prompt": "Prove pipeline phase and PC transitions, including stall, bubble, flush and delayed redirect, against the fixed reference PC semantics. Obtain operand facts through explicit Joint interfaces. Avoid circular imports with RF reachability. Respect instruction length, truncation and alignment."},
-    {"role": "memory", "prompt": "Prove load/store address, width, sign extension, masks, data and pending effects with the fixed reference load/store lemmas. State request/response/preview/commit phases and environment contract. Derive actual memory footprint and alias facts instead of assuming syntactic disjointness."},
-    {"role": "csr_events", "prompt": "For the permitted CSR/exception domain prove state effects and enabled-event agreement, including cause/EPC/tval and priority as applicable. Reuse existing reference definitions and theorems at their actual scope. Treat trap/interrupt as architectural advance when required even without retirement. Report unimplemented reference instructions separately."},
-    {"role": "integration_checker", "prompt": "Own the public Joint and aggregate interfaces. Combine base and conditional step lemmas into actual reachable invariants, close every adapter hypothesis, discharge the exact generated checker at its true phase, and lift through the real instance map. Preserve model and assertion statements."},
-    {"role": "verification", "prompt": "Check the assigned frozen source closure outside source directories. Record compile results, Print Assumptions and recursive or completely covered kernel checking with source/artifact/tool identities. Reuse valid prior results; do not change proof claims, libraries or assumptions to make checking pass."}
+    {
+      "role": "source_analysis",
+      "prompt": "Read the actually instantiated processor source and configuration. Extract useful combinational identities, register/stage contracts or invariant candidates for the assigned obligation. Locate source annotations and structure in flat FIRRTL/Coq AST; identify shared reference/math lemmas and explicit mapping/width/priority/alias/history obligations. Follow references/source-guided-lemmas.md and assets/source-lemma-task.json. Return evidence and candidate status; source inspection does not prove the generated circuit."
+    },
+    {
+      "role": "reference",
+      "prompt": "Reuse the fixed reference proof library first. Map this obligation to existing decoder, immediate, ALU, RF, PC, memory or event lemmas. Prove only genuinely missing reference facts. For generated-node theorems, list the exact embedding/renaming and phase adapter obligations; do not discard the theorem merely because node IDs differ."
+    },
+    {
+      "role": "semantics",
+      "prompt": "Prove shared evaluator/frame/history/settling contracts required by the assigned target. Reuse assets/shared-semantics. Ground every history in successful actual execution, retain invalid-choice policy and memory alias conditions. Expose reusable node or cycle contracts; report which target certificates remain."
+    },
+    {
+      "role": "dut_contracts",
+      "prompt": "From the selected flattened DUT model derive reset, hold, advance, flush, read, forwarding and writeback cycle contracts for the assigned signals. Bind values and widths in ViewAt, keep correctness relations separate. Use shared evaluator lemmas; prove node-location/suffix/alias certificates for this DUT."
+    },
+    {
+      "role": "rf_alu",
+      "prompt": "For the assigned instruction families prove operand and pending-effect correctness using stable cycle contracts and the fixed reference semantics. Share effect preservation and zero/forwarding facts across all RF indices. Return conditional local step lemmas when Joint components are supplied; do not assume an unproved global PC reachability theorem."
+    },
+    {
+      "role": "pc_pipeline",
+      "prompt": "Prove pipeline phase and PC transitions, including stall, bubble, flush and delayed redirect, against the fixed reference PC semantics. Obtain operand facts through explicit Joint interfaces. Avoid circular imports with RF reachability. Respect instruction length, truncation and alignment."
+    },
+    {
+      "role": "memory",
+      "prompt": "Prove load/store address, width, sign extension, masks, data and pending effects with the fixed reference load/store lemmas. State request/response/preview/commit phases and environment contract. Derive actual memory footprint and alias facts instead of assuming syntactic disjointness."
+    },
+    {
+      "role": "csr_events",
+      "prompt": "For the permitted CSR/exception domain prove state effects and enabled-event agreement, including cause/EPC/tval and priority as applicable. Reuse existing reference definitions and theorems at their actual scope. Treat trap/interrupt as architectural advance when required even without retirement. Report unimplemented reference instructions separately."
+    },
+    {
+      "role": "integration_checker",
+      "prompt": "Own the public Joint and aggregate interfaces. Combine base and conditional step lemmas into actual reachable invariants, close every adapter hypothesis, discharge the exact generated checker at its true phase, and lift through the real instance map. Preserve model and assertion statements."
+    },
+    {
+      "role": "verification",
+      "prompt": "Check the assigned frozen source closure outside source directories. Record compile results, Print Assumptions and recursive or completely covered kernel checking with source/artifact/tool identities. Reuse valid prior results; do not change proof claims, libraries or assumptions to make checking pass."
+    }
   ]
 }

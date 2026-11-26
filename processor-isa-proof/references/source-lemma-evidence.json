@@ -1,0 +1,157 @@
+{
+  "scope": "Source-guided lemma discovery examples; no new processor correctness claim or historical transcript reconstruction",
+  "source_root_hint": "processor repository containing this skill",
+  "proof_root_hint": "../riscv-mini-proof",
+  "configuration": {
+    "path": "src/main/scala/mini/Config.scala",
+    "sha256": "aab184e212a2d0c29feb3b729c42874e8bafc37de18e036501f8e986c5f4667b",
+    "line": 9,
+    "anchor": "object MiniConfig"
+  },
+  "flat_source_info_example": {
+    "path": "CoreSoc.lo.fir",
+    "sha256": "b272e90e50d36af7cc8a233d81094cda4e9404c28d674474f4d6f1b59de28eb4",
+    "line": 71,
+    "anchor": "@[src/main/scala/mini/Datapath.scala"
+  },
+  "examples": [
+    {
+      "pattern": "shared-shifter",
+      "processor_source": {
+        "path": "src/main/scala/mini/Alu.scala",
+        "sha256": "a9f1f58d52f98a756c1ab6a5794e46b82f28edfdbd5cefca259aca0df4bf5ac0",
+        "line": 63,
+        "anchor": "class AluArea"
+      },
+      "mapping_status": "Source structure and existing theorem manually compared; not a certified Chisel-to-FIRRTL translation.",
+      "proofs": [
+        {
+          "path": "formal/flat-low/staged-integration/RFShiftSemantics.v",
+          "sha256": "a341bc5a5745a204cbfb52541480e40ab75b12f9c286618bf5a9f02feb2a421c",
+          "line": 25,
+          "anchor": "rf_shift_word_correct",
+          "module": "RFShiftSemantics",
+          "theorem": "rf_shift_word_correct",
+          "status": "existing source theorem; all statement premises retained",
+          "shipped_asset": "assets/same-reference/coq/RFShiftArithmetic.v",
+          "asset_sha256": "b07e819a781724c7711c2651e5375ac4c31439413635889f68258fd3942f9915",
+          "validation": "references/reference-validation.json"
+        },
+        {
+          "path": "formal/flat-low/staged-integration/RFShiftCenter.v",
+          "sha256": "2ea29b3555d66bb2e4d029a2e9520d71f62ea1caf867e76904be919e38d5a4fd",
+          "line": 12,
+          "anchor": "rf_shift_center_history",
+          "module": "RFShiftCenter",
+          "theorem": "rf_shift_center_history",
+          "status": "existing source theorem; all statement premises retained"
+        }
+      ]
+    },
+    {
+      "pattern": "branch-via-subtract",
+      "processor_source": {
+        "path": "src/main/scala/mini/BrCond.scala",
+        "sha256": "d3733f50e0b7141b2b3db0ddb3ea15e799c50c0838291e9a14212457b7d825be",
+        "line": 37,
+        "anchor": "class BrCondArea"
+      },
+      "mapping_status": "Source structure and existing theorem manually compared; not a certified Chisel-to-FIRRTL translation.",
+      "proofs": [
+        {
+          "path": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+          "sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+          "line": 56,
+          "anchor": "dut_unsigned_compare",
+          "module": "DUTBranchArithmetic",
+          "theorem": "dut_unsigned_compare",
+          "status": "existing source theorem; all statement premises retained",
+          "shipped_asset": "assets/same-reference/coq/DUTBranchArithmetic.v",
+          "asset_sha256": "cafa62a37655d70d3668cb92f9b4af2465ce5d2aa9ef2963e710048cd993f669",
+          "validation": "references/reference-validation.json"
+        },
+        {
+          "path": "formal/flat-low/staged-integration/DUTRedirectSemantics.v",
+          "sha256": "f07be09b4ae7cec2f9e126c094f211609e1704d7b2a89a241f4a2dee641340b0",
+          "line": 65,
+          "anchor": "dut_signed_compare",
+          "module": "DUTBranchArithmetic",
+          "theorem": "dut_signed_compare",
+          "status": "existing source theorem; all statement premises retained",
+          "shipped_asset": "assets/same-reference/coq/DUTBranchArithmetic.v",
+          "asset_sha256": "cafa62a37655d70d3668cb92f9b4af2465ce5d2aa9ef2963e710048cd993f669",
+          "validation": "references/reference-validation.json"
+        }
+      ]
+    },
+    {
+      "pattern": "rf-preview-and-read",
+      "processor_source": {
+        "path": "src/main/scala/mini/RegFile.scala",
+        "sha256": "5f19db21abce39ccb7c244efb5e88da7fd2ffc3ba92ac0a4a9667dafb3740a84",
+        "line": 19,
+        "anchor": "class RegFile(xlen"
+      },
+      "mapping_status": "Source structure and existing theorem manually compared; not a certified Chisel-to-FIRRTL translation.",
+      "proofs": [
+        {
+          "path": "formal/flat-low/staged-integration/RFReadPorts.v",
+          "sha256": "823117d25a422cf0915843b7f2a0bd49d6256e2ecb08551bfb184961c9d14321",
+          "line": 234,
+          "anchor": "rf_actual_read_port_history",
+          "module": "RFReadPorts",
+          "theorem": "rf_actual_read_port_history",
+          "status": "existing source theorem; all statement premises retained"
+        },
+        {
+          "path": "formal/flat-low/staged-integration/CycleRFOriginalAssertions.v",
+          "sha256": "ad40c9f2907ef8d562d0bbff404c52ee6584339e29e4b91aa16bb9adbb33f654",
+          "line": 15,
+          "anchor": "cycle_rf_original_assertion_normal",
+          "module": "CycleRFOriginalAssertions",
+          "theorem": "cycle_rf_original_assertion_normal",
+          "status": "existing source theorem; all statement premises retained"
+        }
+      ]
+    },
+    {
+      "pattern": "pipeline-control",
+      "processor_source": {
+        "path": "src/main/scala/mini/Datapath.scala",
+        "sha256": "4e3f9bd48bba80ad60119ae9d821b62a4a02a28efa857b62c8fd8ba2f417e5d7",
+        "line": 81,
+        "anchor": "val stall ="
+      },
+      "mapping_status": "Source structure and existing theorem manually compared; not a certified Chisel-to-FIRRTL translation.",
+      "proofs": [
+        {
+          "path": "formal/flat-low/staged-integration/CommitPCControlledPropagation.v",
+          "sha256": "91b2afe2db6aada1bf814a99037cec87a93e01107c717a8e4985028d124b6442",
+          "line": 10,
+          "anchor": "commit_pc_controlled_after_four",
+          "module": "CommitPCControlledPropagation",
+          "theorem": "commit_pc_controlled_after_four",
+          "status": "existing source theorem; all statement premises retained"
+        },
+        {
+          "path": "formal/flat-low/staged-integration/InstructionNormalTransfer.v",
+          "sha256": "e95c37344e987e37c1e02c0c2e3a659f1efbbd03567e53c61ad7fc707d5207eb",
+          "line": 48,
+          "anchor": "instruction_transfer_after_two",
+          "module": "InstructionNormalTransfer",
+          "theorem": "instruction_transfer_after_two",
+          "status": "existing source theorem; all statement premises retained"
+        },
+        {
+          "path": "formal/flat-low/staged-integration/RFAddPendingInvariant.v",
+          "sha256": "64c7e0d14ec8961e858b0ed2f920823d7fb132277622fb6005fe1da33e398cf3",
+          "line": 31,
+          "anchor": "cycle_add_pending_forwarded",
+          "module": "RFAddPendingInvariant",
+          "theorem": "cycle_add_pending_forwarded",
+          "status": "existing source theorem; all statement premises retained"
+        }
+      ]
+    }
+  ]
+}

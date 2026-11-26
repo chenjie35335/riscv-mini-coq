@@ -20,7 +20,7 @@ Do not redo reference ALU/immediate/decoder/memory mathematics merely because th
 
 ## Choose the boundary before proving
 
-Inspect the DUT, ISA reference, generated semantics, assumptions, and checker. Record the exact source revision, instruction/privilege scope, reset behavior, memory environment, observation phase, and retirement event. Work on the representation selected by the user (for this extraction: flattened low FIRRTL). Source RTL and decoder tables can explain the circuit; they do not replace a proof about the selected generated model.
+Inspect the DUT, ISA reference, generated semantics, assumptions, and checker. Record the exact source revision, instruction/privilege scope, reset behavior, memory environment, observation phase, and retirement event. Work on the representation selected by the user (for this extraction: flattened low FIRRTL). Actively read the instantiated processor source and decoder tables to derive combinational specifications, stage contracts and candidate invariants before expanding large generated cones. Follow [source-guided lemma extraction](references/source-guided-lemmas.md) for worked ALU/branch/RF/pipeline examples and source-to-flat traceability. Prove the resulting contracts on the selected generated model; source inspection itself does not discharge them.
 
 Separate three time scales: internal combinational iterations, hardware cycles, and architectural retirement steps. Identify where failed evaluation returns `None`, where symbolic invalid values are chosen, and where registers/memory commit. Derive successful histories from the real execution relation.
 
@@ -55,6 +55,7 @@ Report: exact scope, proved endpoints, remaining adapter obligations, trust assu
 - [Extraction analysis](references/riscv-mini-analysis.md): concrete source theorems, what transfers, and what stays DUT-specific.
 - [Fixed-reference reuse](references/same-reference-reuse.md): actual reusable code and reference-cone adapters.
 - [Reference asset validation](references/reference-validation.json): source identities, 195 closed theorem audits and recursive kernel coverage.
+- [Source-guided lemmas](references/source-guided-lemmas.md): extract local specifications and invariant candidates from processor implementations, then prove their flat-low counterparts.
 - [Agent workflow](references/agent-workflow.md): functional roles, four-slot scheduling, ownership and lemma sharing.
 - [Provenance](references/provenance.json): source hashes and locations for this extraction, not a certificate for the full original processor proof.
 - [Porting guide](references/porting-guide.md): generic module interfaces, example use, and local validation.
